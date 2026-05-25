@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Solutions from "@/components/Solutions";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -72,9 +73,9 @@ export default function Home() {
           <h2 className="text-7xl md:text-[12rem] font-black italic text-white uppercase tracking-tighter leading-none mb-16">
             STOP <span className="text-glitch">WAITING.</span>
           </h2>
-          <button className="px-16 py-8 bg-electric-volt text-black font-black text-3xl uppercase italic hover:bg-white hover:scale-110 transition-all shadow-[15px_15px_0_0_#ff007a]">
+          <Link href="/contact" className="inline-block px-16 py-8 bg-electric-volt text-black font-black text-3xl uppercase italic hover:bg-white hover:scale-110 transition-all shadow-[15px_15px_0_0_#ff007a]">
             INITIATE_NOW
-          </button>
+          </Link>
         </div>
       </section>
 

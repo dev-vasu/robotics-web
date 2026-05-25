@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Globe, Share2, Mail, ExternalLink } from "lucide-react";
+import { Zap, Globe, Share2, Mail, ExternalLink, Check } from "lucide-react";
+import { useState } from "react";
 
 export default function Footer() {
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = () => {
+    setSubscribed(true);
+    setTimeout(() => setSubscribed(false), 3000);
+  };
+
   return (
     <footer className="bg-black border-t-4 border-hyper-pink pt-24 pb-12 overflow-hidden relative">
       <div className="absolute top-0 right-0 text-[20rem] font-black italic text-white/[0.02] -translate-y-1/2 translate-x-1/4 select-none">
@@ -56,8 +64,19 @@ export default function Footer() {
                 placeholder="USER@DOMAIN.XYZ" 
                 className="w-full bg-white/5 border-2 border-white/10 p-4 font-black uppercase text-sm focus:outline-none focus:border-electric-volt text-white"
               />
-              <button className="w-full py-4 bg-hyper-pink text-black font-black uppercase tracking-widest hover:bg-white transition-all">
-                _SUBSCRIBE
+              <button 
+                onClick={handleSubscribe}
+                className={`w-full py-4 font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+                  subscribed ? "bg-electric-volt text-black" : "bg-hyper-pink text-black hover:bg-white"
+                }`}
+              >
+                {subscribed ? (
+                  <>
+                    <Check className="w-4 h-4" /> SIGNED_UP
+                  </>
+                ) : (
+                  "_SUBSCRIBE"
+                )}
               </button>
             </div>
           </div>
