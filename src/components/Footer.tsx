@@ -5,11 +5,33 @@ import { Zap, Globe, Share2, Mail, ExternalLink, Check } from "lucide-react";
 import { useState } from "react";
 
 export default function Footer() {
-  const [subscribed, setSubscribed] = useState(false);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  const handleSubscribe = () => {
-    setSubscribed(true);
-    setTimeout(() => setSubscribed(false), 3000);
+  const handleSubscribe = async () => {
+    if (!email) return;
+    setStatus("loading");
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   };
 
   return (
@@ -62,21 +84,24 @@ export default function Footer() {
               <input 
                 type="email" 
                 placeholder="USER@DOMAIN.XYZ" 
+                required
                 className="w-full bg-white/5 border-2 border-white/10 p-4 font-black uppercase text-sm focus:outline-none focus:border-electric-volt text-white"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <button 
                 onClick={handleSubscribe}
+                disabled={status === "loading"}
                 className={`w-full py-4 font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
-                  subscribed ? "bg-electric-volt text-black" : "bg-hyper-pink text-black hover:bg-white"
+                  status === "success" ? "bg-electric-volt text-black" : 
+                  status === "error" ? "bg-red-500 text-white" :
+                  "bg-hyper-pink text-black hover:bg-white disabled:opacity-50"
                 }`}
               >
-                {subscribed ? (
-                  <>
-                    <Check className="w-4 h-4" /> SIGNED_UP
-                  </>
-                ) : (
-                  "_SUBSCRIBE"
-                )}
+                {status === "loading" ? "UPLOADING..." : 
+                 status === "success" ? <><Check className="w-4 h-4" /> SIGNED_UP</> :
+                 status === "error" ? "FAIL_RETRY" :
+                 "_SUBSCRIBE"}
               </button>
             </div>
           </div>
