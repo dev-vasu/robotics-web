@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Ghost, Sparkles, Orbit } from "lucide-react";
+import Link from "next/link";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,17 +64,21 @@ export default function Hero() {
 
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 max-w-4xl mx-auto">
           {[
-            { icon: Ghost, label: "PLAY_ARCADE", color: "text-hyper-pink", bg: "bg-hyper-pink/10" },
-            { icon: Sparkles, label: "CREATE_ART", color: "text-cyber-blue", bg: "bg-cyber-blue/10" },
-            { icon: Orbit, label: "SYNC_VIBE", color: "text-electric-volt", bg: "bg-electric-volt/10" }
+            { icon: Ghost, label: "PLAY_ARCADE", color: "text-hyper-pink", bg: "bg-hyper-pink/10", href: "/game" },
+            { icon: Sparkles, label: "CREATE_ART", color: "text-cyber-blue", bg: "bg-cyber-blue/10", href: "/playground/canvas" },
+            { icon: Orbit, label: "SYNC_VIBE", color: "text-electric-volt", bg: "bg-electric-volt/10", href: "/playground" }
           ].map((item, i) => (
-            <div key={i} className={`hero-float flex items-center gap-4 px-8 py-6 rounded-2xl glass-panel group hover:scale-110 transition-transform cursor-pointer`}>
+            <Link 
+              key={i} 
+              href={item.href}
+              className={`hero-float flex items-center gap-4 px-8 py-6 rounded-2xl glass-panel group hover:scale-110 transition-transform cursor-pointer`}
+            >
               <div className={`p-3 rounded-xl ${item.bg}`}>
                 {/* @ts-ignore */}
                 <item.icon className={`w-8 h-8 ${item.color}`} />
               </div>
               <span className="text-xs font-black uppercase tracking-widest text-white/80">{item.label}</span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -82,23 +87,5 @@ export default function Hero() {
       <div className="absolute top-1/2 right-10 w-20 h-20 border-4 border-hyper-pink/20 rounded-full animate-spin-slow" />
       <div className="absolute bottom-20 left-10 w-16 h-16 border-4 border-electric-volt/20 rotate-45 animate-bounce" />
     </section>
-  );
-}
-
-function Zap({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="M4 14.71 13.5 3l-1.5 8h8.5L10.5 21l1.5-8H4z"/>
-    </svg>
   );
 }
