@@ -23,6 +23,7 @@ export default function AdminHQ() {
   
   const [records, setRecords] = useState<Record[]>([]);
   const [leaderboardScores, setLeaderboardScores] = useState<any[]>([]);
+  const [features, setFeatures] = useState<{ id: string; is_enabled: boolean }[]>([]);
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
@@ -66,11 +67,20 @@ export default function AdminHQ() {
         body: JSON.stringify({ passcode: currentPasscode }),
       });
 
-      if (resMsg.ok && resLeader.ok) {
+      // Fetch features
+      const resFeatures = await fetch("/api/hq/features", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passcode: currentPasscode }),
+      });
+
+      if (resMsg.ok && resLeader.ok && resFeatures.ok) {
         const dataMsg = await resMsg.json();
         const dataLeader = await resLeader.json();
+        const dataFeatures = await resFeatures.json();
         setRecords(dataMsg.records || []);
         setLeaderboardScores(dataLeader.scores || []);
+        setFeatures(dataFeatures.features || []);
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
@@ -79,6 +89,21 @@ export default function AdminHQ() {
       console.error(error);
     }
     setIsLoadingRecords(false);
+  };
+
+  const handleToggleFeature = async (id: string, currentState: boolean) => {
+    try {
+      const res = await fetch("/api/hq/features", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passcode, id, isEnabled: !currentState }),
+      });
+      if (res.ok) {
+        fetchRecords(passcode);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDeleteScore = async (id: number) => {
@@ -278,7 +303,7 @@ export default function AdminHQ() {
 
           {!selectedEmail && (
             <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 shrink-0 overflow-x-auto">
-              {["ALL", "QUERIES", "FEEDBACK", "SQUAD", "LEADERBOARDS"].map(tab => (
+              {["ALL", "QUERIES", "FEEDBACK", "SQUAD", "LEADERBOARDS", "MAINTENANCE"].map(tab => (
                 <button 
                   key={tab} 
                   onClick={() => setActiveTab(tab as any)}
@@ -291,7 +316,31 @@ export default function AdminHQ() {
           )}
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-4">
-            {activeTab === "LEADERBOARDS" ? (
+            {activeTab === "MAINTENANCE" ? (
+              // MAINTENANCE PANEL
+              <div className="space-y-4">
+                {[
+                  "strike", "beat", "typer", "run", "pong", "snake", "brick", "stacks", "maze", "dodge", "jump", "canvas", "beats", "terminal"
+                ].map(id => {
+                  const feat = features.find(f => f.id === id);
+                  const isEnabled = feat ? feat.is_enabled : true;
+                  return (
+                    <div key={id} className="flex items-center justify-between p-6 bg-black/50 border-l-4 border-white/10 hover:border-hyper-pink transition-all">
+                       <div>
+                          <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">MODULE_ID</div>
+                          <div className="text-xl font-black italic text-white uppercase">{id}</div>
+                       </div>
+                       <button 
+                        onClick={() => handleToggleFeature(id, isEnabled)}
+                        className={`px-8 py-3 font-black uppercase italic transition-all ${isEnabled ? "bg-electric-volt text-black shadow-[5px_5px_0_0_white]" : "bg-red-500 text-white shadow-[5px_5px_0_0_black]"}`}
+                       >
+                         {isEnabled ? "ACTIVE" : "OFFLINE"}
+                       </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : activeTab === "LEADERBOARDS" ? (
               // LEADERBOARDS TABLE
               <div className="w-full overflow-x-auto">
                 <table className="w-full text-left border-collapse">
