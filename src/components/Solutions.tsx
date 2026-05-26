@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Zap, Activity, Sparkles, Layout } from "lucide-react";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,24 +14,28 @@ const solutions = [
     desc: "Advanced generative dynamics for high-fidelity creative output.",
     icon: Sparkles,
     color: "from-hyper-pink to-purple-600",
+    href: "/playground"
   },
   {
     title: "ARCADE_NET",
     desc: "Robust infrastructure powering 11+ unique game simulations.",
     icon: Activity,
     color: "from-electric-volt to-emerald-600",
+    href: "/game"
   },
   {
     title: "NEON_LABS",
     desc: "Collaborative sandbox environments for rapid prototyping.",
     icon: Layout,
     color: "from-cyber-blue to-blue-600",
+    href: "/playground/canvas"
   },
   {
     title: "SYNC_LOGIC",
     desc: "Intelligent interaction layers for a seamless user experience.",
     icon: Zap,
     color: "from-white to-gray-600",
+    href: "/contact"
   },
 ];
 
@@ -74,9 +79,10 @@ export default function Solutions() {
 
         <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {solutions.map((item, i) => (
-            <div
+            <Link
               key={i}
-              className="group relative p-10 bg-black border-2 border-white/5 hover:border-hyper-pink transition-all duration-300"
+              href={item.href}
+              className="group relative p-10 bg-black border-2 border-white/5 hover:border-hyper-pink transition-all duration-300 block"
             >
               <div
                 className={`w-16 h-16 bg-gradient-to-br ${item.color} p-4 mb-10 group-hover:rotate-12 transition-transform duration-500 shadow-[0_0_30px_rgba(255,0,122,0.3)]`}
@@ -90,9 +96,9 @@ export default function Solutions() {
                 {item.desc}
               </p>
               <div className="flex items-center gap-4 text-[10px] font-black tracking-[0.3em] text-hyper-pink">
-                <span className="group-hover:translate-x-2 transition-transform underline decoration-2 underline-offset-8">EXPLORE_TECH</span>
+                <span className="group-hover:translate-x-2 transition-transform underline decoration-2 underline-offset-8 uppercase">ENTER_MODULE</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
