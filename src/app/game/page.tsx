@@ -3,28 +3,65 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Crosshair, ShieldAlert, Gamepad2, Zap } from "lucide-react";
+import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+
+const GAMES = [
+  {
+    id: "strike",
+    title: "CYBER_STRIKE",
+    desc: "Twin-stick combat simulation. Target rogue AI cores and eliminate the threat.",
+    href: "/game/strike",
+    icon: Crosshair,
+    color: "electric-volt",
+    tag: "HIGH_OCTANE"
+  },
+  {
+    id: "typer",
+    title: "CYBER_TYPER",
+    desc: "Keyboard hacking simulation. Decrypt protocols at high velocity.",
+    href: "/game/typer",
+    icon: Terminal,
+    color: "cyber-blue",
+    tag: "KEYBOARD_ONLY"
+  },
+  {
+    id: "dodge",
+    title: "CYBER_DODGE",
+    desc: "Evasion protocol enabled. Dodge the pink void for as long as your systems hold.",
+    href: "/game/dodge",
+    icon: ShieldAlert,
+    color: "hyper-pink",
+    tag: "SURVIVAL"
+  }
+];
 
 export default function ArcadeHub() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // gsap.context is the industry standard for using GSAP with React 18
-    // It prevents animations from double-triggering and causing elements to disappear
+    // Explicitly define From and To states to ensure elements stay visible
     const ctx = gsap.context(() => {
-      gsap.from(".arcade-card", {
-        y: 100,
-        opacity: 0,
-        duration: 1.2,
-        stagger: 0.15,
-        ease: "expo.out",
-        clearProps: "all" // Ensures GSAP doesn't leave hidden styles on the elements
-      });
+      gsap.fromTo(".arcade-card", 
+        { 
+          y: 100, 
+          opacity: 0,
+          scale: 0.9 
+        }, 
+        { 
+          y: 0, 
+          opacity: 1, 
+          scale: 1,
+          duration: 1, 
+          stagger: 0.1, 
+          ease: "power4.out",
+          immediateRender: false // Crucial for React 18 stability
+        }
+      );
     }, containerRef);
 
-    return () => ctx.revert(); // Clean up on unmount
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -37,67 +74,38 @@ export default function ArcadeHub() {
             ARCADE_<span className="text-hyper-pink">HUB</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">
-            SELECT_YOUR_SIMULATION_ [VER_3.0_STABLE]
+            SELECT_YOUR_SIMULATION_ [VER_3.1_STABLE]
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
-          {/* Cyber Strike Card */}
-          <Link href="/game/strike" className="arcade-card group relative block p-1 bg-gradient-to-br from-electric-volt to-transparent hover:from-white hover:to-electric-volt transition-all">
-            <div className="bg-black p-10 h-full relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                 <Crosshair className="w-40 h-40 text-electric-volt" />
-               </div>
-               <div className="relative z-10">
-                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-electric-volt text-black text-[10px] font-black uppercase mb-6">
-                    <Zap className="w-3 h-3" /> HIGH_OCTANE
-                 </div>
-                 <h2 className="text-4xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-electric-volt">STRIKE</span></h2>
-                 <p className="text-white/40 font-bold mb-8 text-sm">Twin-stick combat simulation. Target rogue AI cores and eliminate the threat.</p>
-                 <div className="text-electric-volt font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform">
-                   INITIATE_STRIKE_ &gt;&gt;
-                 </div>
-               </div>
-            </div>
-          </Link>
-
-          {/* Cyber Typer Card */}
-          <Link href="/game/typer" className="arcade-card group relative block p-1 bg-gradient-to-br from-cyber-blue to-transparent hover:from-white hover:to-cyber-blue transition-all">
-            <div className="bg-black p-10 h-full relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                 <Gamepad2 className="w-40 h-40 text-cyber-blue" />
-               </div>
-               <div className="relative z-10">
-                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyber-blue text-black text-[10px] font-black uppercase mb-6">
-                    <Zap className="w-3 h-3" /> KEYBOARD_ONLY
-                 </div>
-                 <h2 className="text-4xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-cyber-blue">TYPER</span></h2>
-                 <p className="text-white/40 font-bold mb-8 text-sm">Keyboard hacking simulation. Decrypt protocols at high velocity.</p>
-                 <div className="text-cyber-blue font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform">
-                   START_BREACH_ &gt;&gt;
-                 </div>
-               </div>
-            </div>
-          </Link>
-
-          {/* Cyber Dodge Card */}
-          <Link href="/game/dodge" className="arcade-card group relative block p-1 bg-gradient-to-br from-hyper-pink to-transparent hover:from-white hover:to-hyper-pink transition-all">
-            <div className="bg-black p-10 h-full relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                 <ShieldAlert className="w-40 h-40 text-hyper-pink" />
-               </div>
-               <div className="relative z-10">
-                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-hyper-pink text-black text-[10px] font-black uppercase mb-6">
-                    <Gamepad2 className="w-3 h-3" /> SURVIVAL
-                 </div>
-                 <h2 className="text-4xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-hyper-pink">DODGE</span></h2>
-                 <p className="text-white/40 font-bold mb-8 text-sm">Evasion protocol enabled. Dodge the pink void for as long as your systems hold.</p>
-                 <div className="text-hyper-pink font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform">
-                   INITIALIZE_EVASION_ &gt;&gt;
-                 </div>
-               </div>
-            </div>
-          </Link>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+          {GAMES.map((game) => (
+            <Link 
+              key={game.id}
+              href={game.href} 
+              className={`arcade-card group relative block p-1 bg-gradient-to-br from-${game.color} to-transparent hover:from-white hover:to-${game.color} transition-all`}
+            >
+              <div className="bg-black p-10 h-full relative overflow-hidden">
+                <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-${game.color}`}>
+                  <game.icon className="w-40 h-40" />
+                </div>
+                <div className="relative z-10">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 bg-${game.color} text-black text-[10px] font-black uppercase mb-6`}>
+                    <Zap className="w-3 h-3" /> {game.tag}
+                  </div>
+                  <h2 className="text-4xl font-black italic text-white uppercase mb-4">
+                    {game.title.split("_")[0]}_<span className={`text-${game.color}`}>{game.title.split("_")[1]}</span>
+                  </h2>
+                  <p className="text-white/40 font-bold mb-8 text-sm leading-relaxed">
+                    {game.desc}
+                  </p>
+                  <div className={`text-${game.color} font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform`}>
+                    INITIALIZE_LINK_ &gt;&gt;
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 
