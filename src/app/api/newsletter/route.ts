@@ -82,10 +82,10 @@ export async function POST(req: Request) {
           
           <h3 style="color: #fff; margin-top: 40px; font-style: italic;">RE-ESTABLISH_CONNECTION:</h3>
           <div style="margin-bottom: 30px;">
-            <a href="https://robotics-web.vercel.app/" style="display: inline-block; background-color: #ff007a; color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; text-transform: uppercase; margin-right: 10px; border: 2px solid #ff007a;">
+            <a href="https://robotics-web-psi.vercel.app/" style="display: inline-block; background-color: #ff007a; color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; text-transform: uppercase; margin-right: 10px; border: 2px solid #ff007a;">
               >_ENTER_VIBE_LABS
             </a>
-            <a href="https://robotics-web.vercel.app/game" style="display: inline-block; background-color: transparent; color: #ccff00; padding: 12px 24px; text-decoration: none; font-weight: bold; text-transform: uppercase; border: 2px solid #ccff00;">
+            <a href="https://robotics-web-psi.vercel.app/game" style="display: inline-block; background-color: transparent; color: #ccff00; padding: 12px 24px; text-decoration: none; font-weight: bold; text-transform: uppercase; border: 2px solid #ccff00;">
               >_BOOT_ARCADE
             </a>
           </div>

@@ -75,7 +75,7 @@ export async function POST(req: Request) {
           
           <h3 style="color: #fff; margin-top: 40px; font-style: italic;">RETURN_TO_PLAYGROUND:</h3>
           <div style="margin-bottom: 30px;">
-            <a href="https://robotics-web.vercel.app/playground" style="display: inline-block; background-color: #ffaa00; color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; text-transform: uppercase; margin-right: 10px; border: 2px solid #ffaa00;">
+            <a href="https://robotics-web-psi.vercel.app/playground" style="display: inline-block; background-color: #ffaa00; color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; text-transform: uppercase; margin-right: 10px; border: 2px solid #ffaa00;">
               >_CONTINUE_TESTING
             </a>
           </div>
