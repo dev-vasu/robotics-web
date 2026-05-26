@@ -8,6 +8,7 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
   const [email, setEmail] = useState("");
   const [feedback, setFeedback] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [ticketId, setTicketId] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,12 +20,15 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
         body: JSON.stringify({ email, feature: featureName, feedback }),
       });
       if (res.ok) {
+        const data = await res.json();
+        setTicketId(data.ticketId);
         setStatus("success");
         setTimeout(() => {
           setIsOpen(false);
           setStatus("idle");
           setFeedback("");
-        }, 3000);
+          setTicketId("");
+        }, 4000);
       } else {
         setStatus("error");
         setTimeout(() => setStatus("idle"), 3000);
@@ -81,7 +85,7 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
               className="w-full py-4 bg-[#ffaa00] text-black text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] disabled:opacity-50"
             >
               {status === "loading" ? "SENDING..." : 
-               status === "success" ? <><CheckCircle2 className="w-4 h-4" /> LOGGED</> : 
+               status === "success" ? <><CheckCircle2 className="w-4 h-4" /> {ticketId}</> : 
                status === "error" ? <><AlertCircle className="w-4 h-4" /> ERROR</> : 
                <><Send className="w-4 h-4" /> SUBMIT</>}
             </button>

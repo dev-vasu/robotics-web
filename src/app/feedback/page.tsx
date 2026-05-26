@@ -26,6 +26,7 @@ const FEATURES = [
 export default function FeedbackPage() {
   const [formData, setFormData] = useState({ email: "", feature: "GENERAL_WEBSITE", feedback: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [ticketId, setTicketId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +52,8 @@ export default function FeedbackPage() {
       });
 
       if (res.ok) {
+        const data = await res.json();
+        setTicketId(data.ticketId);
         setStatus("success");
         setFormData({ email: "", feature: "GENERAL_WEBSITE", feedback: "" });
       } else {
@@ -73,13 +76,13 @@ export default function FeedbackPage() {
             Vibe_Check_Portal
           </div>
           <h1 className="text-6xl md:text-8xl font-black italic text-white uppercase leading-none mb-6">
-            RATE THE <br />
+            REPORT A <br />
             <span className="text-[#ffaa00] text-glitch">
-              EXPERIENCE
+              PROBLEM
             </span>
           </h1>
           <p className="text-white/40 uppercase tracking-widest font-black text-sm">
-            TELL US WHAT IS BROKEN, WHAT GOES HARD, AND WHAT WE SHOULD BUILD NEXT.
+            TELL US WHAT IS BROKEN, WHAT GOES HARD, AND WHAT WE SHOULD BUILD NEXT. YOU WILL BE ASSIGNED A SUPPORT TICKET.
           </p>
         </div>
 
@@ -118,7 +121,7 @@ export default function FeedbackPage() {
               </div>
 
               <div className="relative">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIGITAL_ADDRESS (For Auto-Reply)</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIGITAL_ADDRESS (For Ticket Updates)</label>
                 <input
                   type="email"
                   placeholder="USER@DOMAIN.COM"
@@ -130,7 +133,7 @@ export default function FeedbackPage() {
               </div>
 
               <div className="relative">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIAGNOSTIC_DATA (Your Feedback)</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIAGNOSTIC_DATA (Describe the problem)</label>
                 <textarea
                   placeholder="HOW CAN WE IMPROVE THIS MODULE? FOUND A BUG? BE BRUTAL."
                   required
@@ -146,13 +149,18 @@ export default function FeedbackPage() {
                 disabled={status === "loading" || status === "success"}
                 className="w-full py-8 bg-white text-black font-black text-2xl uppercase italic tracking-widest hover:bg-[#ffaa00] transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50"
               >
-                {status === "loading" ? "UPLOADING_DIAGNOSTICS..." : "SUBMIT_FEEDBACK"}
+                {status === "loading" ? "UPLOADING_DIAGNOSTICS..." : "SUBMIT_REPORT"}
               </button>
 
               {status === "success" && (
-                <div className="flex items-center gap-4 text-[#ffaa00] bg-[#ffaa00]/10 p-6 border-l-4 border-[#ffaa00]">
-                  <CheckCircle2 className="w-8 h-8" />
-                  <span className="font-black uppercase tracking-widest text-lg">FEEDBACK_LOGGED. THANKS FOR THE INTEL.</span>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[#ffaa00] bg-[#ffaa00]/10 p-6 border-l-4 border-[#ffaa00]">
+                  <div className="flex items-center gap-4">
+                    <CheckCircle2 className="w-8 h-8" />
+                    <span className="font-black uppercase tracking-widest text-lg">ISSUE_LOGGED.</span>
+                  </div>
+                  <div className="text-xl font-black italic tracking-tighter bg-black px-4 py-2 border border-[#ffaa00]">
+                    TICKET: {ticketId}
+                  </div>
                 </div>
               )}
 
