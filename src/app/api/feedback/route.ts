@@ -7,8 +7,8 @@ export async function POST(req: Request) {
   try {
     const { email, feature, feedback } = await req.json();
     
-    // Generate Unique Ticket ID
-    const ticketId = "TKT-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    // Generate Unique Numerical Ticket ID (6 digits)
+    const ticketId = Math.floor(100000 + Math.random() * 900000).toString();
 
     // 0. Ensure Table Exists & Save to Database
     if (process.env.DATABASE_URL) {
