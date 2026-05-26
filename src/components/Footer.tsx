@@ -66,9 +66,9 @@ export default function Footer() {
           <div>
             <h4 className="text-hyper-pink font-black mb-10 uppercase text-xs tracking-[0.4em]">_SYSTEM_MAP</h4>
             <ul className="space-y-6">
-              {["PLAYGROUND", "ARCADE", "CANVAS", "COMMS"].map((item) => (
+              {["PLAYGROUND", "ARCADE", "CANVAS", "COMMS", "FEEDBACK"].map((item) => (
                 <li key={item}>
-                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : "/contact"} className="text-white/60 hover:text-white font-black text-lg transition-colors flex items-center gap-2 group">
+                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : item === "FEEDBACK" ? "/feedback" : "/contact"} className="text-white/60 hover:text-white font-black text-lg transition-colors flex items-center gap-2 group">
                     <span className="w-0 group-hover:w-4 h-1 bg-hyper-pink transition-all" />
                     {item}
                   </Link>

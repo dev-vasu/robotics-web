@@ -267,10 +267,10 @@ export default function AdminHQ() {
             ) : (
               // Thread View
               records.filter(r => r.email === selectedEmail).map(record => (
-                <div key={record.id} className={`p-4 border-l-4 bg-black/50 ${record.type === 'RECEIVED' ? 'border-electric-volt' : 'border-cyber-blue'}`}>
+                <div key={record.id} className={`p-4 border-l-4 bg-black/50 ${record.type === 'RECEIVED' ? 'border-electric-volt' : record.type === 'FEEDBACK' ? 'border-[#ffaa00]' : 'border-cyber-blue'}`}>
                   <div className="flex justify-between items-start mb-2">
-                    <span className={`text-[10px] font-black tracking-widest uppercase ${record.type === 'RECEIVED' ? 'text-electric-volt' : 'text-cyber-blue'}`}>
-                      {record.type === 'RECEIVED' ? 'INCOMING_UPLINK' : 'OUTGOING_TRANSMISSION'}
+                    <span className={`text-[10px] font-black tracking-widest uppercase ${record.type === 'RECEIVED' ? 'text-electric-volt' : record.type === 'FEEDBACK' ? 'text-[#ffaa00]' : 'text-cyber-blue'}`}>
+                      {record.type === 'RECEIVED' ? 'INCOMING_UPLINK' : record.type === 'FEEDBACK' ? 'DIAGNOSTIC_FEEDBACK' : 'OUTGOING_TRANSMISSION'}
                     </span>
                     <span className="text-[10px] text-white/40 font-mono">
                       {new Date(record.created_at).toLocaleString()}
