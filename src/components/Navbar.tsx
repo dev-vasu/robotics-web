@@ -34,10 +34,10 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-10">
           <Link
-            href="/game"
+            href="/playground"
             className="text-xs font-black uppercase tracking-[0.2em] text-hyper-pink animate-pulse hover:text-white transition-all"
           >
-            PLAY_GAME
+            PLAYGROUND
           </Link>
           <Link
             href="/"
