@@ -25,6 +25,16 @@ export default function AdminHQ() {
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"ALL" | "QUERIES" | "FEEDBACK" | "SQUAD">("ALL");
+
+  const filteredRecords = records.filter(r => {
+    const isNewsletter = r.type === "NEWSLETTER" || r.subject === "New Newsletter Subscription";
+    if (activeTab === "ALL") return true;
+    if (activeTab === "FEEDBACK") return r.type === "FEEDBACK";
+    if (activeTab === "SQUAD") return isNewsletter;
+    if (activeTab === "QUERIES") return !isNewsletter && r.type !== "FEEDBACK";
+    return true;
+  });
 
   const handleSelectConversation = (email: string) => {
     setSelectedEmail(email);
@@ -237,13 +247,27 @@ export default function AdminHQ() {
             </div>
           </div>
 
+          {!selectedEmail && (
+            <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 shrink-0">
+              {["ALL", "QUERIES", "FEEDBACK", "SQUAD"].map(tab => (
+                <button 
+                  key={tab} 
+                  onClick={() => setActiveTab(tab as any)}
+                  className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase transition-all rounded ${activeTab === tab ? "bg-hyper-pink text-black" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-4">
-            {records.length === 0 ? (
+            {filteredRecords.length === 0 ? (
                <div className="text-center text-white/30 font-mono text-sm py-10">NO_RECORDS_FOUND_IN_DATABASE</div>
             ) : !selectedEmail ? (
               // Conversation List
-              Array.from(new Set(records.map(r => r.email))).map(email => {
-                const thread = records.filter(r => r.email === email);
+              Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
+                const thread = filteredRecords.filter(r => r.email === email);
                 const latest = thread[0];
                 return (
                   <div 
@@ -266,11 +290,11 @@ export default function AdminHQ() {
               })
             ) : (
               // Thread View
-              records.filter(r => r.email === selectedEmail).map(record => (
-                <div key={record.id} className={`p-4 border-l-4 bg-black/50 ${record.type === 'RECEIVED' ? 'border-electric-volt' : record.type === 'FEEDBACK' ? 'border-[#ffaa00]' : 'border-cyber-blue'}`}>
+              filteredRecords.filter(r => r.email === selectedEmail).map(record => (
+                <div key={record.id} className={`p-4 border-l-4 bg-black/50 ${record.type === 'RECEIVED' ? 'border-electric-volt' : record.type === 'FEEDBACK' ? 'border-[#ffaa00]' : record.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue'}`}>
                   <div className="flex justify-between items-start mb-2">
-                    <span className={`text-[10px] font-black tracking-widest uppercase ${record.type === 'RECEIVED' ? 'text-electric-volt' : record.type === 'FEEDBACK' ? 'text-[#ffaa00]' : 'text-cyber-blue'}`}>
-                      {record.type === 'RECEIVED' ? 'INCOMING_UPLINK' : record.type === 'FEEDBACK' ? 'DIAGNOSTIC_FEEDBACK' : 'OUTGOING_TRANSMISSION'}
+                    <span className={`text-[10px] font-black tracking-widest uppercase ${record.type === 'RECEIVED' ? 'text-electric-volt' : record.type === 'FEEDBACK' ? 'text-[#ffaa00]' : record.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>
+                      {record.type === 'RECEIVED' ? 'INCOMING_UPLINK' : record.type === 'FEEDBACK' ? 'DIAGNOSTIC_FEEDBACK' : record.type === 'NEWSLETTER' ? 'SQUAD_SUBSCRIPTION' : 'OUTGOING_TRANSMISSION'}
                     </span>
                     <span className="text-[10px] text-white/40 font-mono">
                       {new Date(record.created_at).toLocaleString()}

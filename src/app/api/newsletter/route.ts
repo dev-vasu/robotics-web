@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         const sql = neon(process.env.DATABASE_URL);
         await sql`
           INSERT INTO message_records (type, email, subject, content)
-          VALUES ('RECEIVED', ${email}, 'New Newsletter Subscription', 'User joined the squad.')
+          VALUES ('NEWSLETTER', ${email}, 'New Newsletter Subscription', 'User joined the squad.')
         `;
       } catch (dbError) {
         console.error("DB Save Error:", dbError);
