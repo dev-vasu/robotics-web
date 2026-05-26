@@ -25,15 +25,15 @@ export default function Home() {
                </div>
                
                <h2 className="text-6xl md:text-8xl font-black italic uppercase leading-none mb-12 tracking-tighter">
-                 MAX <br/> <span className="text-hyper-pink">VELOCITY</span> <br/> ZERO LIES.
+                 UNLEASH <br/> <span className="text-hyper-pink">CREATIVITY</span> <br/> LIMITS ARE OVER.
                </h2>
                
                <div className="grid grid-cols-2 gap-10">
                  {[
-                   { l: "PRECISION", v: "±0.001" },
-                   { l: "UPTIME", v: "100.0%" },
-                   { l: "LATENCY", v: "0.2ms" },
-                   { l: "ENERGY", v: "-40%" }
+                   { l: "SIMULATIONS", v: "11+" },
+                   { l: "CREATIVE_LABS", v: "4" },
+                   { l: "VIBE_LEVEL", v: "MAX" },
+                   { l: "LATENCY", v: "0.2ms" }
                  ].map((s) => (
                    <div key={s.l} className="border-l-8 border-black pl-6">
                      <div className="text-xs font-black tracking-widest text-black/40">{s.l}</div>
@@ -50,14 +50,14 @@ export default function Home() {
                   
                   <div className="relative z-10 w-full h-full bg-black flex flex-col items-center justify-center p-12 border-4 border-white">
                      <div className="w-full h-px bg-white/20 mb-8" />
-                     <div className="text-hyper-pink font-mono text-[10px] self-start mb-2">RUNNING_NEURAL_OVERRIDE...</div>
+                     <div className="text-hyper-pink font-mono text-[10px] self-start mb-2">RUNNING_PLAYGROUND_CORE...</div>
                      <div className="text-white font-black italic text-4xl text-center leading-tight mb-8">
-                       DO NOT COMPROMISE. <br/> AUTOMATE EVERYTHING.
+                       DESIGNED FOR PLAY. <br/> BUILT FOR CREATION.
                      </div>
                      <div className="w-full h-px bg-white/20 mt-auto mb-4" />
                      <div className="flex justify-between w-full text-[8px] font-mono text-white/40">
-                       <span>VER: 9.0.4-GENZ</span>
-                       <span>STATUS: AGGRESSIVE</span>
+                       <span>VER: PLAYGROUND-V1</span>
+                       <span>STATUS: WELCOMING</span>
                      </div>
                   </div>
                </div>
@@ -71,10 +71,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-hyper-pink opacity-10 animate-pulse" />
         <div className="container mx-auto px-6 relative z-10">
           <h2 className="text-7xl md:text-[12rem] font-black italic text-white uppercase tracking-tighter leading-none mb-16">
-            STOP <span className="text-glitch">WAITING.</span>
+            START <span className="text-glitch">PLAYING.</span>
           </h2>
-          <Link href="/contact" className="inline-block px-16 py-8 bg-electric-volt text-black font-black text-3xl uppercase italic hover:bg-white hover:scale-110 transition-all shadow-[15px_15px_0_0_#ff007a]">
-            INITIATE_NOW
+          <Link href="/playground" className="inline-block px-16 py-8 bg-electric-volt text-black font-black text-3xl uppercase italic hover:bg-white hover:scale-110 transition-all shadow-[15px_15px_0_0_#ff007a]">
+            ENTER_LABS
           </Link>
         </div>
       </section>

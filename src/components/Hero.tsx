@@ -55,17 +55,17 @@ export default function Hero() {
           ref={titleRef}
           className="text-6xl md:text-[10rem] font-black italic tracking-tight text-white leading-none uppercase mb-12"
         >
-          PURE <br />
+          CREATIVE <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-hyper-pink via-white to-electric-volt text-glitch">
-            CHAOS_CONTROL
+            PLAYGROUND
           </span>
         </h1>
 
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 max-w-4xl mx-auto">
           {[
-            { icon: Ghost, label: "Stealth_Ops", color: "text-hyper-pink", bg: "bg-hyper-pink/10" },
-            { icon: Orbit, label: "Global_Flow", color: "text-cyber-blue", bg: "bg-cyber-blue/10" },
-            { icon: Zap, label: "Overdrive", color: "text-electric-volt", bg: "bg-electric-volt/10" }
+            { icon: Ghost, label: "PLAY_ARCADE", color: "text-hyper-pink", bg: "bg-hyper-pink/10" },
+            { icon: Sparkles, label: "CREATE_ART", color: "text-cyber-blue", bg: "bg-cyber-blue/10" },
+            { icon: Orbit, label: "SYNC_VIBE", color: "text-electric-volt", bg: "bg-electric-volt/10" }
           ].map((item, i) => (
             <div key={i} className={`hero-float flex items-center gap-4 px-8 py-6 rounded-2xl glass-panel group hover:scale-110 transition-transform cursor-pointer`}>
               <div className={`p-3 rounded-xl ${item.bg}`}>
