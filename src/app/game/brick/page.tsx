@@ -125,7 +125,7 @@ export default function BrickGame() {
   };
 
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
+    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20">
       <Navbar />
       <MinimalFeedback featureName="BIT_CRUSH" />
       <BackToArcade />

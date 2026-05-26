@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="relative flex flex-col bg-black">
+    <main className="relative flex flex-col bg-transparent">
       <Navbar />
       <Hero />
       <Solutions />

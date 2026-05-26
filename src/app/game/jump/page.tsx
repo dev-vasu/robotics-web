@@ -159,7 +159,7 @@ export default function JumpGame() {
   }, [score, highScore]);
 
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20 touch-none">
+    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 touch-none">
       <Navbar />
       <MinimalFeedback featureName="CYBER_JUMP" />
       <BackToArcade />
@@ -207,9 +207,9 @@ export default function JumpGame() {
           )}
 
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl border-4 border-red-500/30 text-center px-4">
-              <Ghost className="w-16 h-16 text-white mb-4 animate-pulse" />
-              <h2 className="text-4xl md:text-5xl font-black text-white italic uppercase mb-2">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl border-4 border-red-500/30 text-center px-4 overflow-y-auto py-8">
+              <Ghost className="w-12 h-12 text-white mb-2 animate-pulse" />
+              <h2 className="text-3xl md:text-4xl font-black text-white italic uppercase mb-1">
                 {score <= 2 ? "NPC_BEHAVIOR" : 
                  score <= 10 ? "SKILL_ISSUE" : 
                  score <= 20 ? "KINDA_MID" : 
@@ -217,7 +217,7 @@ export default function JumpGame() {
                  score <= 70 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6">
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-4">
                 {score <= 2 ? "BRO FELL OFF BEFORE IT EVEN STARTED 💀" : 
                  score <= 10 ? "NOT VERY DEMURE OF YOU TO CRASH SO SOON." : 
                  score <= 20 ? "YOU AIN'T BUILT FOR THE VOID YET." : 
@@ -225,12 +225,11 @@ export default function JumpGame() {
                  score <= 70 ? "LOWKEY A GOATED RUN. NO CAP." : 
                  "CERTIFIED SWEAT. TOUCH GRASS IMMEDIATELY."}
               </p>
-              <div className="bg-black px-8 py-3 border-2 border-cyber-blue mb-8">
-                <span className="text-cyber-blue text-3xl font-black italic tabular-nums">SCORE: {score}</span>
+              <div className="bg-black px-6 py-2 border-2 border-cyber-blue mb-4">
+                <span className="text-cyber-blue text-2xl font-black italic tabular-nums">SCORE: {score}</span>
               </div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a] hover:bg-electric-volt transition-all">
-                RE-LINK
-              </button>
+              
+              <Leaderboard gameId="cyber_jump" currentScore={score} onRestart={initGame} />
             </div>
           )}
 

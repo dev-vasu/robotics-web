@@ -135,7 +135,7 @@ const CATEGORIES = [
 
 export default function ArcadeHub() {
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
+    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20">
       <Navbar />
 
       <div className="flex-1 container mx-auto px-6 py-20">

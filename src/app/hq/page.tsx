@@ -114,7 +114,7 @@ export default function AdminHQ() {
 
   if (!isAuthenticated) {
     return (
-      <main className="min-h-screen bg-black grid-bg flex flex-col items-center justify-center p-6 relative">
+      <main className="min-h-screen bg-transparent grid-bg flex flex-col items-center justify-center p-6 relative">
         <div className="w-full max-w-md glass-panel border-4 border-cyber-blue/30 bg-black/80 p-8 text-center">
           <Lock className="w-16 h-16 text-cyber-blue mx-auto mb-6" />
           <h1 className="text-3xl font-black italic text-white uppercase tracking-tighter mb-6">ROBOVIBE_HQ</h1>
@@ -136,7 +136,7 @@ export default function AdminHQ() {
   }
 
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20 px-6 pb-20 relative overflow-x-hidden">
+    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 px-6 pb-20 relative overflow-x-hidden">
       <div className="fixed top-6 left-6 z-40">
         <Link 
           href="/" 

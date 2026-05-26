@@ -105,7 +105,7 @@ export default function StacksGame() {
   }, [gameState, gameLoop]);
 
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
+    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20">
       <Navbar />
       <MinimalFeedback featureName="CYBER_STACKS" />
       <BackToArcade />

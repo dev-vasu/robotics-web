@@ -79,7 +79,7 @@ export default function NeonCanvas() {
   };
 
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20 overflow-hidden">
+    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 overflow-hidden">
       <Navbar />
       
       <div className="fixed top-24 left-6 z-40 flex flex-col gap-4">
