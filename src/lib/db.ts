@@ -13,6 +13,16 @@ export async function setupDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS leaderboards (
+      id SERIAL PRIMARY KEY,
+      game_id VARCHAR(50) NOT NULL,
+      initials VARCHAR(3) NOT NULL,
+      score INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
   
   return true;
 }

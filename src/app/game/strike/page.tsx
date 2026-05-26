@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import MinimalFeedback from "@/components/MinimalFeedback";
 import BackToArcade from "@/components/BackToArcade";
+import Leaderboard from "@/components/Leaderboard";
 import Footer from "@/components/Footer";
 import { Zap, Trophy, RefreshCcw, Gamepad2, Crosshair, ShieldAlert } from "lucide-react";
 
@@ -294,9 +295,9 @@ export default function GamePage() {
           )}
 
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-900/40 backdrop-blur-xl">
-              <ShieldAlert className="w-24 h-24 text-white mb-6 animate-pulse" />
-              <h2 className="text-6xl md:text-7xl font-black text-white italic uppercase mb-2 text-center">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-900/40 backdrop-blur-xl px-4 py-8 overflow-y-auto">
+              <ShieldAlert className="w-16 h-16 text-white mb-2 animate-pulse" />
+              <h2 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
                 {score <= 500 ? "NPC_BEHAVIOR" : 
                  score <= 1500 ? "SKILL_ISSUE" : 
                  score <= 3000 ? "KINDA_MID" : 
@@ -304,7 +305,7 @@ export default function GamePage() {
                  score <= 10000 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-4 text-center">
                 {score <= 500 ? "BRO GOT CLAPPED BY THE FIRST BOT 💀" : 
                  score <= 1500 ? "AIM ASSIST COULDN'T EVEN SAVE YOU." : 
                  score <= 3000 ? "NOT BAD, BUT NOT VERY DEMURE." : 
@@ -312,13 +313,9 @@ export default function GamePage() {
                  score <= 10000 ? "BRO IS JOHN WICK IN THE CYBERSPACE." : 
                  "CERTIFIED AIMBOT. TOUCH GRASS IMMEDIATELY."}
               </p>
-              <div className="text-electric-volt text-4xl font-black mb-10 italic">FINAL_INTEL: {score}</div>
-              <button 
-                onClick={initGame}
-                className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic hover:bg-hyper-pink transition-all shadow-[8px_8px_0_0_#000]"
-              >
-                RETRY_UPLINK
-              </button>
+              <div className="text-electric-volt text-3xl font-black mb-4 italic">FINAL_INTEL: {score}</div>
+              
+              <Leaderboard gameId="cyber_strike" currentScore={score} onRestart={initGame} />
             </div>
           )}
 

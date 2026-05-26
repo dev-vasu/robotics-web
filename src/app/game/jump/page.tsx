@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import MinimalFeedback from "@/components/MinimalFeedback";
 import BackToArcade from "@/components/BackToArcade";
+import Leaderboard from "@/components/Leaderboard";
 import Footer from "@/components/Footer";
 import { Smartphone, Ghost, Timer } from "lucide-react";
 
