@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import BackToArcade from "@/components/BackToArcade";
 import Footer from "@/components/Footer";
 import { Zap, Ghost, Timer } from "lucide-react";
 
@@ -105,6 +106,7 @@ export default function StacksGame() {
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
       <Navbar />
+      <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
           <h1 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">STACKS</span></h1>

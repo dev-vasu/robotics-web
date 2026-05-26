@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import BackToArcade from "@/components/BackToArcade";
 import Footer from "@/components/Footer";
 import { Zap, Trophy, RefreshCcw, Gamepad2, Ghost, Skull } from "lucide-react";
 
@@ -107,6 +108,7 @@ export default function DodgeGame() {
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
       <Navbar />
+      <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-12">
         <div className="text-center mb-10">
           <h1 className="text-6xl md:text-[8rem] font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
