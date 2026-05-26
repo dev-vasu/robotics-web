@@ -30,7 +30,7 @@ export default function ArcadeHub() {
             ARCADE_<span className="text-hyper-pink">HUB</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">
-            SELECT_YOUR_SIMULATION_
+            SELECT_YOUR_SIMULATION_ [VER_3.0_STABLE]
           </p>
         </div>
 
