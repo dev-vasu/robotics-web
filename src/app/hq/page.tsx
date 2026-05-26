@@ -265,29 +265,60 @@ export default function AdminHQ() {
             {filteredRecords.length === 0 ? (
                <div className="text-center text-white/30 font-mono text-sm py-10">NO_RECORDS_FOUND_IN_DATABASE</div>
             ) : !selectedEmail ? (
-              // Conversation List
-              Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
-                const thread = filteredRecords.filter(r => r.email === email);
-                const latest = thread[0];
-                return (
-                  <div 
-                    key={email} 
-                    onClick={() => handleSelectConversation(email)}
-                    className="p-4 border-l-4 border-hyper-pink bg-black/50 hover:bg-white/5 transition-all cursor-pointer"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-[10px] font-black tracking-widest uppercase text-hyper-pink">
-                        THREAD // {thread.length} MESSAGES
-                      </span>
-                      <span className="text-[10px] text-white/40 font-mono">
-                        {new Date(latest.created_at).toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="text-sm font-bold text-white mb-1 truncate">{email}</div>
-                    <div className="text-xs text-white/60 truncate">{latest.subject}</div>
-                  </div>
-                );
-              })
+              // Conversation List (Table Format)
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-white/10 text-[10px] uppercase tracking-widest text-white/40">
+                      <th className="pb-3 px-4 font-black">Type</th>
+                      <th className="pb-3 px-4 font-black">Client Node</th>
+                      <th className="pb-3 px-4 font-black hidden md:table-cell">Latest Subject</th>
+                      <th className="pb-3 px-4 font-black text-right">Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
+                      const thread = filteredRecords.filter(r => r.email === email);
+                      const latest = thread[0];
+                      let typeColor = "text-hyper-pink";
+                      let typeLabel = "MIXED_THREAD";
+                      
+                      // Determine primary thread type
+                      if (thread.every(t => t.type === "NEWSLETTER")) {
+                        typeColor = "text-[#ccff00]";
+                        typeLabel = "SQUAD_SUB";
+                      } else if (thread.every(t => t.type === "FEEDBACK")) {
+                        typeColor = "text-[#ffaa00]";
+                        typeLabel = "FEEDBACK";
+                      } else if (thread.some(t => t.type === "RECEIVED")) {
+                        typeColor = "text-electric-volt";
+                        typeLabel = "QUERY";
+                      }
+
+                      return (
+                        <tr 
+                          key={email} 
+                          onClick={() => handleSelectConversation(email)}
+                          className="border-b border-white/5 hover:bg-white/5 transition-all cursor-pointer group"
+                        >
+                          <td className={`py-4 px-4 text-[10px] font-black tracking-widest uppercase ${typeColor} whitespace-nowrap`}>
+                            {typeLabel} <span className="text-white/30 ml-2">({thread.length})</span>
+                          </td>
+                          <td className="py-4 px-4 font-bold text-white text-sm group-hover:text-hyper-pink transition-colors whitespace-nowrap">
+                            {email}
+                          </td>
+                          <td className="py-4 px-4 text-xs text-white/60 truncate max-w-[200px] hidden md:table-cell">
+                            {latest.subject}
+                          </td>
+                          <td className="py-4 px-4 text-[10px] text-white/40 font-mono text-right whitespace-nowrap">
+                            {new Date(latest.created_at).toLocaleString()}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             ) : (
               // Thread View
               filteredRecords.filter(r => r.email === selectedEmail).map(record => (

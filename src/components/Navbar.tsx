@@ -40,6 +40,12 @@ export default function Navbar() {
             PLAYGROUND
           </Link>
           <Link
+            href="/feedback"
+            className="text-xs font-black uppercase tracking-[0.2em] text-[#ffaa00] hover:text-white transition-all"
+          >
+            FEEDBACK
+          </Link>
+          <Link
             href="/"
             className="text-xs font-black uppercase tracking-[0.2em] text-white/60 hover:text-hyper-pink hover:line-through transition-all"
           >
