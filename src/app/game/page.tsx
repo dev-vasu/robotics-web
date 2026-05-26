@@ -34,7 +34,7 @@ export default function ArcadeHub() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-10 w-full max-w-5xl">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
           {/* Cyber Strike Card */}
           <Link href="/game/strike" className="arcade-card group relative block p-1 bg-gradient-to-br from-electric-volt to-transparent hover:from-white hover:to-electric-volt transition-all">
             <div className="bg-black p-10 h-full relative overflow-hidden">
@@ -45,10 +45,29 @@ export default function ArcadeHub() {
                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-electric-volt text-black text-[10px] font-black uppercase mb-6">
                     <Zap className="w-3 h-3" /> HIGH_OCTANE
                  </div>
-                 <h2 className="text-5xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-electric-volt">STRIKE</span></h2>
-                 <p className="text-white/40 font-bold mb-8 max-w-xs">Twin-stick combat simulation. Target rogue AI cores and eliminate the threat.</p>
+                 <h2 className="text-4xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-electric-volt">STRIKE</span></h2>
+                 <p className="text-white/40 font-bold mb-8 text-sm">Twin-stick combat simulation. Target rogue AI cores and eliminate the threat.</p>
                  <div className="text-electric-volt font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform">
                    INITIATE_STRIKE_ &gt;&gt;
+                 </div>
+               </div>
+            </div>
+          </Link>
+
+          {/* Cyber Typer Card */}
+          <Link href="/game/typer" className="arcade-card group relative block p-1 bg-gradient-to-br from-cyber-blue to-transparent hover:from-white hover:to-cyber-blue transition-all">
+            <div className="bg-black p-10 h-full relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                 <Gamepad2 className="w-40 h-40 text-cyber-blue" />
+               </div>
+               <div className="relative z-10">
+                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyber-blue text-black text-[10px] font-black uppercase mb-6">
+                    <Zap className="w-3 h-3" /> KEYBOARD_ONLY
+                 </div>
+                 <h2 className="text-4xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-cyber-blue">TYPER</span></h2>
+                 <p className="text-white/40 font-bold mb-8 text-sm">Keyboard hacking simulation. Decrypt protocols at high velocity.</p>
+                 <div className="text-cyber-blue font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform">
+                   START_BREACH_ &gt;&gt;
                  </div>
                </div>
             </div>
@@ -64,8 +83,8 @@ export default function ArcadeHub() {
                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-hyper-pink text-black text-[10px] font-black uppercase mb-6">
                     <Gamepad2 className="w-3 h-3" /> SURVIVAL
                  </div>
-                 <h2 className="text-5xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-hyper-pink">DODGE</span></h2>
-                 <p className="text-white/40 font-bold mb-8 max-w-xs">Evasion protocol enabled. Dodge the pink void for as long as your systems hold.</p>
+                 <h2 className="text-4xl font-black italic text-white uppercase mb-4">CYBER_<span className="text-hyper-pink">DODGE</span></h2>
+                 <p className="text-white/40 font-bold mb-8 text-sm">Evasion protocol enabled. Dodge the pink void for as long as your systems hold.</p>
                  <div className="text-hyper-pink font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform">
                    INITIALIZE_EVASION_ &gt;&gt;
                  </div>
