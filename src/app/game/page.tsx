@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal } from "lucide-react";
+import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal, Music } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
