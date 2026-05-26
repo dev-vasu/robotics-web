@@ -3,40 +3,51 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Zap, Smartphone, RefreshCcw, Activity, Ghost, Info } from "lucide-react";
+import { Smartphone, Ghost, Timer } from "lucide-react";
 
 const CANVAS_WIDTH = 400;
 const CANVAS_HEIGHT = 600;
-const PLAYER_SIZE = 40;
-const GRAVITY = 0.45; // Reduced from 0.6 for floatier feel
-const JUMP_FORCE = -9; // Adjusted for new gravity
-const START_SPEED = 2.5; // Reduced from 4 for slow start
+const PLAYER_SIZE = 30;
+const GRAVITY = 0.25; // EXTREME SLOW: reduced from 0.45
+const JUMP_FORCE = -6.5; // EXTREME SLOW: reduced from -9
+const START_SPEED = 1.2; // EXTREME SLOW: reduced from 2.5
+const GAP_SIZE = 240; // EXTREME EASY: increased from 200
 
 export default function JumpGame() {
-  const [gameState, setGameState] = useState<"IDLE" | "PLAYING" | "GAMEOVER">("IDLE");
+  const [gameState, setGameState] = useState<"IDLE" | "COUNTDOWN" | "PLAYING" | "GAMEOVER">("IDLE");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+  const [countdown, setCountdown] = useState(3);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>(undefined);
   
-  // Game state refs for loop
   const playerRef = useRef({ y: 300, vy: 0, x: 100 });
   const obstaclesRef = useRef<{ x: number; height: number; passed: boolean }[]>([]);
   const scoreRef = useRef(0);
 
   const initGame = () => {
-    // Reset player to safe center position with 0 velocity
     playerRef.current = { y: 300, vy: 0, x: 100 };
-    // Spawn first obstacles further away to give player time to react
     obstaclesRef.current = [
-      { x: 600, height: 200, passed: false },
-      { x: 950, height: 300, passed: false }
+      { x: 700, height: 180, passed: false },
+      { x: 1100, height: 280, passed: false }
     ];
     scoreRef.current = 0;
     setScore(0);
-    setGameState("PLAYING");
+    setCountdown(3);
+    setGameState("COUNTDOWN");
   };
+
+  useEffect(() => {
+    if (gameState === "COUNTDOWN") {
+      if (countdown > 0) {
+        const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        return () => clearTimeout(timer);
+      } else {
+        setGameState("PLAYING");
+      }
+    }
+  }, [gameState, countdown]);
 
   const jump = useCallback(() => {
     if (gameState === "PLAYING") {
@@ -47,13 +58,20 @@ export default function JumpGame() {
   }, [gameState]);
 
   const draw = useCallback((ctx: CanvasRenderingContext2D) => {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Ground & Ceiling Warning Zones
-    ctx.fillStyle = "rgba(255, 0, 122, 0.1)";
-    ctx.fillRect(0, 0, CANVAS_WIDTH, 20);
-    ctx.fillRect(0, CANVAS_HEIGHT - 20, CANVAS_WIDTH, 20);
+    // Static Player during Countdown
+    if (gameState === "COUNTDOWN") {
+      ctx.beginPath();
+      ctx.arc(playerRef.current.x, playerRef.current.y, PLAYER_SIZE / 2, 0, Math.PI * 2);
+      ctx.fillStyle = "#00f0ff";
+      ctx.fill();
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "#00f0ff";
+      ctx.closePath();
+      return;
+    }
 
     // Player Physics
     playerRef.current.vy += GRAVITY;
@@ -64,74 +82,64 @@ export default function JumpGame() {
     ctx.arc(playerRef.current.x, playerRef.current.y, PLAYER_SIZE / 2, 0, Math.PI * 2);
     ctx.fillStyle = "#00f0ff";
     ctx.fill();
-    ctx.shadowBlur = 25;
+    ctx.shadowBlur = 30;
     ctx.shadowColor = "#00f0ff";
     ctx.closePath();
 
-    // Obstacles (Lasers)
-    // Dynamic Speed: Starts slow, gets faster as you score
-    const currentSpeed = START_SPEED + (scoreRef.current * 0.15);
+    // Obstacles
+    const currentSpeed = START_SPEED + (scoreRef.current * 0.05);
     
     obstaclesRef.current.forEach((obs, index) => {
       obs.x -= currentSpeed;
 
-      // Draw Laser Beam
       ctx.fillStyle = "#ff007a";
       ctx.shadowBlur = 15;
       ctx.shadowColor = "#ff007a";
-      
-      // Top laser
-      ctx.fillRect(obs.x, 0, 40, obs.height);
-      // Bottom laser
-      const gap = 200; // Increased gap for fairness
-      ctx.fillRect(obs.x, obs.height + gap, 40, CANVAS_HEIGHT);
+      ctx.fillRect(obs.x, 0, 45, obs.height);
+      ctx.fillRect(obs.x, obs.height + GAP_SIZE, 45, CANVAS_HEIGHT);
 
-      // Collision Detection
+      // Collision
       const p = playerRef.current;
-      // Precision hit box
       if (
-        p.x + 12 > obs.x && 
-        p.x - 12 < obs.x + 40 && 
-        (p.y - 12 < obs.height || p.y + 12 > obs.height + gap)
+        p.x + 10 > obs.x && 
+        p.x - 10 < obs.x + 45 && 
+        (p.y - 10 < obs.height || p.y + 10 > obs.height + GAP_SIZE)
       ) {
         setGameState("GAMEOVER");
       }
 
-      // Score Tracking
       if (!obs.passed && obs.x < p.x) {
         obs.passed = true;
         scoreRef.current += 1;
         setScore(scoreRef.current);
       }
 
-      // Cleanup & Respawn
-      if (obs.x < -60) {
+      if (obs.x < -100) {
         obstaclesRef.current.splice(index, 1);
         obstaclesRef.current.push({
-          x: CANVAS_WIDTH + 150,
-          height: Math.random() * (CANVAS_HEIGHT - 350) + 75,
+          x: CANVAS_WIDTH + 200,
+          height: Math.random() * (CANVAS_HEIGHT - GAP_SIZE - 100) + 50,
           passed: false
         });
       }
     });
 
-    // Boundary death (Floor or Ceiling)
-    if (playerRef.current.y < 15 || playerRef.current.y > CANVAS_HEIGHT - 15) {
+    if (playerRef.current.y < 0 || playerRef.current.y > CANVAS_HEIGHT) {
       setGameState("GAMEOVER");
     }
-  }, []);
+  }, [gameState]);
 
   const gameLoop = useCallback(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    if (!canvas || !ctx || gameState !== "PLAYING") return;
+    if (!canvas || !ctx || (gameState !== "PLAYING" && gameState !== "COUNTDOWN")) return;
 
     draw(ctx);
     requestRef.current = requestAnimationFrame(gameLoop);
   }, [gameState, draw]);
 
   useEffect(() => {
-    if (gameState === "PLAYING") {
+    if (gameState === "PLAYING" || gameState === "COUNTDOWN") {
       requestRef.current = requestAnimationFrame(gameLoop);
     }
     return () => { if (requestRef.current) cancelAnimationFrame(requestRef.current); };
@@ -156,13 +164,13 @@ export default function JumpGame() {
           <h1 className="text-5xl md:text-7xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
             CYBER_<span className="text-cyber-blue">JUMP</span>
           </h1>
-          <p className="text-electric-volt font-black uppercase tracking-[0.3em] text-[10px] mt-2">
-            STABILITY_RE-CALIBRATED
+          <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-[10px] mt-2">
+            MODE_EXTREME_SLOW_ENABLED
           </p>
         </div>
 
         <div 
-          className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer shadow-[0_0_50px_rgba(0,240,255,0.1)]"
+          className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer"
           style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
           onClick={jump}
         >
@@ -170,54 +178,53 @@ export default function JumpGame() {
 
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 p-8 text-center">
-              <div className="w-20 h-20 bg-cyber-blue rounded-full flex items-center justify-center mb-8 animate-pulse shadow-[0_0_30px_#00f0ff]">
-                <Smartphone className="w-10 h-10 text-black" />
-              </div>
-              <button 
-                className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a] mb-8 hover:bg-cyber-blue transition-all"
-              >
-                BOOT_SYSTEM
+              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff] mb-6">
+                START_MISSION
               </button>
-              <div className="space-y-4">
-                <div className="p-3 border border-white/10 glass-panel bg-white/5">
-                  <div className="text-[8px] text-cyber-blue font-black uppercase mb-1">STABILITY_CHECK</div>
-                  <div className="text-white font-bold text-[10px]">PHYSICS_NORMALIZED // START_SLOW</div>
-                </div>
-                <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">
-                  TAP_OR_SPACE_TO_JUMP
+              <div className="p-4 border-2 border-cyber-blue bg-cyber-blue/5 rounded-lg">
+                <p className="text-[10px] font-black text-white uppercase tracking-widest leading-relaxed">
+                  SYSTEM_RE-BALANCED<br/>
+                  VELOCITY: MINIMAL<br/>
+                  GRAVITY: LIGHT<br/>
+                  3S_PRE-LOAD_ACTIVE
                 </p>
               </div>
             </div>
           )}
 
-          {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl border-4 border-red-500/30">
-              <Ghost className="w-20 h-20 text-white mb-6 animate-pulse" />
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">TERMINATED</h2>
-              <div className="bg-black px-8 py-3 border-2 border-cyber-blue mb-8">
-                <span className="text-cyber-blue text-3xl font-black italic tabular-nums">SCORE: {score}</span>
+          {gameState === "COUNTDOWN" && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
+              <div className="text-white text-[12rem] font-black italic animate-ping opacity-50 tabular-nums">
+                {countdown}
               </div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic hover:bg-electric-volt transition-all shadow-[8px_8px_0_0_#000]">
-                RE-BOOT_CORE
-              </button>
+              <div className="text-cyber-blue font-black uppercase tracking-[0.4em] text-xs">UPLINKING...</div>
             </div>
           )}
 
-          {gameState === "PLAYING" && (
+          {gameState === "GAMEOVER" && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
+              <Ghost className="w-16 h-16 text-red-500 mb-6" />
+              <h2 className="text-5xl font-black text-white italic uppercase mb-2">FAILED</h2>
+              <div className="text-cyber-blue text-3xl font-black mb-8 italic">SCORE: {score}</div>
+              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-LINK</button>
+            </div>
+          )}
+
+          {(gameState === "PLAYING" || gameState === "COUNTDOWN") && (
             <div className="absolute top-10 left-0 w-full text-center pointer-events-none">
-              <div className="text-white text-8xl font-black italic tracking-tighter opacity-20 tabular-nums select-none">{score}</div>
+              <div className="text-white text-9xl font-black italic tracking-tighter opacity-10 tabular-nums select-none">{score}</div>
             </div>
           )}
         </div>
 
-        <div className="mt-8 flex gap-4 w-full max-w-[400px]">
-           <div className="flex-1 p-4 glass-panel border-l-4 border-cyber-blue">
-              <div className="text-[8px] font-black text-white/40 uppercase mb-1">HI_SCORE</div>
-              <div className="text-xl font-black italic text-white">{highScore}</div>
+        <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-[400px]">
+           <div className="bg-white/5 p-4 border-l-4 border-cyber-blue flex justify-between items-center">
+              <span className="text-[8px] font-black text-white/40 uppercase">RECORD</span>
+              <span className="text-xl font-black italic text-white tabular-nums">{highScore}</span>
            </div>
-           <div className="flex-1 p-4 glass-panel border-l-4 border-hyper-pink">
-              <div className="text-[8px] font-black text-white/40 uppercase mb-1">VELOCITY</div>
-              <div className="text-xl font-black italic text-white">{(START_SPEED + score * 0.15).toFixed(1)}x</div>
+           <div className="bg-white/5 p-4 border-l-4 border-hyper-pink flex justify-between items-center">
+              <span className="text-[8px] font-black text-white/40 uppercase">V_INDEX</span>
+              <span className="text-xl font-black italic text-white tabular-nums">{(START_SPEED + score * 0.05).toFixed(1)}x</span>
            </div>
         </div>
       </div>
