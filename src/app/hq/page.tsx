@@ -22,10 +22,11 @@ export default function AdminHQ() {
   const [errorMsg, setErrorMsg] = useState("");
   
   const [records, setRecords] = useState<Record[]>([]);
+  const [leaderboardScores, setLeaderboardScores] = useState<any[]>([]);
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"ALL" | "QUERIES" | "FEEDBACK" | "SQUAD">("ALL");
+  const [activeTab, setActiveTab] = useState<"ALL" | "QUERIES" | "FEEDBACK" | "SQUAD" | "LEADERBOARDS">("ALL");
 
   const filteredRecords = records.filter(r => {
     const isNewsletter = r.type === "NEWSLETTER" || r.subject === "New Newsletter Subscription";
@@ -51,14 +52,25 @@ export default function AdminHQ() {
   const fetchRecords = async (currentPasscode: string) => {
     setIsLoadingRecords(true);
     try {
-      const res = await fetch("/api/hq/records", {
+      // Fetch messages
+      const resMsg = await fetch("/api/hq/records", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode: currentPasscode }),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setRecords(data.records || []);
+      
+      // Fetch leaderboards
+      const resLeader = await fetch("/api/hq/leaderboard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passcode: currentPasscode }),
+      });
+
+      if (resMsg.ok && resLeader.ok) {
+        const dataMsg = await resMsg.json();
+        const dataLeader = await resLeader.json();
+        setRecords(dataMsg.records || []);
+        setLeaderboardScores(dataLeader.scores || []);
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
@@ -67,6 +79,23 @@ export default function AdminHQ() {
       console.error(error);
     }
     setIsLoadingRecords(false);
+  };
+
+  const handleDeleteScore = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this score?")) return;
+    
+    try {
+      const res = await fetch("/api/hq/leaderboard", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passcode, id }),
+      });
+      if (res.ok) {
+        fetchRecords(passcode);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleAuth = (e: React.FormEvent) => {
@@ -248,8 +277,8 @@ export default function AdminHQ() {
           </div>
 
           {!selectedEmail && (
-            <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 shrink-0">
-              {["ALL", "QUERIES", "FEEDBACK", "SQUAD"].map(tab => (
+            <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 shrink-0 overflow-x-auto">
+              {["ALL", "QUERIES", "FEEDBACK", "SQUAD", "LEADERBOARDS"].map(tab => (
                 <button 
                   key={tab} 
                   onClick={() => setActiveTab(tab as any)}
@@ -262,7 +291,50 @@ export default function AdminHQ() {
           )}
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-4">
-            {filteredRecords.length === 0 ? (
+            {activeTab === "LEADERBOARDS" ? (
+              // LEADERBOARDS TABLE
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-white/10 text-[10px] uppercase tracking-widest text-white/40">
+                      <th className="pb-3 px-4 font-black">Simulation</th>
+                      <th className="pb-3 px-4 font-black">Alias</th>
+                      <th className="pb-3 px-4 font-black">Score</th>
+                      <th className="pb-3 px-4 font-black text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leaderboardScores.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="text-center text-white/30 font-mono text-sm py-10">NO_SCORES_FOUND</td>
+                      </tr>
+                    ) : (
+                      leaderboardScores.map(score => (
+                        <tr key={score.id} className="border-b border-white/5 hover:bg-white/10 transition-all group">
+                          <td className="py-4 px-4 font-black text-xs text-cyber-blue uppercase tracking-widest">
+                            {score.game_id}
+                          </td>
+                          <td className="py-4 px-4 font-bold text-white text-sm">
+                            {score.initials}
+                          </td>
+                          <td className="py-4 px-4 font-black italic text-electric-volt tabular-nums">
+                            {score.score}
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <button 
+                              onClick={() => handleDeleteScore(score.id)}
+                              className="px-3 py-1 bg-red-500/20 text-red-500 border border-red-500/50 hover:bg-red-500 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest rounded"
+                            >
+                              DELETE
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : filteredRecords.length === 0 ? (
                <div className="text-center text-white/30 font-mono text-sm py-10">NO_RECORDS_FOUND_IN_DATABASE</div>
             ) : !selectedEmail ? (
               // Conversation List (Table Format)
