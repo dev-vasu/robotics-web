@@ -19,8 +19,8 @@ export default function GamePage() {
   const [playerPos, setPlayerPos] = useState({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 });
   const [enemies, setEnemies] = useState<{ x: number; y: number; id: number; speed: number }[]>([]);
   
-  const requestRef = useRef<number>();
-  const lastTimeRef = useRef<number>();
+  const requestRef = useRef<number>(undefined);
+  const lastTimeRef = useRef<number>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const enemiesRef = useRef(enemies);
   const scoreRef = useRef(score);
