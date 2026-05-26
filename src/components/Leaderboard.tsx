@@ -43,6 +43,8 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
       className="w-full max-w-sm mx-auto bg-black/80 border-2 border-hyper-pink p-6 mt-6 glass-panel relative z-50 text-left"
       onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
     >
       <div className="flex items-center gap-2 mb-6 border-b border-white/10 pb-4">
         <Trophy className="w-6 h-6 text-hyper-pink" />
@@ -95,7 +97,7 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
         )}
       </div>
 
-      <button onClick={onRestart} className="w-full py-4 bg-white text-black font-black uppercase italic hover:bg-hyper-pink hover:text-white transition-all shadow-[6px_6px_0_0_#ff007a]">
+      <button type="button" onClick={onRestart} className="w-full py-4 bg-white text-black font-black uppercase italic hover:bg-hyper-pink hover:text-white transition-all shadow-[6px_6px_0_0_#ff007a]">
         REBOOT_SIMULATION
       </button>
     </div>

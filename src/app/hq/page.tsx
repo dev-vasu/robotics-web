@@ -299,18 +299,20 @@ export default function AdminHQ() {
                         <tr 
                           key={email} 
                           onClick={() => handleSelectConversation(email)}
-                          className="border-b border-white/5 hover:bg-white/5 transition-all cursor-pointer group"
+                          className="border-b border-white/5 hover:bg-white/10 transition-all cursor-pointer group"
                         >
-                          <td className={`py-4 px-4 text-[10px] font-black tracking-widest uppercase ${typeColor} whitespace-nowrap`}>
-                            {typeLabel} <span className="text-white/30 ml-2">({thread.length})</span>
+                          <td className="py-4 px-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2 py-1 bg-${typeColor.replace('text-', '')}/10 border border-${typeColor.replace('text-', '')}/30 ${typeColor} text-[10px] font-black tracking-widest uppercase rounded-sm`}>
+                              {typeLabel} <span className="text-white/40 ml-2">[{thread.length}]</span>
+                            </span>
                           </td>
                           <td className="py-4 px-4 font-bold text-white text-sm group-hover:text-hyper-pink transition-colors whitespace-nowrap">
                             {email}
                           </td>
-                          <td className="py-4 px-4 text-xs text-white/60 truncate max-w-[200px] hidden md:table-cell">
+                          <td className="py-4 px-4 text-xs text-white/60 truncate max-w-[200px] hidden md:table-cell group-hover:text-white transition-colors">
                             {latest.subject}
                           </td>
-                          <td className="py-4 px-4 text-[10px] text-white/40 font-mono text-right whitespace-nowrap">
+                          <td className="py-4 px-4 text-[10px] text-white/40 font-mono text-right whitespace-nowrap group-hover:text-hyper-pink transition-colors">
                             {new Date(latest.created_at).toLocaleString()}
                           </td>
                         </tr>
