@@ -149,8 +149,13 @@ export default function BrickGame() {
           {gameState === "WIN" && (
              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-electric-volt/20 backdrop-blur-md">
                <Zap className="w-20 h-20 text-white mb-6 animate-ping" />
-               <h2 className="text-7xl font-black text-white italic uppercase mb-2">CLEARED</h2>
-               <button className="px-10 py-5 bg-black text-white font-black text-xl uppercase">NEXT_STAGE</button>
+               <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+                 {score >= 2000 ? "MAIN_CHARACTER" : "W_RIZZ"}
+               </h2>
+               <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                 {score >= 2000 ? "PERFECT CLEAR. NO CAP." : "YOU COOKED BRO."}
+               </p>
+               <button className="px-10 py-5 bg-black text-white font-black text-xl uppercase" onClick={() => initGame()}>NEXT_STAGE</button>
              </div>
           )}
           {gameState === "PLAYING" && (

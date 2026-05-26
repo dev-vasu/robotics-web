@@ -134,7 +134,22 @@ export default function SnakeGame() {
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
               <Skull className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">METABOLISM_FAIL</h2>
+              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+                {score <= 500 ? "NPC_BEHAVIOR" : 
+                 score <= 1500 ? "SKILL_ISSUE" : 
+                 score <= 3000 ? "KINDA_MID" : 
+                 score <= 5000 ? "COOKING_RN" : 
+                 score <= 10000 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                {score <= 500 ? "BRO BIT HIS OWN TAIL INSTANTLY 💀" : 
+                 score <= 1500 ? "NOT VERY DEMURE SNAKE CONTROL." : 
+                 score <= 3000 ? "KINDA MID. GET MORE APPLES." : 
+                 score <= 5000 ? "COOKING RN. LONG BOI." : 
+                 score <= 10000 ? "BRO IS ANACONDA." : 
+                 "CERTIFIED SLITHER GOD. TOUCH GRASS."}
+              </p>
               <div className="text-hyper-pink text-3xl font-black mb-8 italic uppercase">SCORE: {score}</div>
               <button onClick={initGame} className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-LINK</button>
             </div>

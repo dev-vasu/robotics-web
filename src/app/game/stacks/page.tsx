@@ -122,9 +122,24 @@ export default function StacksGame() {
           )}
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95 text-center">
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">INSTABILITY</h2>
+              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2">
+                {score <= 3 ? "NPC_BEHAVIOR" : 
+                 score <= 8 ? "SKILL_ISSUE" : 
+                 score <= 15 ? "KINDA_MID" : 
+                 score <= 25 ? "COOKING_RN" : 
+                 score <= 40 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6">
+                {score <= 3 ? "BRO CAN'T EVEN STACK 3 BLOCKS 💀" : 
+                 score <= 8 ? "YOUR TIMING IS LITERALLY TRASH." : 
+                 score <= 15 ? "MID STACKS. TRY HARDER." : 
+                 score <= 25 ? "WE VIBING. LET HIM COOK." : 
+                 score <= 40 ? "BRO IS AN ARCHITECT." : 
+                 "CERTIFIED BUILDER. TOUCH GRASS NOW."}
+              </p>
               <div className="text-cyber-blue text-3xl font-black mb-8 italic">STACKS: {score}</div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-BUILD</button>
+              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]" onClick={initGame}>RE-BUILD</button>
             </div>
           )}
           {gameState === "PLAYING" && (

@@ -210,7 +210,22 @@ export default function BeatGame() {
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
               <Ghost className="w-24 h-24 text-red-500 mb-6" />
-              <h2 className="text-6xl font-black text-white italic uppercase mb-2 text-glitch">SYNC_LOST</h2>
+              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-glitch text-center">
+                {score <= 500 ? "NPC_BEHAVIOR" : 
+                 score <= 2000 ? "SKILL_ISSUE" : 
+                 score <= 5000 ? "KINDA_MID" : 
+                 score <= 10000 ? "COOKING_RN" : 
+                 score <= 20000 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                {score <= 500 ? "BRO HAS NO RHYTHM 💀" : 
+                 score <= 2000 ? "YOUR TIMING IS LITERALLY TRASH." : 
+                 score <= 5000 ? "MID BEATS. TRY HARDER." : 
+                 score <= 10000 ? "OKAY WE VIBING. LET HIM COOK." : 
+                 score <= 20000 ? "BRO IS THE METRONOME." : 
+                 "MOZART BEEN QUIET SINCE THIS DROPPED."}
+              </p>
               <div className="text-cyber-blue text-4xl font-black mb-10 italic uppercase">SCORE: {score}</div>
               <button onClick={initGame} className="px-10 py-5 bg-electric-volt text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">RE-BOOT</button>
             </div>

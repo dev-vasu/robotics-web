@@ -153,9 +153,24 @@ export default function RunGame() {
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
               <Ghost className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">HALTED</h2>
+              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+                {score <= 500 ? "NPC_BEHAVIOR" : 
+                 score <= 1500 ? "SKILL_ISSUE" : 
+                 score <= 3000 ? "KINDA_MID" : 
+                 score <= 6000 ? "COOKING_RN" : 
+                 score <= 10000 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                {score <= 500 ? "BRO TRIPPED ON AIR 💀" : 
+                 score <= 1500 ? "NOT VERY DEMURE HURDLE SKILLS." : 
+                 score <= 3000 ? "KINDA MID. NEED MORE AGILITY." : 
+                 score <= 6000 ? "COOKING RN. KEEP JUMPING." : 
+                 score <= 10000 ? "BRO IS A TRACK STAR." : 
+                 "CERTIFIED SPEEDSTER. TOUCH GRASS NOW."}
+              </p>
               <div className="text-hyper-pink text-3xl font-black mb-8 italic uppercase">INTEL: {score}</div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic shadow-[8px_8px_0_0_#ff007a]">RE-IGNITE</button>
+              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic shadow-[8px_8px_0_0_#ff007a]" onClick={initGame}>RE-IGNITE</button>
             </div>
           )}
           {gameState === "PLAYING" && (

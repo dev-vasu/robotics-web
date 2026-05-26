@@ -164,7 +164,22 @@ export default function TyperGame() {
           {gameState === "GAMEOVER" && (
             <div className="relative z-10 text-center py-6">
               <CheckCircle2 className="w-24 h-24 text-electric-volt mx-auto mb-6" />
-              <h2 className="text-7xl font-black text-white italic uppercase mb-2">HACK_SUCCESSFUL</h2>
+              <h2 className="text-5xl md:text-7xl font-black text-white italic uppercase mb-2">
+                {score <= 50 ? "NPC_BEHAVIOR" : 
+                 score <= 100 ? "SKILL_ISSUE" : 
+                 score <= 150 ? "KINDA_MID" : 
+                 score <= 250 ? "COOKING_RN" : 
+                 score <= 350 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6">
+                {score <= 50 ? "BRO TYPES WITH TWO FINGERS 💀" : 
+                 score <= 100 ? "GRANDMA TYPES FASTER THAN YOU." : 
+                 score <= 150 ? "NOT BAD, BUT NOT HACKERMAN LEVEL." : 
+                 score <= 250 ? "KEYBOARD IS ON FIRE RN." : 
+                 score <= 350 ? "W RIZZ. BRO IS IN THE MAINFRAME." : 
+                 "CERTIFIED HACKERMAN. TOUCH GRASS PLEASE."}
+              </p>
               <div className="flex justify-center gap-12 mb-10">
                  <div>
                    <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">SPEED</div>

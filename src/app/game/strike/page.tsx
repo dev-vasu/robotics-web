@@ -294,7 +294,22 @@ export default function GamePage() {
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-900/40 backdrop-blur-xl">
               <ShieldAlert className="w-24 h-24 text-white mb-6 animate-pulse" />
-              <h2 className="text-7xl font-black text-white italic uppercase mb-2">MISSION_FAILED</h2>
+              <h2 className="text-6xl md:text-7xl font-black text-white italic uppercase mb-2 text-center">
+                {score <= 500 ? "NPC_BEHAVIOR" : 
+                 score <= 1500 ? "SKILL_ISSUE" : 
+                 score <= 3000 ? "KINDA_MID" : 
+                 score <= 6000 ? "COOKING_RN" : 
+                 score <= 10000 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                {score <= 500 ? "BRO GOT CLAPPED BY THE FIRST BOT 💀" : 
+                 score <= 1500 ? "AIM ASSIST COULDN'T EVEN SAVE YOU." : 
+                 score <= 3000 ? "NOT BAD, BUT NOT VERY DEMURE." : 
+                 score <= 6000 ? "LET HIM COOK. SOLID AIM." : 
+                 score <= 10000 ? "BRO IS JOHN WICK IN THE CYBERSPACE." : 
+                 "CERTIFIED AIMBOT. TOUCH GRASS IMMEDIATELY."}
+              </p>
               <div className="text-electric-volt text-4xl font-black mb-10 italic">FINAL_INTEL: {score}</div>
               <button 
                 onClick={initGame}

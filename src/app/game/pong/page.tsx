@@ -137,8 +137,23 @@ export default function PongGame() {
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
               <ShieldAlert className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">DISCONNECTED</h2>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-LINK</button>
+              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+                {score <= 50 ? "NPC_BEHAVIOR" : 
+                 score <= 150 ? "SKILL_ISSUE" : 
+                 score <= 300 ? "KINDA_MID" : 
+                 score <= 600 ? "COOKING_RN" : 
+                 score <= 1000 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                {score <= 50 ? "BRO MISSED THE SLOWEST BALL EVER 💀" : 
+                 score <= 150 ? "LITERALLY ZERO REFLEXES." : 
+                 score <= 300 ? "MID RALLIES NGGL." : 
+                 score <= 600 ? "COOKING THE AI. NOT BAD." : 
+                 score <= 1000 ? "BRO IS ROGER FEDERER." : 
+                 "CERTIFIED PONG GOD. TOUCH GRASS."}
+              </p>
+              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]" onClick={() => initGame()}>RE-LINK</button>
             </div>
           )}
           {gameState === "PLAYING" && (

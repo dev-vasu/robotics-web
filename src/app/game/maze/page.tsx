@@ -153,7 +153,18 @@ export default function MazeGame() {
           {gameState === "WIN" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-electric-volt/20 backdrop-blur-md border-4 border-electric-volt">
               <Trophy className="w-20 h-20 text-white mb-6 animate-bounce" />
-              <h2 className="text-6xl font-black text-white italic uppercase mb-2">ZONE_CLEARED</h2>
+              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+                 {level <= 1 ? "KINDA_MID" : 
+                  level <= 3 ? "COOKING_RN" : 
+                  level <= 5 ? "W_RIZZ" : 
+                  "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                 {level <= 1 ? "IT WAS JUST LEVEL 1 BRO." : 
+                  level <= 3 ? "WE SEE YOU NAVIGATING." : 
+                  level <= 5 ? "BRO KNOWS THE WAY." : 
+                  "CERTIFIED MINOTAUR. TOUCH GRASS."}
+              </p>
               <div className="bg-black px-10 py-4 border-2 border-cyber-blue mb-8">
                 <span className="text-cyber-blue text-4xl font-black italic">LEVEL {level} DONE</span>
               </div>

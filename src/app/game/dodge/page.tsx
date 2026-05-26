@@ -136,6 +136,22 @@ export default function DodgeGame() {
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl">
               <Skull className="w-24 h-24 text-white mb-6" />
+              <h2 className="text-6xl md:text-7xl font-black text-white italic uppercase mb-2 text-center">
+                {score <= 300 ? "NPC_BEHAVIOR" : 
+                 score <= 1000 ? "SKILL_ISSUE" : 
+                 score <= 2000 ? "KINDA_MID" : 
+                 score <= 3500 ? "COOKING_RN" : 
+                 score <= 5000 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+                {score <= 300 ? "BRO GOT DELETED INSTANTLY 💀" : 
+                 score <= 1000 ? "YOUR MOVEMENT IS LITERALLY TRASH." : 
+                 score <= 2000 ? "COULD DO BETTER. KINDA MID NGGL." : 
+                 score <= 3500 ? "JUKING THEM OUT OF THEIR CODE." : 
+                 score <= 5000 ? "BRO IS NEO FROM THE MATRIX." : 
+                 "LITERALLY UNTOUCHABLE. GO TOUCH GRASS."}
+              </p>
               <div className="text-white text-5xl font-black italic mb-10">SCORE: {score}</div>
               <button onClick={startGame} className="px-12 py-6 bg-white text-black font-black text-2xl uppercase italic">RETRY</button>
             </div>
