@@ -24,6 +24,19 @@ export default function AdminHQ() {
   const [records, setRecords] = useState<Record[]>([]);
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+
+  const handleSelectConversation = (email: string) => {
+    setSelectedEmail(email);
+    setTo(email);
+    const originalMsg = records.find(r => r.email === email && r.type === 'RECEIVED');
+    const lastMsg = records.find(r => r.email === email);
+    let subj = originalMsg ? originalMsg.subject : lastMsg?.subject || "";
+    if (subj && !subj.toUpperCase().startsWith("RE:")) {
+      subj = "RE: " + subj;
+    }
+    setSubject(subj);
+  };
 
   const fetchRecords = async (currentPasscode: string) => {
     setIsLoadingRecords(true);
@@ -206,19 +219,54 @@ export default function AdminHQ() {
                 <p className="text-hyper-pink font-black uppercase tracking-[0.4em] text-[10px]">NEON_DB_CONNECTION_ACTIVE</p>
               </div>
             </div>
-            <button 
-              onClick={() => fetchRecords(passcode)}
-              className="p-3 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded"
-            >
-               <RefreshCcw className={`w-5 h-5 ${isLoadingRecords ? "animate-spin" : ""}`} />
-            </button>
+            <div className="flex items-center gap-4">
+              {selectedEmail && (
+                <button 
+                  onClick={() => { setSelectedEmail(null); setTo(""); setSubject(""); }}
+                  className="px-4 py-2 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded text-[10px] font-black tracking-widest uppercase"
+                >
+                  BACK_TO_LIST
+                </button>
+              )}
+              <button 
+                onClick={() => fetchRecords(passcode)}
+                className="p-3 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded"
+              >
+                 <RefreshCcw className={`w-5 h-5 ${isLoadingRecords ? "animate-spin" : ""}`} />
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-4">
             {records.length === 0 ? (
                <div className="text-center text-white/30 font-mono text-sm py-10">NO_RECORDS_FOUND_IN_DATABASE</div>
+            ) : !selectedEmail ? (
+              // Conversation List
+              Array.from(new Set(records.map(r => r.email))).map(email => {
+                const thread = records.filter(r => r.email === email);
+                const latest = thread[0];
+                return (
+                  <div 
+                    key={email} 
+                    onClick={() => handleSelectConversation(email)}
+                    className="p-4 border-l-4 border-hyper-pink bg-black/50 hover:bg-white/5 transition-all cursor-pointer"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[10px] font-black tracking-widest uppercase text-hyper-pink">
+                        THREAD // {thread.length} MESSAGES
+                      </span>
+                      <span className="text-[10px] text-white/40 font-mono">
+                        {new Date(latest.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-sm font-bold text-white mb-1 truncate">{email}</div>
+                    <div className="text-xs text-white/60 truncate">{latest.subject}</div>
+                  </div>
+                );
+              })
             ) : (
-              records.map(record => (
+              // Thread View
+              records.filter(r => r.email === selectedEmail).map(record => (
                 <div key={record.id} className={`p-4 border-l-4 bg-black/50 ${record.type === 'RECEIVED' ? 'border-electric-volt' : 'border-cyber-blue'}`}>
                   <div className="flex justify-between items-start mb-2">
                     <span className={`text-[10px] font-black tracking-widest uppercase ${record.type === 'RECEIVED' ? 'text-electric-volt' : 'text-cyber-blue'}`}>
@@ -228,7 +276,6 @@ export default function AdminHQ() {
                       {new Date(record.created_at).toLocaleString()}
                     </span>
                   </div>
-                  <div className="text-sm font-bold text-white mb-1 truncate">{record.email}</div>
                   <div className="text-xs text-white/60 mb-3 truncate border-b border-white/10 pb-2">{record.subject}</div>
                   <div className="text-xs font-mono text-white/80 whitespace-pre-wrap">{record.content}</div>
                 </div>
