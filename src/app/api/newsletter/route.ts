@@ -1,9 +1,25 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { neon } from '@neondatabase/serverless';
+import { setupDatabase } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
+
+    // 0. Ensure Table Exists & Save to Database
+    if (process.env.DATABASE_URL) {
+      try {
+        await setupDatabase();
+        const sql = neon(process.env.DATABASE_URL);
+        await sql`
+          INSERT INTO message_records (type, email, subject, content)
+          VALUES ('RECEIVED', ${email}, 'New Newsletter Subscription', 'User joined the squad.')
+        `;
+      } catch (dbError) {
+        console.error("DB Save Error:", dbError);
+      }
+    }
 
     // 1. DISCORD NOTIFICATION
     if (process.env.DISCORD_WEBHOOK_URL) {
