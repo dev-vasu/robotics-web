@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { neon } from '@neondatabase/serverless';
+import { setupDatabase } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +17,20 @@ export async function POST(req: Request) {
 
     if (!to || !subject || !message) {
       return NextResponse.json({ error: "MISSING_DATA: Fill all fields" }, { status: 400 });
+    }
+
+    // 1.5 Ensure Table Exists & Save to Database
+    if (process.env.DATABASE_URL) {
+      try {
+        await setupDatabase();
+        const sql = neon(process.env.DATABASE_URL);
+        await sql`
+          INSERT INTO message_records (type, email, subject, content)
+          VALUES ('SENT', ${to}, ${subject}, ${message})
+        `;
+      } catch (dbError) {
+        console.error("DB Save Error:", dbError);
+      }
     }
 
     // 2. FORMAT THE MESSAGE (Convert line breaks to HTML <br/>)
