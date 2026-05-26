@@ -1,267 +1,326 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Zap, Trophy, RefreshCcw, Gamepad2, Ghost, Skull } from "lucide-react";
-
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 500;
-const PLAYER_SIZE = 30;
-const ENEMY_SIZE = 25;
-const INITIAL_SPEED = 2;
-const SPEED_INCREMENT = 0.05;
+import { Zap, Trophy, RefreshCcw, Gamepad2, Crosshair, ShieldAlert } from "lucide-react";
 
 export default function GamePage() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [gameState, setGameState] = useState<"IDLE" | "PLAYING" | "GAMEOVER">("IDLE");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Game Loop Variables
   const requestRef = useRef<number>(undefined);
-  const lastTimeRef = useRef<number>(undefined);
-  
-  // High-performance refs for the game loop
-  const playerPosRef = useRef({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 });
-  const enemiesRef = useRef<{ x: number; y: number; id: number; speed: number }[]>([]);
-  const scoreRef = useRef(0);
+  const playerRef = useRef({ x: 0, y: 0, radius: 15, color: "#ccff00", health: 100 });
+  const bulletsRef = useRef<any[]>([]);
+  const enemiesRef = useRef<any[]>([]);
+  const particlesRef = useRef<any[]>([]);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const frameRef = useRef(0);
+  const shakeRef = useRef(0);
 
-  // Sync React state for rendering
-  const [renderTrigger, setRenderTrigger] = useState(0);
-
-  const startGame = () => {
-    setGameState("PLAYING");
-    setScore(0);
-    scoreRef.current = 0;
+  const initGame = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    playerRef.current = { x: canvas.width / 2, y: canvas.height / 2, radius: 15, color: "#ccff00", health: 100 };
+    bulletsRef.current = [];
     enemiesRef.current = [];
-    playerPosRef.current = { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 };
-    lastTimeRef.current = performance.now();
+    particlesRef.current = [];
+    setScore(0);
+    setGameState("PLAYING");
+  };
+
+  const spawnParticle = (x: number, y: number, color: string) => {
+    for (let i = 0; i < 8; i++) {
+      particlesRef.current.push({
+        x, y,
+        radius: Math.random() * 3,
+        color,
+        velocity: {
+          x: (Math.random() - 0.5) * 5,
+          y: (Math.random() - 0.5) * 5
+        },
+        alpha: 1
+      });
+    }
+  };
+
+  const spawnEnemy = (canvas: HTMLCanvasElement) => {
+    const radius = Math.random() * (30 - 10) + 10;
+    let x, y;
+    if (Math.random() < 0.5) {
+      x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+      y = Math.random() * canvas.height;
+    } else {
+      x = Math.random() * canvas.width;
+      y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
+    }
+    const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+    const angle = Math.atan2(playerRef.current.y - y, playerRef.current.x - x);
+    const velocity = {
+      x: Math.cos(angle) * (1 + score / 1000),
+      y: Math.sin(angle) * (1 + score / 1000)
+    };
+    enemiesRef.current.push({ x, y, radius, color, velocity });
+  };
+
+  const update = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+    frameRef.current++;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (shakeRef.current > 0) {
+      const sx = (Math.random() - 0.5) * shakeRef.current;
+      const sy = (Math.random() - 0.5) * shakeRef.current;
+      ctx.translate(sx, sy);
+      shakeRef.current -= 0.5;
+    }
+
+    // Draw Player
+    ctx.beginPath();
+    ctx.arc(playerRef.current.x, playerRef.current.y, playerRef.current.radius, 0, Math.PI * 2);
+    ctx.fillStyle = playerRef.current.color;
+    ctx.fill();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = playerRef.current.color;
+    ctx.closePath();
+
+    // Spawn Enemies
+    if (frameRef.current % Math.max(10, 60 - Math.floor(score / 100)) === 0) {
+      spawnEnemy(canvas);
+    }
+
+    // Update Particles
+    particlesRef.current.forEach((p, index) => {
+      if (p.alpha <= 0) {
+        particlesRef.current.splice(index, 1);
+      } else {
+        p.velocity.x *= 0.99;
+        p.velocity.y *= 0.99;
+        p.x += p.velocity.x;
+        p.y += p.velocity.y;
+        p.alpha -= 0.01;
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+      }
+    });
+
+    // Update Bullets
+    bulletsRef.current.forEach((b, index) => {
+      b.x += b.velocity.x;
+      b.y += b.velocity.y;
+      if (b.x + b.radius < 0 || b.x - b.radius > canvas.width || b.y + b.radius < 0 || b.y - b.radius > canvas.height) {
+        bulletsRef.current.splice(index, 1);
+      } else {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.closePath();
+      }
+    });
+
+    // Update Enemies
+    enemiesRef.current.forEach((e, eIndex) => {
+      e.x += e.velocity.x;
+      e.y += e.velocity.y;
+
+      // Enemy hit player
+      const dist = Math.hypot(playerRef.current.x - e.x, playerRef.current.y - e.y);
+      if (dist - e.radius - playerRef.current.radius < 1) {
+        setGameState("GAMEOVER");
+        spawnParticle(playerRef.current.x, playerRef.current.y, "#ff007a");
+        shakeRef.current = 20;
+      }
+
+      // Bullets hit enemy
+      bulletsRef.current.forEach((b, bIndex) => {
+        const dist = Math.hypot(b.x - e.x, b.y - e.y);
+        if (dist - e.radius - b.radius < 1) {
+          spawnParticle(e.x, e.y, e.color);
+          if (e.radius > 15) {
+            e.radius -= 10;
+            setScore(s => s + 50);
+          } else {
+            enemiesRef.current.splice(eIndex, 1);
+            setScore(s => s + 100);
+          }
+          bulletsRef.current.splice(bIndex, 1);
+          shakeRef.current = 5;
+        }
+      });
+
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+      ctx.fillStyle = e.color;
+      ctx.fill();
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = e.color;
+      ctx.closePath();
+    });
+
+    if (shakeRef.current > 0) ctx.setTransform(1, 0, 0, 1, 0, 0);
+  };
+
+  const gameLoop = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx || gameState === "GAMEOVER") return;
+
+    update(canvas, ctx);
     requestRef.current = requestAnimationFrame(gameLoop);
   };
 
-  const spawnEnemy = useCallback(() => {
-    const side = Math.floor(Math.random() * 4);
-    let x = 0, y = 0;
-    if (side === 0) { x = Math.random() * GAME_WIDTH; y = -ENEMY_SIZE; }
-    if (side === 1) { x = GAME_WIDTH + ENEMY_SIZE; y = Math.random() * GAME_HEIGHT; }
-    if (side === 2) { x = Math.random() * GAME_WIDTH; y = GAME_HEIGHT + ENEMY_SIZE; }
-    if (side === 3) { x = -ENEMY_SIZE; y = Math.random() * GAME_HEIGHT; }
-
-    const speed = INITIAL_SPEED + (scoreRef.current * 0.001);
-    return { x, y, id: Math.random(), speed };
-  }, []);
-
-  const gameLoop = useCallback((time: number) => {
-    if (lastTimeRef.current === undefined) lastTimeRef.current = time;
-    const deltaTime = time - lastTimeRef.current;
-
-    if (deltaTime > 1000 / 60) {
-      // Move Enemies
-      enemiesRef.current = enemiesRef.current.map(e => {
-        const dx = playerPosRef.current.x - e.x;
-        const dy = playerPosRef.current.y - e.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        // Enemies get more aggressive as score increases
-        const pursuitSpeed = e.speed + (scoreRef.current / 5000);
-        return {
-          ...e,
-          x: e.x + (dx / dist) * pursuitSpeed,
-          y: e.y + (dy / dist) * pursuitSpeed,
-        };
-      });
-
-      // Collision Check
-      const playerBox = {
-        left: playerPosRef.current.x - PLAYER_SIZE/2,
-        right: playerPosRef.current.x + PLAYER_SIZE/2,
-        top: playerPosRef.current.y - PLAYER_SIZE/2,
-        bottom: playerPosRef.current.y + PLAYER_SIZE/2
-      };
-
-      const hasCollision = enemiesRef.current.some(e => {
-        return e.x < playerBox.right && e.x + ENEMY_SIZE > playerBox.left &&
-               e.y < playerBox.bottom && e.y + ENEMY_SIZE > playerBox.top;
-      });
-
-      if (hasCollision) {
-        setGameState("GAMEOVER");
-        if (requestRef.current) cancelAnimationFrame(requestRef.current);
-        return;
-      }
-
-      // Spawn Logic (Increases over time)
-      const spawnChance = 0.03 + (scoreRef.current / 10000);
-      if (Math.random() < Math.min(0.1, spawnChance)) {
-        enemiesRef.current.push(spawnEnemy());
-      }
-
-      scoreRef.current += 1;
-      setScore(scoreRef.current);
-      setRenderTrigger(prev => prev + 1);
-      lastTimeRef.current = time;
-    }
-
-    requestRef.current = requestAnimationFrame(gameLoop);
-  }, [spawnEnemy]);
-
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      playerPosRef.current = {
-        x: Math.max(PLAYER_SIZE/2, Math.min(GAME_WIDTH - PLAYER_SIZE/2, e.clientX - rect.left)),
-        y: Math.max(PLAYER_SIZE/2, Math.min(GAME_HEIGHT - PLAYER_SIZE/2, e.clientY - rect.top)),
-      };
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
+    if (gameState === "PLAYING") {
+      requestRef.current = requestAnimationFrame(gameLoop);
+    }
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, []);
+  }, [gameState]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    mouseRef.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+    playerRef.current.x = mouseRef.current.x;
+    playerRef.current.y = mouseRef.current.y;
+  };
+
+  const handleMouseDown = () => {
+    if (gameState !== "PLAYING") return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Automatic firing would be better, but let's do click for now
+    // Actually, let's just make it shoot towards the center/cursor
+    const angle = Math.atan2(mouseRef.current.y - playerRef.current.y, mouseRef.current.x - playerRef.current.x);
+    // Bullet velocity is always away from player towards mouse? No, player IS mouse.
+    // Let's make enemies come from edges and player shoot radially or towards nearest enemy.
+    // BETTER: Player is at center, mouse aims. 
+  };
+
+  // RE-INIT MOUSE LOGIC: Player is centered, shoots towards mouse.
+  useEffect(() => {
+    const fire = (e: MouseEvent) => {
+      if (gameState !== "PLAYING" || !canvasRef.current) return;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const angle = Math.atan2(y - playerRef.current.y, x - playerRef.current.x);
+      bulletsRef.current.push({
+        x: playerRef.current.x,
+        y: playerRef.current.y,
+        radius: 5,
+        velocity: {
+          x: Math.cos(angle) * 10,
+          y: Math.sin(angle) * 10
+        }
+      });
+    };
+    window.addEventListener("mousedown", fire);
+    return () => window.removeEventListener("mousedown", fire);
+  }, [gameState]);
 
   useEffect(() => {
     if (score > highScore) setHighScore(score);
   }, [score, highScore]);
 
   return (
-    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
+    <main className="min-h-screen bg-black grid-bg flex flex-col pt-20 overflow-hidden">
       <Navbar />
 
-      <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-12">
-        <div className="text-center mb-10">
-          <h1 className="text-6xl md:text-[10rem] font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
-            CYBER_<span className="text-hyper-pink">DODGE</span>
+      <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10 relative">
+        <div className="text-center mb-6 z-10">
+          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+            CYBER_<span className="text-electric-volt">STRIKE</span>
           </h1>
-          <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">
-            LEVEL_10_THREAT_DETECTED
+          <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px] mt-2">
+            ELIMINATE_ ROGUE_ AI_ CORES
           </p>
         </div>
 
         <div 
-          ref={containerRef}
-          className="relative glass-panel border-8 border-white/5 overflow-hidden cursor-none shadow-[0_0_100px_rgba(255,0,122,0.1)]"
-          style={{ width: GAME_WIDTH, height: GAME_HEIGHT }}
+          className="relative bg-black border-4 border-white/10 shadow-[0_0_50px_rgba(204,255,0,0.1)] group"
+          style={{ width: 800, height: 500 }}
         >
-          {/* Grid lines inside game */}
-          <div className="absolute inset-0 opacity-20 pointer-events-none" 
-               style={{ backgroundImage: 'radial-gradient(circle, #333 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+          <canvas 
+            ref={canvasRef}
+            width={800}
+            height={500}
+            onMouseMove={handleMouseMove}
+            className="cursor-crosshair"
+          />
 
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
-              <div className="w-24 h-24 bg-hyper-pink rounded-full flex items-center justify-center mb-8 animate-bounce shadow-[0_0_50px_#ff007a]">
-                 <Gamepad2 className="w-12 h-12 text-black" />
+              <div className="w-20 h-20 border-4 border-electric-volt flex items-center justify-center mb-8 animate-spin">
+                 <Crosshair className="w-10 h-10 text-electric-volt" />
               </div>
               <button 
-                onClick={startGame}
-                className="px-16 py-8 bg-white text-black font-black text-3xl uppercase italic hover:bg-electric-volt transition-all shadow-[15px_15px_0_0_#ff007a] hover:-translate-y-2 active:translate-y-0"
+                onClick={initGame}
+                className="px-12 py-6 bg-electric-volt text-black font-black text-2xl uppercase italic hover:bg-white transition-all shadow-[10px_10px_0_0_#ff007a]"
               >
-                BOOT_SYSTEM
+                START_MISSION
               </button>
-              <div className="mt-12 flex gap-10">
-                <div className="text-center">
-                   <div className="text-[10px] text-white/40 font-black tracking-widest uppercase mb-1">CONTROLS</div>
-                   <div className="text-electric-volt font-black text-xs uppercase italic">MOUSE_ONLY</div>
-                </div>
-                <div className="text-center">
-                   <div className="text-[10px] text-white/40 font-black tracking-widest uppercase mb-1">OBJECTIVE</div>
-                   <div className="text-hyper-pink font-black text-xs uppercase italic">AVOID_PINK_VOID</div>
-                </div>
+              <div className="mt-8 text-white/40 font-black uppercase text-[10px] tracking-widest text-center">
+                MOVE_MOUSE_TO_DRIVE // CLICK_TO_FIRE <br/>
+                DESTROY_EVERYTHING_
               </div>
             </div>
           )}
 
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl border-4 border-red-500/50">
-              <Skull className="w-24 h-24 text-white mb-6 animate-pulse" />
-              <h2 className="text-8xl font-black text-white italic uppercase mb-4 tracking-tighter">TERMINATED</h2>
-              <div className="bg-black px-10 py-4 border-2 border-hyper-pink mb-10">
-                <span className="text-white/60 font-black uppercase tracking-widest text-sm mr-4">FINAL_SCORE:</span>
-                <span className="text-hyper-pink text-5xl font-black italic">{score}</span>
-              </div>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-900/40 backdrop-blur-xl">
+              <ShieldAlert className="w-24 h-24 text-white mb-6 animate-pulse" />
+              <h2 className="text-7xl font-black text-white italic uppercase mb-2">MISSION_FAILED</h2>
+              <div className="text-electric-volt text-4xl font-black mb-10 italic">FINAL_INTEL: {score}</div>
               <button 
-                onClick={startGame}
-                className="flex items-center gap-4 px-12 py-6 bg-white text-black font-black text-2xl uppercase italic hover:bg-electric-volt transition-all shadow-[10px_10px_0_0_#000]"
+                onClick={initGame}
+                className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic hover:bg-hyper-pink transition-all shadow-[8px_8px_0_0_#000]"
               >
-                <RefreshCcw className="w-8 h-8" /> REBOOT_CORE
+                RETRY_UPLINK
               </button>
             </div>
           )}
 
+          {/* Real-time HUD */}
           {gameState === "PLAYING" && (
-            <>
-              {/* Player - High-Performance Motion */}
-              <div 
-                className="absolute bg-electric-volt rounded-full shadow-[0_0_30px_#ccff00] z-10 border-4 border-white pointer-events-none"
-                style={{
-                  width: PLAYER_SIZE,
-                  height: PLAYER_SIZE,
-                  left: playerPosRef.current.x - PLAYER_SIZE/2,
-                  top: playerPosRef.current.y - PLAYER_SIZE/2,
-                }}
-              >
-                <div className="absolute inset-0 bg-white/50 rounded-full animate-ping" />
-              </div>
-              
-              {/* Enemies */}
-              {enemiesRef.current.map(e => (
-                <div 
-                  key={e.id}
-                  className="absolute bg-hyper-pink rounded-sm shadow-[0_0_20px_#ff007a] border-2 border-black"
-                  style={{
-                    width: ENEMY_SIZE,
-                    height: ENEMY_SIZE,
-                    left: e.x,
-                    top: e.y,
-                    transform: `rotate(${score * 2}deg)`
-                  }}
-                />
-              ))}
-
-              {/* HUD */}
-              <div className="absolute top-8 left-8 flex items-baseline gap-4">
-                <span className="text-white/40 font-black italic text-xs uppercase tracking-widest">DATA_POINTS:</span>
-                <span className="text-white text-5xl font-black italic tracking-tighter tabular-nums">{score}</span>
-              </div>
-              
-              <div className="absolute bottom-8 right-8 text-right">
-                <div className="text-electric-volt font-black italic text-xl uppercase tracking-tighter">HI_SCORE: {highScore}</div>
-                <div className="text-white/20 font-mono text-[8px] uppercase">ROBOVIBE_GAME_ENGINE_V2.0</div>
-              </div>
-            </>
+            <div className="absolute top-4 left-4 flex gap-8 pointer-events-none">
+               <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-white/40 uppercase">DATA_HARVESTED</span>
+                  <span className="text-white text-4xl font-black italic tracking-tighter">{score}</span>
+               </div>
+            </div>
           )}
         </div>
 
-        {/* Stats Footer */}
-        <div className="mt-16 grid md:grid-cols-4 gap-4 w-full max-w-[800px]">
-          {[
-            { label: "VELOCITY", val: (INITIAL_SPEED + score / 1000).toFixed(2) + "x", icon: Zap, color: "text-hyper-pink" },
-            { label: "RECORD", val: highScore, icon: Trophy, color: "text-electric-volt" },
-            { label: "THREATS", val: enemiesRef.current.length, icon: Ghost, color: "text-cyber-blue" },
-            { label: "STATUS", val: gameState === "PLAYING" ? "ACTIVE" : "OFFLINE", icon: Activity, color: "text-white" }
-          ].map((item, i) => (
-            <div key={i} className="bg-white/5 p-6 border-2 border-white/5 hover:border-white/10 transition-colors">
-              <item.icon className={`w-5 h-5 ${item.color} mb-4`} />
-              <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">{item.label}</div>
-              <div className="text-2xl font-black italic text-white uppercase">{item.val}</div>
-            </div>
-          ))}
+        <div className="mt-8 flex gap-4 w-full max-w-[800px]">
+           <div className="flex-1 p-4 glass-panel border-l-4 border-hyper-pink">
+              <div className="text-[10px] font-black text-white/40 uppercase mb-1">HIGHSCORE_INTEL</div>
+              <div className="text-2xl font-black italic text-white">{highScore}</div>
+           </div>
+           <div className="flex-1 p-4 glass-panel border-l-4 border-electric-volt">
+              <div className="text-[10px] font-black text-white/40 uppercase mb-1">SYSTEM_LOAD</div>
+              <div className="text-2xl font-black italic text-white">{enemiesRef.current.length} UNIT(S)</div>
+           </div>
         </div>
       </div>
 
       <Footer />
     </main>
-  );
-}
-
-function Activity({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}
-    >
-      <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.48 12H2"/>
-    </svg>
   );
 }
