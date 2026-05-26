@@ -3,33 +3,33 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Zap, Activity, Shield, Target } from "lucide-react";
+import { Zap, Activity, Sparkles, Layout } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const solutions = [
   {
-    title: "FORCE_ARMS",
-    desc: "Aggressive mechanical precision for high-velocity fabrication.",
-    icon: Target,
+    title: "VIBE_CORE",
+    desc: "Advanced generative dynamics for high-fidelity creative output.",
+    icon: Sparkles,
     color: "from-hyper-pink to-purple-600",
   },
   {
-    title: "NEO_WAREHOUSE",
-    desc: "Autonomous flow units that never sleep. Infinite inventory scaling.",
+    title: "ARCADE_NET",
+    desc: "Robust infrastructure powering 11+ unique game simulations.",
     icon: Activity,
     color: "from-electric-volt to-emerald-600",
   },
   {
-    title: "SYNC_LABS",
-    desc: "Collaborative neural-link systems for rapid prototyping.",
-    icon: Zap,
+    title: "NEON_LABS",
+    desc: "Collaborative sandbox environments for rapid prototyping.",
+    icon: Layout,
     color: "from-cyber-blue to-blue-600",
   },
   {
-    title: "CORE_DECISION",
-    desc: "Edge-based survival logic. Local processing at the speed of light.",
-    icon: Shield,
+    title: "SYNC_LOGIC",
+    desc: "Intelligent interaction layers for a seamless user experience.",
+    icon: Zap,
     color: "from-white to-gray-600",
   },
 ];
@@ -42,17 +42,21 @@ export default function Solutions() {
     const cards = gridRef.current?.children;
     if (!cards) return;
 
-    gsap.from(cards, {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-      },
-      scale: 0.5,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.15,
-      ease: "expo.out",
-    });
+    gsap.fromTo(cards, 
+      { scale: 0.5, opacity: 0 },
+      {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+        scale: 1,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.15,
+        ease: "expo.out",
+        immediateRender: false
+      }
+    );
   }, []);
 
   return (
@@ -60,11 +64,11 @@ export default function Solutions() {
       <div className="container mx-auto px-6">
         <div className="mb-24 text-right">
           <h2 className="text-xs font-black text-hyper-pink uppercase tracking-[0.5em] mb-4">
-            Industrial_Distruption
+            Creative_Ecosystem
           </h2>
           <h3 className="text-6xl md:text-[8rem] font-black italic text-white tracking-tighter uppercase leading-none">
             CHOOSE YOUR <br />
-            <span className="text-glitch">WEAPON</span>
+            <span className="text-glitch">MODULE</span>
           </h3>
         </div>
 
@@ -86,7 +90,7 @@ export default function Solutions() {
                 {item.desc}
               </p>
               <div className="flex items-center gap-4 text-[10px] font-black tracking-[0.3em] text-hyper-pink">
-                <span className="group-hover:translate-x-2 transition-transform underline decoration-2 underline-offset-8">INITIALIZE_DATA</span>
+                <span className="group-hover:translate-x-2 transition-transform underline decoration-2 underline-offset-8">EXPLORE_TECH</span>
               </div>
             </div>
           ))}
