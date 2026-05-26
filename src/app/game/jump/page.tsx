@@ -55,7 +55,7 @@ export default function JumpGame() {
   const jump = useCallback(() => {
     if (gameState === "PLAYING") {
       playerRef.current.vy = JUMP_FORCE;
-    } else if (gameState === "IDLE" || gameState === "GAMEOVER") {
+    } else if (gameState === "IDLE") {
       initGame();
     }
   }, [gameState]);
