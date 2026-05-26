@@ -52,7 +52,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-white/40 text-xl font-bold leading-tight max-w-md mb-10 italic">
-              WE DON&apos;T BUILD ROBOTS. WE BUILD THE FUTURE THAT REPLACES YOU. ADAPT OR DISAPPEAR.
+              WE BUILD THE TOOLS. YOU BUILD THE FUTURE. WELCOME TO THE ULTIMATE CREATIVE HUB.
             </p>
             <div className="flex gap-6">
               {[Globe, Share2, ExternalLink].map((Icon, i) => (
@@ -66,9 +66,9 @@ export default function Footer() {
           <div>
             <h4 className="text-hyper-pink font-black mb-10 uppercase text-xs tracking-[0.4em]">_SYSTEM_MAP</h4>
             <ul className="space-y-6">
-              {["SECTORS", "STACK", "INTEL", "HQ_CORE"].map((item) => (
+              {["PLAYGROUND", "ARCADE", "CANVAS", "COMMS"].map((item) => (
                 <li key={item}>
-                  <Link href="/" className="text-white/60 hover:text-white font-black text-lg transition-colors flex items-center gap-2 group">
+                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : "/contact"} className="text-white/60 hover:text-white font-black text-lg transition-colors flex items-center gap-2 group">
                     <span className="w-0 group-hover:w-4 h-1 bg-hyper-pink transition-all" />
                     {item}
                   </Link>
@@ -109,7 +109,7 @@ export default function Footer() {
 
         <div className="border-t-2 border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-white/20 text-[10px] font-black tracking-widest uppercase">
-            © 2026 ROBOVIBE_SYSTEMS_GLOBAL. ALL_YOUR_BASE_ARE_BELONG_TO_US.
+            © 2026 ROBOVIBE_SYSTEMS_GLOBAL. BUILT_FOR_THE_SQUAD.
           </p>
           <div className="flex gap-12 text-[10px] font-black text-white/20 uppercase tracking-widest">
             <a href="#" className="hover:text-hyper-pink transition-colors">PRIVACY_VOID</a>
