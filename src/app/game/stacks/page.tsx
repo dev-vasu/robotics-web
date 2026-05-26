@@ -1,5 +1,7 @@
 "use client";
 
+import FeatureGuard from "@/components/FeatureGuard";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import MinimalFeedback from "@/components/MinimalFeedback";
@@ -105,6 +107,7 @@ export default function StacksGame() {
   }, [gameState, gameLoop]);
 
   return (
+    <FeatureGuard featureId="stacks">
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20">
       <Navbar />
       <MinimalFeedback featureName="CYBER_STACKS" />
@@ -151,5 +154,6 @@ export default function StacksGame() {
       </div>
       <Footer />
     </main>
+    </FeatureGuard>
   );
 }

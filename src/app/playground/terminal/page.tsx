@@ -1,5 +1,7 @@
 "use client";
 
+import FeatureGuard from "@/components/FeatureGuard";
+
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -40,6 +42,7 @@ export default function DataVault() {
   }, [history]);
 
   return (
+    <FeatureGuard featureId="terminal">
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 overflow-hidden">
       <Navbar />
       
@@ -111,5 +114,6 @@ export default function DataVault() {
 
       <Footer />
     </main>
+    </FeatureGuard>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import FeatureGuard from "@/components/FeatureGuard";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import MinimalFeedback from "@/components/MinimalFeedback";
@@ -116,6 +118,7 @@ export default function SnakeGame() {
   }, [gameState]);
 
   return (
+    <FeatureGuard featureId="snake">
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20">
       <Navbar />
       <MinimalFeedback featureName="NEON_SNAKE" />
@@ -163,5 +166,6 @@ export default function SnakeGame() {
       </div>
       <Footer />
     </main>
+    </FeatureGuard>
   );
 }

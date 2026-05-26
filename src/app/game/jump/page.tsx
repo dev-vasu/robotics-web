@@ -1,5 +1,7 @@
 "use client";
 
+import FeatureGuard from "@/components/FeatureGuard";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import MinimalFeedback from "@/components/MinimalFeedback";
@@ -159,6 +161,7 @@ export default function JumpGame() {
   }, [score, highScore]);
 
   return (
+    <FeatureGuard featureId="jump">
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 touch-none">
       <Navbar />
       <MinimalFeedback featureName="CYBER_JUMP" />
@@ -254,5 +257,6 @@ export default function JumpGame() {
 
       <Footer />
     </main>
+    </FeatureGuard>
   );
 }
