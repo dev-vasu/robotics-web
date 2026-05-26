@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import MinimalFeedback from "@/components/MinimalFeedback";
 import BackToArcade from "@/components/BackToArcade";
 import Footer from "@/components/Footer";
 import { Terminal, Zap, ShieldAlert, CheckCircle2, AlertTriangle } from "lucide-react";
@@ -81,6 +82,7 @@ export default function TyperGame() {
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
       <Navbar />
+      <MinimalFeedback featureName="CYBER_TYPER" />
       <BackToArcade />
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-12">

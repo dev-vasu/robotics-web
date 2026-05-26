@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import MinimalFeedback from "@/components/MinimalFeedback";
 import BackToArcade from "@/components/BackToArcade";
 import Footer from "@/components/Footer";
 import { Zap, Music, RefreshCcw, Activity, Ghost, Info, MousePointer2 } from "lucide-react";
@@ -157,6 +158,7 @@ export default function BeatGame() {
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
       <Navbar />
+      <MinimalFeedback featureName="CYBER_BEAT" />
       <BackToArcade />
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-12">

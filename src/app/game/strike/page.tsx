@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
+import MinimalFeedback from "@/components/MinimalFeedback";
 import BackToArcade from "@/components/BackToArcade";
 import Footer from "@/components/Footer";
 import { Zap, Trophy, RefreshCcw, Gamepad2, Crosshair, ShieldAlert } from "lucide-react";
@@ -243,6 +244,7 @@ export default function GamePage() {
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20 overflow-hidden">
       <Navbar />
+      <MinimalFeedback featureName="CYBER_STRIKE" />
       <BackToArcade />
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10 relative">

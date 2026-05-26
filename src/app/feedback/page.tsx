@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { MessageSquareWarning, Send, CheckCircle2, AlertCircle, Terminal } from "lucide-react";
+import { MessageSquareWarning, Send, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 const FEATURES = [
   "GENERAL_WEBSITE",
@@ -26,6 +26,18 @@ const FEATURES = [
 export default function FeedbackPage() {
   const [formData, setFormData] = useState({ email: "", feature: "GENERAL_WEBSITE", feedback: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,10 +63,10 @@ export default function FeedbackPage() {
   };
 
   return (
-    <main className="min-h-screen pt-32 pb-20 grid-bg">
+    <main className="min-h-screen pt-32 pb-20 grid-bg flex flex-col">
       <Navbar />
       
-      <div className="container mx-auto px-6 max-w-4xl">
+      <div className="flex-1 container mx-auto px-6 max-w-4xl">
         <div className="text-left mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1 bg-[#ffaa00] text-black text-[10px] font-black uppercase tracking-widest mb-6">
             <MessageSquareWarning className="w-3 h-3" />
@@ -77,20 +89,32 @@ export default function FeedbackPage() {
         >
           <div className="bg-black p-8 md:p-12 relative overflow-hidden">
             <div className="space-y-10 relative z-10">
-              <div className="relative">
+              
+              {/* Custom Gen-Z Dropdown */}
+              <div className="relative" ref={dropdownRef}>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">TARGET_MODULE (Select Game/Feature)</label>
-                <select
-                  required
-                  className="w-full bg-black border-b-2 border-white/20 pb-4 text-xl md:text-2xl font-black uppercase text-white focus:outline-none focus:border-[#ffaa00] transition-colors cursor-pointer appearance-none"
-                  value={formData.feature}
-                  onChange={(e) => setFormData({ ...formData, feature: e.target.value })}
+                
+                <div 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="w-full bg-black border-b-2 border-white/20 pb-4 pt-2 text-xl md:text-2xl font-black uppercase text-white cursor-pointer flex justify-between items-center group"
                 >
-                  {FEATURES.map(f => (
-                    <option key={f} value={f} className="bg-black text-white text-sm">
-                      {f}
-                    </option>
-                  ))}
-                </select>
+                  <span className="truncate group-hover:text-[#ffaa00] transition-colors">{formData.feature}</span>
+                  <ChevronDown className={`w-6 h-6 text-[#ffaa00] transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+                </div>
+
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 w-full mt-2 bg-black border-2 border-[#ffaa00] max-h-60 overflow-y-auto custom-scrollbar z-50 shadow-[0_10px_30px_rgba(255,170,0,0.2)]">
+                    {FEATURES.map(f => (
+                      <div 
+                        key={f} 
+                        onClick={() => { setFormData({ ...formData, feature: f }); setIsDropdownOpen(false); }}
+                        className={`px-6 py-4 text-sm md:text-base font-black uppercase cursor-pointer hover:bg-[#ffaa00] hover:text-black transition-all ${formData.feature === f ? "text-[#ffaa00] bg-white/5 border-l-4 border-[#ffaa00]" : "text-white/60"}`}
+                      >
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="relative">
@@ -119,7 +143,7 @@ export default function FeedbackPage() {
 
               <button
                 type="submit"
-                disabled={status === "loading"}
+                disabled={status === "loading" || status === "success"}
                 className="w-full py-8 bg-white text-black font-black text-2xl uppercase italic tracking-widest hover:bg-[#ffaa00] transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50"
               >
                 {status === "loading" ? "UPLOADING_DIAGNOSTICS..." : "SUBMIT_FEEDBACK"}
@@ -143,7 +167,7 @@ export default function FeedbackPage() {
         </form>
       </div>
 
-      <div className="mt-40">
+      <div className="mt-20">
         <Footer />
       </div>
     </main>

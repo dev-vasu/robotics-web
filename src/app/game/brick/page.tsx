@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import MinimalFeedback from "@/components/MinimalFeedback";
 import BackToArcade from "@/components/BackToArcade";
 import Footer from "@/components/Footer";
 import { Zap, Ghost, ShieldAlert } from "lucide-react";
@@ -126,6 +127,7 @@ export default function BrickGame() {
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
       <Navbar />
+      <MinimalFeedback featureName="BIT_CRUSH" />
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
