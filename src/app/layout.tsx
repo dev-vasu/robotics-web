@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import GlobalAudio from "@/components/GlobalAudio";
+import SynthwaveGrid from "@/components/SynthwaveGrid";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +34,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col grid-bg" suppressHydrationWarning>
+        <SynthwaveGrid />
+        <GlobalAudio />
         {children}
       </body>
     </html>
