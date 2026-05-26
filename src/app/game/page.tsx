@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal, Music, Smartphone, MousePointer2 } from "lucide-react";
+import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal, Music, Smartphone, MousePointer2, Move, Ghost, Target, Eye, Layers } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 const CATEGORIES = [
@@ -23,13 +23,23 @@ const CATEGORIES = [
         tag: "MOBILE_ONLY"
       },
       {
+        id: "stacks",
+        title: "CYBER_STACKS",
+        desc: "Precision timing. Build the highest tower in the void.",
+        href: "/game/stacks",
+        icon: Layers,
+        color: "bg-hyper-pink",
+        text: "text-hyper-pink",
+        tag: "TOUCH_READY"
+      },
+      {
         id: "dodge",
         title: "CYBER_DODGE",
         desc: "Evasion protocol. Dodge the void using touch or mouse.",
         href: "/game/dodge",
         icon: ShieldAlert,
-        color: "bg-hyper-pink",
-        text: "text-hyper-pink",
+        color: "bg-electric-volt",
+        text: "text-electric-volt",
         tag: "HYBRID_TOUCH"
       }
     ]
@@ -68,6 +78,56 @@ const CATEGORIES = [
         color: "bg-white",
         text: "text-white",
         tag: "KEYBOARD_ONLY"
+      },
+      {
+        id: "run",
+        title: "CYBER_RUN",
+        desc: "Infinite speed. Leap over firewalls in the matrix.",
+        href: "/game/run",
+        icon: Move,
+        color: "bg-hyper-pink",
+        text: "text-hyper-pink",
+        tag: "SPACE_BAR"
+      },
+      {
+        id: "pong",
+        title: "VOID_PONG",
+        desc: "Glow combat. Outplay the rogue AI in a duel of light.",
+        href: "/game/pong",
+        icon: Target,
+        color: "bg-electric-volt",
+        text: "text-electric-volt",
+        tag: "MOUSE_ONLY"
+      },
+      {
+        id: "snake",
+        title: "NEON_SNAKE",
+        desc: "Growth hack. Consume data packets to expand your link.",
+        href: "/game/snake",
+        icon: Ghost,
+        color: "bg-cyber-blue",
+        text: "text-cyber-blue",
+        tag: "ARROWS_ONLY"
+      },
+      {
+        id: "brick",
+        title: "BIT_CRUSH",
+        desc: "Deconstruction mode. Shatter the walls of the mainframe.",
+        href: "/game/brick",
+        icon: Target,
+        color: "bg-white",
+        text: "text-white",
+        tag: "MOUSE_PLAY"
+      },
+      {
+        id: "maze",
+        title: "DARK_MAZE",
+        desc: "Pathfinding protocol. Find the exit before systems fail.",
+        href: "/game/maze",
+        icon: Eye,
+        color: "bg-hyper-pink",
+        text: "text-hyper-pink",
+        tag: "NAVIGATION"
       }
     ]
   }
@@ -84,7 +144,7 @@ export default function ArcadeHub() {
             ARCADE_<span className="text-hyper-pink">HUB</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">
-            SELECT_YOUR_PLATFORM_ [VER_6.0_STABLE]
+            SELECT_YOUR_SIMULATION_ [VER_10.0_ULTIMATE]
           </p>
         </div>
 
