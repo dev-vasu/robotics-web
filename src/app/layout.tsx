@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RoboAuto | Next-Gen Robotics & Automation",
-  description: "Leading the future of industrial automation and advanced robotics solutions.",
+  title: "RoboVibe | Creative Playground",
+  description: "Advanced generative dynamics, high-fidelity simulations, and creative tools.",
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
