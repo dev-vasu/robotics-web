@@ -204,11 +204,30 @@ export default function JumpGame() {
           )}
 
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
-              <Ghost className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">FAILED</h2>
-              <div className="text-cyber-blue text-3xl font-black mb-8 italic">SCORE: {score}</div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-LINK</button>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl border-4 border-red-500/30 text-center px-4">
+              <Ghost className="w-16 h-16 text-white mb-4 animate-pulse" />
+              <h2 className="text-4xl md:text-5xl font-black text-white italic uppercase mb-2">
+                {score <= 2 ? "NPC_BEHAVIOR" : 
+                 score <= 10 ? "SKILL_ISSUE" : 
+                 score <= 20 ? "KINDA_MID" : 
+                 score <= 40 ? "COOKING_RN" : 
+                 score <= 70 ? "W_RIZZ" : 
+                 "MAIN_CHARACTER"}
+              </h2>
+              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6">
+                {score <= 2 ? "BRO FELL OFF BEFORE IT EVEN STARTED 💀" : 
+                 score <= 10 ? "NOT VERY DEMURE OF YOU TO CRASH SO SOON." : 
+                 score <= 20 ? "YOU AIN'T BUILT FOR THE VOID YET." : 
+                 score <= 40 ? "OKAY WE SEE YOU, BUT YOU STILL CRASHED." : 
+                 score <= 70 ? "LOWKEY A GOATED RUN. NO CAP." : 
+                 "CERTIFIED SWEAT. TOUCH GRASS IMMEDIATELY."}
+              </p>
+              <div className="bg-black px-8 py-3 border-2 border-cyber-blue mb-8">
+                <span className="text-cyber-blue text-3xl font-black italic tabular-nums">SCORE: {score}</span>
+              </div>
+              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a] hover:bg-electric-volt transition-all">
+                RE-LINK
+              </button>
             </div>
           )}
 
