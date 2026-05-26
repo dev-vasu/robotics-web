@@ -18,12 +18,21 @@ const GAMES = [
     tag: "HIGH_OCTANE"
   },
   {
+    id: "beat",
+    title: "CYBER_BEAT",
+    desc: "Rhythm survival. Sync your inputs with the data stream. Keys: A,S,D,F.",
+    href: "/game/beat",
+    icon: Music,
+    color: "cyber-blue",
+    tag: "RHYTHM_SYNC"
+  },
+  {
     id: "typer",
     title: "CYBER_TYPER",
     desc: "Keyboard hacking simulation. Decrypt protocols at high velocity.",
     href: "/game/typer",
     icon: Terminal,
-    color: "cyber-blue",
+    color: "white",
     tag: "KEYBOARD_ONLY"
   },
   {
@@ -56,7 +65,7 @@ export default function ArcadeHub() {
           duration: 1, 
           stagger: 0.1, 
           ease: "power4.out",
-          immediateRender: false // Crucial for React 18 stability
+          immediateRender: false 
         }
       );
     }, containerRef);
@@ -74,11 +83,11 @@ export default function ArcadeHub() {
             ARCADE_<span className="text-hyper-pink">HUB</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">
-            SELECT_YOUR_SIMULATION_ [VER_3.1_STABLE]
+            SELECT_YOUR_SIMULATION_ [VER_4.0_EXPANDED]
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-[1400px]">
           {GAMES.map((game) => (
             <Link 
               key={game.id}
