@@ -11,20 +11,27 @@ export default function ArcadeHub() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    gsap.from(".arcade-card", {
-      y: 100,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.2,
-      ease: "expo.out"
-    });
+    // gsap.context is the industry standard for using GSAP with React 18
+    // It prevents animations from double-triggering and causing elements to disappear
+    const ctx = gsap.context(() => {
+      gsap.from(".arcade-card", {
+        y: 100,
+        opacity: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: "expo.out",
+        clearProps: "all" // Ensures GSAP doesn't leave hidden styles on the elements
+      });
+    }, containerRef);
+
+    return () => ctx.revert(); // Clean up on unmount
   }, []);
 
   return (
     <main className="min-h-screen bg-black grid-bg flex flex-col pt-20">
       <Navbar />
 
-      <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-20">
+      <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-20" ref={containerRef}>
         <div className="text-center mb-20">
           <h1 className="text-6xl md:text-[10rem] font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
             ARCADE_<span className="text-hyper-pink">HUB</span>
