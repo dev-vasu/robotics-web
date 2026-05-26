@@ -276,9 +276,15 @@ export default function GamePage() {
               >
                 START_MISSION
               </button>
-              <div className="mt-8 text-white/40 font-black uppercase text-[10px] tracking-widest text-center">
-                MOVE_MOUSE_TO_DRIVE // CLICK_TO_FIRE <br/>
-                DESTROY_EVERYTHING_
+              <div className="mt-8 grid grid-cols-2 gap-8 max-w-md">
+                 <div className="text-center p-4 border border-white/10 glass-panel">
+                    <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">CONTROLS</div>
+                    <div className="text-white font-bold text-xs uppercase">MOUSE: MOVE_CORE<br/>LEFT_CLICK: FIRE_LASER</div>
+                 </div>
+                 <div className="text-center p-4 border border-white/10 glass-panel">
+                    <div className="text-[10px] text-hyper-pink font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
+                    <div className="text-white font-bold text-xs uppercase">ELIMINATE_ENEMIES<br/>DODGE_COLLISIONS</div>
+                 </div>
               </div>
             </div>
           )}

@@ -152,9 +152,19 @@ export default function BeatGame() {
               >
                 START_SYNC
               </button>
-              <div className="mt-12 grid grid-cols-4 gap-4">
+              <div className="mt-8 grid grid-cols-2 gap-6 w-full max-w-sm">
+                 <div className="text-center p-3 border border-white/10 glass-panel">
+                    <div className="text-[10px] text-cyber-blue font-black tracking-widest uppercase mb-1">CONTROLS</div>
+                    <div className="text-white font-bold text-[10px] uppercase">KEYS: A, S, D, F</div>
+                 </div>
+                 <div className="text-center p-3 border border-white/10 glass-panel">
+                    <div className="text-[10px] text-hyper-pink font-black tracking-widest uppercase mb-1">OBJECTIVE</div>
+                    <div className="text-white font-bold text-[10px] uppercase">SYNC_WITH_DATA_NODES</div>
+                 </div>
+              </div>
+              <div className="mt-8 grid grid-cols-4 gap-4">
                  {KEYS.map(k => (
-                   <div key={k} className="w-12 h-12 border-2 border-white/20 flex items-center justify-center font-black text-white">{k}</div>
+                   <div key={k} className="w-10 h-10 border-2 border-white/20 flex items-center justify-center font-black text-white text-xs">{k}</div>
                  ))}
               </div>
             </div>

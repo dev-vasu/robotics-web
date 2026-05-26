@@ -106,9 +106,16 @@ export default function TyperGame() {
               >
                 INITIATE_HACK
               </button>
-              <p className="mt-8 text-white/40 font-bold uppercase text-[10px] tracking-widest">
-                TYPE_ THE_ CODE_ TO_ BYPASS_ SECURITY_ NODES
-              </p>
+              <div className="mt-12 grid grid-cols-2 gap-8 max-w-md mx-auto">
+                 <div className="text-center p-4 border border-white/10 glass-panel">
+                    <div className="text-[10px] text-cyber-blue font-black tracking-widest uppercase mb-2">CONTROLS</div>
+                    <div className="text-white font-bold text-xs uppercase">KEYBOARD: TYPE_CODE</div>
+                 </div>
+                 <div className="text-center p-4 border border-white/10 glass-panel">
+                    <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
+                    <div className="text-white font-bold text-xs uppercase">DECRYPT_PROTOCOLS<br/>BEFORE_TIME_OUT</div>
+                 </div>
+              </div>
             </div>
           )}
 
