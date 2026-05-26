@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { ChevronLeft, Trash2, Download, Sparkles, Palette } from "lucide-react";
+import { ChevronLeft, Trash2, Download, Sparkles, Palette, Activity } from "lucide-react";
 
 export default function NeonCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
