@@ -23,6 +23,14 @@ export async function setupDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS feature_flags (
+      id VARCHAR(50) PRIMARY KEY,
+      is_enabled BOOLEAN DEFAULT true,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
   
   return true;
 }

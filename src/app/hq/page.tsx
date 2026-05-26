@@ -26,7 +26,7 @@ export default function AdminHQ() {
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"ALL" | "QUERIES" | "FEEDBACK" | "SQUAD" | "LEADERBOARDS">("ALL");
+  const [activeTab, setActiveTab] = useState<"ALL" | "QUERIES" | "FEEDBACK" | "SQUAD" | "LEADERBOARDS" | "MAINTENANCE">("ALL");
 
   const filteredRecords = records.filter(r => {
     const isNewsletter = r.type === "NEWSLETTER" || r.subject === "New Newsletter Subscription";
