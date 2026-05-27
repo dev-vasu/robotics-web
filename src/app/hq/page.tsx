@@ -291,8 +291,8 @@ function DataStreamBackground() {
             className="absolute text-[10px] font-mono text-hyper-pink whitespace-pre leading-none animate-data-fall" 
             style={{ 
               left: `${i * 3.33}%`, 
-              animationDelay: `${Math.random() * 8}s`, 
-              animationDuration: `${8 + Math.random() * 15}s` 
+              animationDelay: `${Math.random() * 4}s`, 
+              animationDuration: `${4 + Math.random() * 8}s` 
             }}
           >
             {Array.from({ length: 60 }).map(() => Math.round(Math.random())).join('\n')}
