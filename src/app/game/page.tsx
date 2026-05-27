@@ -165,7 +165,7 @@ export default function ArcadeHub() {
                     href={game.href} 
                     className={`group relative block p-1 bg-foreground/10 hover:bg-foreground transition-all`}
                   >
-                    <div className="arcade-card-inner p-10 h-full relative overflow-hidden">
+                    <div className="arcade-card-inner group-hover:bg-foreground p-10 h-full relative overflow-hidden transition-colors duration-300">
                       <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity ${game.textClass}`}>
                         <game.icon className="w-40 h-40" />
                       </div>
