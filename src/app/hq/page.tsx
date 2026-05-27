@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Download, Mail, Settings, Trophy, Sparkles, Star, Trash2, Edit3, Check, X, Loader2 } from "lucide-react";
+import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Download, Mail, Settings, Trophy, Sparkles, Star, Trash2, Edit3, Check, X, Loader2, MessageSquare } from "lucide-react";
 import gsap from "gsap";
 import { CATEGORIES, SYSTEM_MODULES } from "@/lib/constants";
 
@@ -25,8 +25,15 @@ type SquadUser = {
   created_at: string;
 };
 
+type ChatMessage = {
+  id: number;
+  username: string;
+  content: string;
+  created_at: string;
+};
+
 const SECTORS = [
-  { id: "COMMUNICATIONS", label: "COMM_SECTOR", icon: Mail, sub: ["ALL", "QUERIES", "FEEDBACK", "TICKETS", "SQUAD_MEMBERS"] },
+  { id: "COMMUNICATIONS", label: "COMM_SECTOR", icon: Mail, sub: ["ALL", "QUERIES", "FEEDBACK", "TICKETS", "CHAT_MODERATION", "SQUAD_MEMBERS"] },
   { id: "SYSTEMS", label: "SYSTEM_SECTOR", icon: Settings, sub: ["MAINTENANCE", "LEADERBOARDS"] },
   { id: "ALERTS", label: "BROADCAST_SECTOR", icon: Radio, sub: ["GLOBAL_ALERT"] }
 ];
@@ -55,6 +62,7 @@ export default function AdminHQ() {
   
   const [records, setRecords] = useState<Record[]>([]);
   const [squadUsers, setSquadUsers] = useState<SquadUser[]>([]);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [leaderboardScores, setLeaderboardScores] = useState<any[]>([]);
   const [features, setFeatures] = useState<{ id: string; is_enabled: boolean; is_new: boolean }[]>([]);
   const [activeBroadcast, setActiveBroadcast] = useState("");
@@ -83,7 +91,7 @@ export default function AdminHQ() {
     if (activeTab === "ALL") return true;
     if (activeTab === "FEEDBACK") return r.type === "FEEDBACK";
     if (activeTab === "TICKETS") return r.type === "TICKET";
-    if (activeTab === "SQUAD_MEMBERS") return false; 
+    if (activeTab === "SQUAD_MEMBERS" || activeTab === "CHAT_MODERATION") return false; 
     if (activeTab === "QUERIES") return !isNewsletter && r.type !== "FEEDBACK" && r.type !== "TICKET" && (r.type === "RECEIVED" || r.type === "SENT");
     return true;
   });
@@ -103,23 +111,25 @@ export default function AdminHQ() {
   const fetchRecords = async (currentPasscode: string) => {
     setIsLoadingRecords(true);
     try {
-      const [resMsg, resLeader, resFeatures, resBroadcast, resUsers] = await Promise.all([
+      const [resMsg, resLeader, resFeatures, resBroadcast, resUsers, resChat] = await Promise.all([
         fetch("/api/hq/records", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
         fetch("/api/hq/leaderboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
         fetch("/api/hq/features", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
         fetch(`/api/hq/broadcast?passcode=${currentPasscode}`),
-        fetch("/api/hq/users", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) })
+        fetch("/api/hq/users", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
+        fetch("/api/hq/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) })
       ]);
 
-      if (resMsg.ok && resLeader.ok && resFeatures.ok && resBroadcast.ok && resUsers.ok) {
-        const [dataMsg, dataLeader, dataFeatures, dataBroadcast, dataUsers] = await Promise.all([
-          resMsg.json(), resLeader.json(), resFeatures.json(), resBroadcast.json(), resUsers.json()
+      if (resMsg.ok && resLeader.ok && resFeatures.ok && resBroadcast.ok && resUsers.ok && resChat.ok) {
+        const [dataMsg, dataLeader, dataFeatures, dataBroadcast, dataUsers, dataChat] = await Promise.all([
+          resMsg.json(), resLeader.json(), resFeatures.json(), resBroadcast.json(), resUsers.json(), resChat.json()
         ]);
         setRecords(dataMsg.records || []);
         setLeaderboardScores(dataLeader.scores || []);
         setFeatures(dataFeatures.features || []);
         setActiveBroadcast(dataBroadcast.broadcast || "");
         setSquadUsers(dataUsers.users || []);
+        setChatMessages(dataChat.messages || []);
         setIsAuthenticated(true);
       } else { setIsAuthenticated(false); }
     } catch (error) { console.error(error); }
@@ -172,6 +182,18 @@ export default function AdminHQ() {
         method: "DELETE", 
         headers: { "Content-Type": "application/json" }, 
         body: JSON.stringify({ passcode, id }) 
+      });
+      if (res.ok) fetchRecords(passcode);
+    } catch (e) { console.error(e); }
+  };
+
+  const handleDeleteChatMessage = async (messageId: number) => {
+    if (!confirm("PURGE THIS SIGNAL FROM THE GLOBAL CHAT?")) return;
+    try {
+      const res = await fetch("/api/hq/chat", { 
+        method: "DELETE", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ passcode, messageId }) 
       });
       if (res.ok) fetchRecords(passcode);
     } catch (e) { console.error(e); }
@@ -251,7 +273,7 @@ export default function AdminHQ() {
   };
 
   const handleExportData = () => {
-    const data = { messages: records, scores: leaderboardScores, features, users: squadUsers };
+    const data = { messages: records, scores: leaderboardScores, features, users: squadUsers, chat: chatMessages };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -376,6 +398,32 @@ export default function AdminHQ() {
                 <div className="space-y-12 animate-in fade-in zoom-in duration-500">{Array.from(new Set(leaderboardScores.map(s => s.game_id))).map(gameId => (<div key={gameId} className="space-y-4"><div className="flex items-center gap-3 border-b border-cyber-blue/30 pb-3"><Trophy className="w-6 h-6 text-cyber-blue" /><h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">{gameId}</h3></div><table className="w-full text-left border-collapse"><thead><tr className="border-b border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6 font-black">ALIAS_ID</th><th className="pb-3 px-6 font-black">DATA_POINTS</th><th className="pb-3 px-6 font-black text-right">ACTION</th></tr></thead><tbody>{leaderboardScores.filter(s => s.game_id === gameId).map(s => (<tr key={s.id} className="border-b border-foreground/5 hover:bg-foreground/5 transition-all"><td className="py-4 px-6 font-black text-foreground text-lg tracking-widest">{s.initials}</td><td className="py-4 px-6 font-black italic text-electric-volt text-2xl tabular-nums">{s.score}</td><td className="py-4 px-6 text-right"><button onClick={() => handleDeleteScore(s.id)} className="p-2 text-red-500 hover:bg-red-500 hover:text-foreground transition-all rounded border border-transparent hover:border-foreground/20"><ShieldAlert className="w-6 h-6" /></button></td></tr>))}</tbody></table></div>))}{leaderboardScores.length === 0 && <div className="text-center text-foreground/20 font-black uppercase tracking-[0.5em] py-20 italic">NO_SIMULATION_DATA_DETECTED</div>}</div>
               ) : activeTab === "SQUAD_MEMBERS" ? (
                 <div className="animate-in fade-in slide-in-from-bottom-5 duration-500"><table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6">PILOT_ALIAS</th><th className="pb-3 px-6">CURRENT_XP</th><th className="pb-3 px-6">LEVEL</th><th className="pb-3 px-6 text-right">ACTION</th></tr></thead><tbody>{squadUsers.map(u => (<tr key={u.id} className="border-b border-foreground/5 hover:bg-foreground/5 transition-all group"><td className="py-5 px-6 font-black text-foreground text-xl italic group-hover:text-hyper-pink transition-colors">{u.username} <div className="text-[10px] text-dim font-mono">{u.email}</div></td><td className="py-5 px-6 font-black text-cyber-blue tabular-nums">{u.xp}</td><td className="py-5 px-6 font-black text-electric-volt tabular-nums">LVL_{u.level}</td><td className="py-5 px-6 text-right flex justify-end gap-2"><button onClick={() => handleAdjustXP(u.id, 500)} className="p-2 bg-foreground/5 border border-foreground/10 hover:bg-electric-volt hover:text-background transition-all rounded text-[8px] font-black uppercase">+500_XP</button><button onClick={() => handleDeleteUser(u.id)} className="p-2 text-red-500 hover:bg-red-500 hover:text-white transition-all rounded border border-transparent hover:border-white/20"><Trash2 className="w-5 h-5" /></button></td></tr>))}</tbody></table></div>
+              ) : activeTab === "CHAT_MODERATION" ? (
+                <div className="animate-in fade-in slide-in-from-bottom-5 duration-500">
+                   <table className="w-full text-left border-collapse">
+                      <thead>
+                         <tr className="border-b-2 border-foreground/10 text-[10px] uppercase text-dim">
+                            <th className="pb-3 px-6">PILOT</th>
+                            <th className="pb-3 px-6">DATA_SIGNAL</th>
+                            <th className="pb-3 px-6 text-right">ACTION</th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                         {chatMessages.map(msg => (
+                            <tr key={msg.id} className="border-b border-foreground/5 hover:bg-foreground/5 transition-all group">
+                               <td className="py-5 px-6 font-black text-cyber-blue text-sm italic">{msg.username}</td>
+                               <td className="py-5 px-6 text-foreground text-xs font-mono max-w-md break-words">{msg.content}</td>
+                               <td className="py-5 px-6 text-right">
+                                  <button onClick={() => handleDeleteChatMessage(msg.id)} className="p-2 text-red-500 hover:bg-red-500 hover:text-white transition-all rounded border border-transparent hover:border-foreground/20">
+                                     <Trash2 className="w-5 h-5" />
+                                  </button>
+                               </td>
+                            </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                   {chatMessages.length === 0 && <div className="text-center text-dim font-black uppercase tracking-[0.5em] py-20 italic">CHAT_LOG_EMPTY</div>}
+                </div>
               ) : !selectedEmail ? (
                 <div className="animate-in fade-in slide-in-from-bottom-5 duration-500"><table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6">CATEGORY</th><th className="pb-3 px-6">PARTNER_NODE</th><th className="pb-3 px-6 text-right">TIMESTAMP</th></tr></thead><tbody>{Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
                   const thread = filteredRecords.filter(r => r.email === email); const latest = thread[0]; let c = "text-hyper-pink"; let l = "MIXED";

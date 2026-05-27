@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw } from "lucide-react";
+import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw, MessageSquare } from "lucide-react";
 import gsap from "gsap";
+import NeonChat from "@/components/NeonChat";
 
 type UserData = {
   id: number;
@@ -180,7 +181,7 @@ export default function IdentityPage() {
             </form>
           </div>
         ) : (
-          <div className="w-full max-w-4xl space-y-12 animate-in slide-in-from-bottom-10 duration-700">
+          <div className="w-full max-w-4xl space-y-20 animate-in slide-in-from-bottom-10 duration-700">
             {/* Identity Card */}
             <div className="grid md:grid-cols-3 gap-10">
                <div className="md:col-span-2 glass-panel p-10 border-4 border-hyper-pink/30 bg-background/80 relative overflow-hidden flex flex-col justify-between">
@@ -284,6 +285,15 @@ export default function IdentityPage() {
                </div>
             </div>
 
+            {/* Live Chat System */}
+            <div className="space-y-8">
+               <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider flex items-center gap-4">
+                  <MessageSquare className="w-6 h-6 text-cyber-blue" /> GLOBAL_UPLINK
+               </h3>
+               <NeonChat user={{ id: user.id, username: user.username }} />
+            </div>
+
+            {/* Simulation History Placeholder */}
             <div className="glass-panel p-10 border-4 border-foreground/10 bg-background/80">
                <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider mb-8 flex items-center gap-4">
                   <Zap className="w-6 h-6 text-hyper-pink" /> RECENT_SIMULATIONS
