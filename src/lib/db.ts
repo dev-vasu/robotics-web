@@ -10,9 +10,17 @@ export async function setupDatabase() {
       email VARCHAR(255) NOT NULL,
       subject VARCHAR(255),
       content TEXT NOT NULL,
+      status VARCHAR(20) DEFAULT 'OPEN',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  // Migration: Add status column if it doesn't exist
+  try {
+    await sql`ALTER TABLE message_records ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'OPEN';`;
+  } catch (e) {
+    console.warn("Migration warning (status column might already exist):", e);
+  }
 
   await sql`
     CREATE TABLE IF NOT EXISTS leaderboards (

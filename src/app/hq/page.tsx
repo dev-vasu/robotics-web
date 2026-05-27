@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Download, Mail, Settings, Trophy, Sparkles } from "lucide-react";
+import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Download, Mail, Settings, Trophy, Sparkles, Star, Trash2, Edit3, Check, X, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { CATEGORIES, SYSTEM_MODULES } from "@/lib/constants";
 
@@ -12,11 +12,21 @@ type Record = {
   email: string;
   subject: string;
   content: string;
+  status: string;
+  created_at: string;
+};
+
+type SquadUser = {
+  id: number;
+  email: string;
+  username: string;
+  xp: number;
+  level: number;
   created_at: string;
 };
 
 const SECTORS = [
-  { id: "COMMUNICATIONS", label: "COMM_SECTOR", icon: Mail, sub: ["ALL", "QUERIES", "FEEDBACK", "TICKETS", "SQUAD"] },
+  { id: "COMMUNICATIONS", label: "COMM_SECTOR", icon: Mail, sub: ["ALL", "QUERIES", "FEEDBACK", "TICKETS", "SQUAD_MEMBERS"] },
   { id: "SYSTEMS", label: "SYSTEM_SECTOR", icon: Settings, sub: ["MAINTENANCE", "LEADERBOARDS"] },
   { id: "ALERTS", label: "BROADCAST_SECTOR", icon: Radio, sub: ["GLOBAL_ALERT"] }
 ];
@@ -44,6 +54,7 @@ export default function AdminHQ() {
   const [errorMsg, setErrorMsg] = useState("");
   
   const [records, setRecords] = useState<Record[]>([]);
+  const [squadUsers, setSquadUsers] = useState<SquadUser[]>([]);
   const [leaderboardScores, setLeaderboardScores] = useState<any[]>([]);
   const [features, setFeatures] = useState<{ id: string; is_enabled: boolean; is_new: boolean }[]>([]);
   const [activeBroadcast, setActiveBroadcast] = useState("");
@@ -72,7 +83,7 @@ export default function AdminHQ() {
     if (activeTab === "ALL") return true;
     if (activeTab === "FEEDBACK") return r.type === "FEEDBACK";
     if (activeTab === "TICKETS") return r.type === "TICKET";
-    if (activeTab === "SQUAD") return isNewsletter;
+    if (activeTab === "SQUAD_MEMBERS") return false; // Handled by users list
     if (activeTab === "QUERIES") return !isNewsletter && r.type !== "FEEDBACK" && r.type !== "TICKET" && (r.type === "RECEIVED" || r.type === "SENT");
     return true;
   });
@@ -93,21 +104,23 @@ export default function AdminHQ() {
   const fetchRecords = async (currentPasscode: string) => {
     setIsLoadingRecords(true);
     try {
-      const [resMsg, resLeader, resFeatures, resBroadcast] = await Promise.all([
+      const [resMsg, resLeader, resFeatures, resBroadcast, resUsers] = await Promise.all([
         fetch("/api/hq/records", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
         fetch("/api/hq/leaderboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
         fetch("/api/hq/features", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) }),
-        fetch(`/api/hq/broadcast?passcode=${currentPasscode}`)
+        fetch(`/api/hq/broadcast?passcode=${currentPasscode}`),
+        fetch("/api/hq/users", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ passcode: currentPasscode }) })
       ]);
 
-      if (resMsg.ok && resLeader.ok && resFeatures.ok && resBroadcast.ok) {
-        const [dataMsg, dataLeader, dataFeatures, dataBroadcast] = await Promise.all([
-          resMsg.json(), resLeader.json(), resFeatures.json(), resBroadcast.json()
+      if (resMsg.ok && resLeader.ok && resFeatures.ok && resBroadcast.ok && resUsers.ok) {
+        const [dataMsg, dataLeader, dataFeatures, dataBroadcast, dataUsers] = await Promise.all([
+          resMsg.json(), resLeader.json(), resFeatures.json(), resBroadcast.json(), resUsers.json()
         ]);
         setRecords(dataMsg.records || []);
         setLeaderboardScores(dataLeader.scores || []);
         setFeatures(dataFeatures.features || []);
         setActiveBroadcast(dataBroadcast.broadcast || "");
+        setSquadUsers(dataUsers.users || []);
         setIsAuthenticated(true);
       } else { setIsAuthenticated(false); }
     } catch (error) { console.error(error); }
@@ -137,6 +150,43 @@ export default function AdminHQ() {
       const res = await fetch("/api/hq/features", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (res.ok) fetchRecords(passcode);
     } catch (error) { console.error(error); }
+  };
+
+  const handleResolveTicket = async (ticketId: number) => {
+    try {
+      const res = await fetch("/api/hq/tickets", { 
+        method: "PUT", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ passcode, ticketId, status: 'RESOLVED' }) 
+      });
+      if (res.ok) {
+        alert("TICKET_NEUTRALIZED");
+        fetchRecords(passcode);
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  const handleAdjustXP = async (userId: number, xpAmount: number) => {
+    try {
+      const res = await fetch("/api/hq/users", { 
+        method: "PUT", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ passcode, userId, xpAmount, action: "ADJUST_XP" }) 
+      });
+      if (res.ok) fetchRecords(passcode);
+    } catch (e) { console.error(e); }
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    if (!confirm("FORCE DE-SYNC THIS NODE? ALL XP WILL BE PURGED.")) return;
+    try {
+      const res = await fetch("/api/hq/users", { 
+        method: "PUT", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ passcode, userId, action: "DELETE_USER" }) 
+      });
+      if (res.ok) fetchRecords(passcode);
+    } catch (e) { console.error(e); }
   };
 
   const handleDeleteScore = async (id: number) => {
@@ -191,7 +241,7 @@ export default function AdminHQ() {
   };
 
   const handleExportData = () => {
-    const data = { messages: records, scores: leaderboardScores, features };
+    const data = { messages: records, scores: leaderboardScores, features, users: squadUsers };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -214,7 +264,7 @@ export default function AdminHQ() {
     );
   }
 
-  const squadCount = Array.from(new Set(records.filter(r => r.type === "NEWSLETTER").map(r => r.email))).length;
+  const squadCount = squadUsers.length;
 
   return (
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 px-6 pb-20 relative overflow-x-hidden" ref={containerRef}>
@@ -238,7 +288,7 @@ export default function AdminHQ() {
               <div className="absolute top-0 left-0 w-full h-1 bg-cyber-blue/40 shadow-[0_0_10px_#00f0ff] animate-scan opacity-0 group-hover:opacity-100" />
               <div className="flex items-center justify-between mb-8 border-b border-foreground/10 pb-6">
                 <div className="flex items-center gap-4"><div className="p-3 bg-cyber-blue rounded-full"><Send className="w-6 h-6 text-background" /></div><div><h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none">TRANSMITTER</h2><p className="text-cyber-blue font-black uppercase tracking-[0.4em] text-[10px] mt-1">SECURE_UPLINK</p></div></div>
-                {activeTab === "SQUAD" && <button onClick={handleSquadBlast} className="px-4 py-2 bg-[#ccff00] text-background font-black text-[10px] uppercase tracking-widest hover:bg-foreground transition-all shadow-[4px_4px_0_0_#ff007a]">SQUAD_BLAST</button>}
+                {activeTab === "SQUAD_MEMBERS" && <button onClick={handleSquadBlast} className="px-4 py-2 bg-[#ccff00] text-background font-black text-[10px] uppercase tracking-widest hover:bg-foreground transition-all shadow-[4px_4px_0_0_#ff007a]">SQUAD_BLAST</button>}
               </div>
               <form onSubmit={handleSend} className="space-y-6">
                 <div className="space-y-4">
@@ -301,81 +351,29 @@ export default function AdminHQ() {
                 </div>
               ) : activeTab === "MAINTENANCE" ? (
                 <div className="space-y-16 animate-in fade-in slide-in-from-right-5 duration-500 pb-20">
-                  
-                  {/* 1. Global & Communications Category */}
                   {SYSTEM_MODULES.map(group => (
                     <div key={group.group} className="space-y-6">
-                      <div className="flex items-center gap-4 border-b border-foreground/10 pb-4">
-                        <Settings className="w-6 h-6 text-cyber-blue" />
-                        <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">{group.group}</h3>
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {group.modules.map(mod => {
-                          const feat = features.find(f => f.id === mod.id);
-                          const isEnabled = feat ? feat.is_enabled : true;
-                          return (
-                            <div key={mod.id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-cyber-blue transition-all group relative overflow-hidden">
-                              <div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-cyber-blue transition-colors" />
-                              <div>
-                                <div className="text-[8px] font-black text-foreground/30 uppercase mb-1">{mod.id}</div>
-                                <div className="text-2xl font-black italic text-foreground uppercase group-hover:text-cyber-blue transition-colors">{mod.name}</div>
-                                <p className="text-[10px] text-dim font-bold mt-1 uppercase">{mod.desc}</p>
-                              </div>
-                              <button 
-                                onClick={() => handleToggleFeature(mod.id, 'ENABLED', isEnabled)} 
-                                className={`px-8 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-cyber-blue text-background" : "bg-red-500 text-foreground"}`}
-                              >
-                                {isEnabled ? "ONLINE" : "OFFLINE"}
-                              </button>
-                            </div>
-                          );
-                        })}
-                      </div>
+                      <div className="flex items-center gap-4 border-b border-foreground/10 pb-4"><Settings className="w-6 h-6 text-cyber-blue" /><h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">{group.group}</h3></div>
+                      <div className="grid md:grid-cols-2 gap-4">{group.modules.map(mod => {
+                        const feat = features.find(f => f.id === mod.id); const isEnabled = feat ? feat.is_enabled : true;
+                        return ( <div key={mod.id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-cyber-blue transition-all group relative overflow-hidden"><div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-cyber-blue transition-colors" /><div><div className="text-[8px] font-black text-foreground/30 uppercase mb-1">{mod.id}</div><div className="text-2xl font-black italic text-foreground uppercase group-hover:text-cyber-blue transition-colors">{mod.name}</div><p className="text-[10px] text-dim font-bold mt-1 uppercase">{mod.desc}</p></div><button onClick={() => handleToggleFeature(mod.id, 'ENABLED', isEnabled)} className={`px-8 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-cyber-blue text-background" : "bg-red-500 text-foreground"}`}>{isEnabled ? "ONLINE" : "OFFLINE"}</button></div> );
+                      })}</div>
                     </div>
                   ))}
-
-                  {/* 2. Arcade Categories (Mobile / PC) */}
                   {CATEGORIES.map(cat => (
                     <div key={cat.title} className="space-y-6">
-                      <div className="flex items-center gap-4 border-b border-foreground/10 pb-4">
-                        <cat.icon className={`w-6 h-6 ${cat.color}`} />
-                        <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">ARCADE: {cat.title}</h3>
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {cat.games.map(game => {
-                          const feat = features.find(f => f.id === game.id);
-                          const isEnabled = feat ? feat.is_enabled : true;
-                          const isNew = feat ? feat.is_new : false;
-                          return (
-                            <div key={game.id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-hyper-pink transition-all group relative overflow-hidden">
-                              <div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-hyper-pink transition-colors" />
-                              <div>
-                                <div className="text-[8px] font-black text-foreground/30 uppercase mb-1">MODULE_ID</div>
-                                <div className="text-2xl font-black italic text-foreground uppercase group-hover:text-hyper-pink transition-colors">{game.id}</div>
-                              </div>
-                              <div className="flex gap-2">
-                                <button 
-                                  onClick={() => handleToggleFeature(game.id, 'NEW', isNew)} 
-                                  className={`px-4 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isNew ? "bg-hyper-pink text-background" : "bg-background border border-foreground/10 text-dim"}`}
-                                >
-                                  {isNew ? "NEW_ON" : "NEW_OFF"}
-                                </button>
-                                <button 
-                                  onClick={() => handleToggleFeature(game.id, 'ENABLED', isEnabled)} 
-                                  className={`px-6 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-electric-volt text-background" : "bg-red-500 text-foreground"}`}
-                                >
-                                  {isEnabled ? "ACTIVE" : "OFFLINE"}
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                      <div className="flex items-center gap-4 border-b border-foreground/10 pb-4"><cat.icon className={`w-6 h-6 ${cat.color}`} /><h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">ARCADE: {cat.title}</h3></div>
+                      <div className="grid md:grid-cols-2 gap-4">{cat.games.map(game => {
+                        const feat = features.find(f => f.id === game.id); const isEnabled = feat ? feat.is_enabled : true; const isNew = feat ? feat.is_new : false;
+                        return ( <div key={game.id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-hyper-pink transition-all group relative overflow-hidden"><div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-hyper-pink transition-colors" /><div><div className="text-[8px] font-black text-foreground/30 uppercase mb-1">MODULE_ID</div><div className="text-2xl font-black italic text-foreground uppercase group-hover:text-hyper-pink transition-colors">{game.id}</div></div><div className="flex gap-2"><button onClick={() => handleToggleFeature(game.id, 'NEW', isNew)} className={`px-4 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isNew ? "bg-hyper-pink text-background" : "bg-background border border-foreground/10 text-dim"}`}>{isNew ? "NEW_ON" : "NEW_OFF"}</button><button onClick={() => handleToggleFeature(game.id, 'ENABLED', isEnabled)} className={`px-6 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-electric-volt text-background" : "bg-red-500 text-foreground"}`}>{isEnabled ? "ACTIVE" : "OFFLINE"}</button></div></div> );
+                      })}</div>
                     </div>
                   ))}
                 </div>
               ) : activeTab === "LEADERBOARDS" ? (
                 <div className="space-y-12 animate-in fade-in zoom-in duration-500">{Array.from(new Set(leaderboardScores.map(s => s.game_id))).map(gameId => (<div key={gameId} className="space-y-4"><div className="flex items-center gap-3 border-b border-cyber-blue/30 pb-3"><Trophy className="w-6 h-6 text-cyber-blue" /><h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">{gameId}</h3></div><table className="w-full text-left border-collapse"><thead><tr className="border-b border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6 font-black">ALIAS_ID</th><th className="pb-3 px-6 font-black">DATA_POINTS</th><th className="pb-3 px-6 font-black text-right">ACTION</th></tr></thead><tbody>{leaderboardScores.filter(s => s.game_id === gameId).map(s => (<tr key={s.id} className="border-b border-foreground/5 hover:bg-foreground/5 transition-all"><td className="py-4 px-6 font-black text-foreground text-lg tracking-widest">{s.initials}</td><td className="py-4 px-6 font-black italic text-electric-volt text-2xl tabular-nums">{s.score}</td><td className="py-4 px-6 text-right"><button onClick={() => handleDeleteScore(s.id)} className="p-2 text-red-500 hover:bg-red-500 hover:text-foreground transition-all rounded border border-transparent hover:border-foreground/20"><ShieldAlert className="w-6 h-6" /></button></td></tr>))}</tbody></table></div>))}{leaderboardScores.length === 0 && <div className="text-center text-foreground/20 font-black uppercase tracking-[0.5em] py-20 italic">NO_SIMULATION_DATA_DETECTED</div>}</div>
+              ) : activeTab === "SQUAD_MEMBERS" ? (
+                <div className="animate-in fade-in slide-in-from-bottom-5 duration-500"><table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6">PILOT_ALIAS</th><th className="pb-3 px-6">CURRENT_XP</th><th className="pb-3 px-6">LEVEL</th><th className="pb-3 px-6 text-right">ACTION</th></tr></thead><tbody>{squadUsers.map(u => (<tr key={u.id} className="border-b border-foreground/5 hover:bg-foreground/5 transition-all group"><td className="py-5 px-6 font-black text-foreground text-xl italic group-hover:text-hyper-pink transition-colors">{u.username} <div className="text-[10px] text-dim font-mono">{u.email}</div></td><td className="py-5 px-6 font-black text-cyber-blue tabular-nums">{u.xp}</td><td className="py-5 px-6 font-black text-electric-volt tabular-nums">LVL_{u.level}</td><td className="py-5 px-6 text-right flex justify-end gap-2"><button onClick={() => handleAdjustXP(u.id, 500)} className="p-2 bg-foreground/5 border border-foreground/10 hover:bg-electric-volt hover:text-background transition-all rounded text-[8px] font-black uppercase">+500_XP</button><button onClick={() => handleDeleteUser(u.id)} className="p-2 text-red-500 hover:bg-red-500 hover:text-white transition-all rounded border border-transparent hover:border-white/20"><Trash2 className="w-5 h-5" /></button></td></tr>))}</tbody></table></div>
               ) : !selectedEmail ? (
                 <div className="animate-in fade-in slide-in-from-bottom-5 duration-500"><table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6">CATEGORY</th><th className="pb-3 px-6">PARTNER_NODE</th><th className="pb-3 px-6 text-right">TIMESTAMP</th></tr></thead><tbody>{Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
                   const thread = filteredRecords.filter(r => r.email === email); const latest = thread[0]; let c = "text-hyper-pink"; let l = "MIXED";
@@ -387,7 +385,7 @@ export default function AdminHQ() {
                 })}</tbody></table></div>
               ) : (
                 <div className="space-y-8 thread-view pb-10">{filteredRecords.filter(r => r.email === selectedEmail).map(r => (
-                  <div key={r.id} className={`p-8 border-l-8 bg-background/60 relative overflow-hidden group ${r.type === 'RECEIVED' ? 'border-electric-volt shadow-[0_0_20px_rgba(204,255,0,0.05)]' : r.type === 'FEEDBACK' ? 'border-cyber-blue' : r.type === 'TICKET' ? 'border-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue shadow-[0_0_20px_rgba(0,240,255,0.05)]'}`}><div className="flex justify-between items-start mb-6"><span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-foreground/5 border border-foreground/10 ${r.type === 'RECEIVED' ? 'text-electric-volt' : r.type === 'FEEDBACK' ? 'text-cyber-blue' : r.type === 'TICKET' ? 'text-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>{r.type === 'RECEIVED' ? 'INCOMING_UPLINK' : r.type === 'FEEDBACK' ? 'DIAGNOSTIC_DATA' : r.type === 'TICKET' ? 'SUPPORT_TICKET' : r.type === 'NEWSLETTER' ? 'SQUAD_INIT' : 'OUTGOING_SIGNAL'}</span><span className="text-[10px] text-foreground/30 font-mono uppercase italic">{new Date(r.created_at).toLocaleString()}</span></div><div className="text-lg font-black text-foreground mb-3 italic tracking-tighter">{r.subject}</div><div className="text-base font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed border-t border-foreground/5 pt-4">{r.content}</div></div>
+                  <div key={r.id} className={`p-8 border-l-8 bg-background/60 relative overflow-hidden group ${r.type === 'RECEIVED' ? 'border-electric-volt shadow-[0_0_20px_rgba(204,255,0,0.05)]' : r.type === 'FEEDBACK' ? 'border-cyber-blue' : r.type === 'TICKET' ? 'border-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue shadow-[0_0_20px_rgba(0,240,255,0.05)]'}`}><div className="flex justify-between items-start mb-6"><span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-foreground/5 border border-foreground/10 ${r.type === 'RECEIVED' ? 'text-electric-volt' : r.type === 'FEEDBACK' ? 'text-cyber-blue' : r.type === 'TICKET' ? 'text-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>{r.type === 'RECEIVED' ? 'INCOMING_UPLINK' : r.type === 'FEEDBACK' ? 'DIAGNOSTIC_DATA' : r.type === 'TICKET' ? 'SUPPORT_TICKET' : r.type === 'NEWSLETTER' ? 'SQUAD_INIT' : 'OUTGOING_SIGNAL'}</span><div className="flex items-center gap-4">{r.type === 'TICKET' && r.status === 'OPEN' && <button onClick={() => handleResolveTicket(r.id)} className="px-3 py-1 bg-electric-volt text-background text-[8px] font-black uppercase hover:bg-white transition-all">NEUTRALIZE_BUG</button>}<span className="text-[10px] text-foreground/30 font-mono uppercase italic">{new Date(r.created_at).toLocaleString()}</span></div></div><div className="text-lg font-black text-foreground mb-3 italic tracking-tighter">{r.subject} {r.status === 'RESOLVED' && <span className="text-electric-volt ml-4 underline">[NEUTRALIZED]</span>}</div><div className="text-base font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed border-t border-foreground/5 pt-4">{r.content}</div></div>
                 ))}</div>
               )}
             </div>
@@ -400,37 +398,20 @@ export default function AdminHQ() {
 
 function DataStreamBackground() {
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return (
     <div className="fixed inset-0 pointer-events-none -z-5 overflow-hidden">
       <div className="absolute inset-0 bg-background opacity-60" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,0,122,0.05),transparent_80%)] animate-pulse" />
       <div className="absolute top-0 left-0 w-full h-full opacity-30">
         {mounted && Array.from({ length: 30 }).map((_, i) => (
-          <div 
-            key={i} 
-            className="absolute text-[10px] font-mono text-hyper-pink whitespace-pre leading-none animate-data-fall" 
-            style={{ 
-              left: `${i * 3.33}%`, 
-              animationDelay: `${Math.random() * 4}s`, 
-              animationDuration: `${4 + Math.random() * 8}s` 
-            }}
-          >
+          <div key={i} className="absolute text-[10px] font-mono text-hyper-pink whitespace-pre leading-none animate-data-fall" style={{ left: `${i * 3.33}%`, animationDelay: `${Math.random() * 4}s`, animationDuration: `${4 + Math.random() * 8}s` }}>
             {Array.from({ length: 60 }).map(() => Math.round(Math.random())).join('\n')}
           </div>
         ))}
       </div>
       <style jsx>{`
-        @keyframes data-fall {
-          0% { transform: translateY(-100%); opacity: 0; }
-          20% { opacity: 1; }
-          80% { opacity: 1; }
-          100% { transform: translateY(1200%); opacity: 0; }
-        }
+        @keyframes data-fall { 0% { transform: translateY(-100%); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(1200%); opacity: 0; } }
         .animate-data-fall { animation: data-fall linear infinite; }
       `}</style>
     </div>
