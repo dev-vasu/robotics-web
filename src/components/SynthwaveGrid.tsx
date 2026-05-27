@@ -1,10 +1,24 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function SynthwaveGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
+    // 0. Theme Detection
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "data-theme") {
+          const newTheme = document.documentElement.getAttribute("data-theme") as "dark" | "light";
+          setTheme(newTheme || "dark");
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+    setTheme((document.documentElement.getAttribute("data-theme") as "dark" | "light") || "dark");
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -17,23 +31,29 @@ export default function SynthwaveGrid() {
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
       
-      // 1. Draw the Neon Sun (The "Vibe" factor)
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      const mainColor = "#ff007a"; // Hyper Pink remains the same
+      const gridOpacity = isLight ? 0.4 : 0.6;
+      const sunOpacity = isLight ? 0.3 : 1;
+
+      // 1. Draw the Neon Sun
       const sunY = h / 2 - 50;
       const sunRadius = 200;
       const sunGrad = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY + sunRadius);
-      sunGrad.addColorStop(0, "#ff007a"); // Hyper Pink
-      sunGrad.addColorStop(0.5, "#ff007a");
+      sunGrad.addColorStop(0, mainColor);
+      sunGrad.addColorStop(0.5, mainColor);
       sunGrad.addColorStop(1, "transparent");
       
       ctx.save();
+      ctx.globalAlpha = sunOpacity;
       ctx.beginPath();
       ctx.arc(w / 2, sunY, sunRadius, 0, Math.PI, true);
       ctx.fillStyle = sunGrad;
-      ctx.shadowBlur = 100;
-      ctx.shadowColor = "#ff007a";
+      ctx.shadowBlur = isLight ? 40 : 100;
+      ctx.shadowColor = mainColor;
       ctx.fill();
       
-      // Sun stripes (Retro look)
+      // Sun stripes
       ctx.globalCompositeOperation = "destination-out";
       for (let i = 0; i < 15; i++) {
         const sy = sunY - sunRadius + (i * 25);
@@ -44,7 +64,7 @@ export default function SynthwaveGrid() {
       // 2. Draw moving grid horizon fade
       const grad = ctx.createLinearGradient(0, h/2, 0, h);
       grad.addColorStop(0, "rgba(255, 0, 122, 0)");
-      grad.addColorStop(0.2, "rgba(255, 0, 122, 0.2)");
+      grad.addColorStop(0.2, isLight ? "rgba(255, 0, 122, 0.1)" : "rgba(255, 0, 122, 0.2)");
       grad.addColorStop(1, "rgba(255, 0, 122, 0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, h/2, w, h/2);
@@ -57,7 +77,7 @@ export default function SynthwaveGrid() {
       ctx.lineWidth = 1;
 
       // 3. Draw horizontal lines
-      const speed = 2.0; // Faster for more "playful" feel
+      const speed = 2.0;
       time = (time + speed) % gridSpacing;
 
       for (let z = 10; z < 600; z += gridSpacing) {
@@ -66,7 +86,9 @@ export default function SynthwaveGrid() {
         const scale = fov / pz;
         const y = 80 * scale;
         
-        ctx.strokeStyle = `rgba(255, 0, 122, ${Math.max(0, 0.6 - pz/600)})`;
+        ctx.strokeStyle = isLight 
+          ? `rgba(255, 0, 122, ${Math.max(0, 0.4 - pz/600)})` 
+          : `rgba(255, 0, 122, ${Math.max(0, 0.6 - pz/600)})`;
         ctx.beginPath();
         ctx.moveTo(-w * scale, y);
         ctx.lineTo(w * scale, y);
@@ -91,7 +113,7 @@ export default function SynthwaveGrid() {
             ctx.lineTo(px, py);
           }
         }
-        ctx.strokeStyle = `rgba(255, 0, 122, 0.3)`;
+        ctx.strokeStyle = isLight ? `rgba(255, 0, 122, 0.15)` : `rgba(255, 0, 122, 0.3)`;
         ctx.stroke();
       }
 
@@ -110,13 +132,14 @@ export default function SynthwaveGrid() {
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", handleResize);
+      observer.disconnect();
     };
   }, []);
 
   return (
     <canvas 
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 opacity-60 mix-blend-screen"
+      className={`fixed top-0 left-0 w-full h-full pointer-events-none -z-10 transition-opacity duration-500 ${theme === 'light' ? 'opacity-40 mix-blend-multiply' : 'opacity-60 mix-blend-screen'}`}
     />
   );
 }
