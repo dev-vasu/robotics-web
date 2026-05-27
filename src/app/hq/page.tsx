@@ -154,11 +154,16 @@ export default function AdminHQ() {
   };
 
   const handleInjectNewSims = () => {
-    const newGames = features.filter(f => f.is_new).map(f => f.id.toUpperCase());
+    // Filter features that are enabled and marked as new
+    const newGames = features
+      .filter((f: any) => f.is_new)
+      .map((f: any) => f.id.toUpperCase());
+
     if (newGames.length > 0) {
-      setActiveBroadcast(`🚀 NEW SIMS LIVE: ${newGames.join(", ")} // BOOT THEM NOW IN THE ARCADE HUB!`);
+      const msg = `🚀 NEW SIMS LIVE: ${newGames.join(", ")} // BOOT THEM NOW IN THE ARCADE HUB!`;
+      setActiveBroadcast(msg);
     } else {
-      alert("NO GAMES CURRENTLY HAVE 'NEW_SIM' ENABLED.");
+      alert("NO GAMES CURRENTLY HAVE 'NEW_SIM' ENABLED. GO TO SYSTEMS SECTOR TO ENABLE.");
     }
   };
 
