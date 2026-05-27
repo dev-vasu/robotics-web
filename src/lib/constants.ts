@@ -7,6 +7,16 @@ export const CATEGORIES = [
     color: "text-cyber-blue",
     games: [
       {
+        id: "drift",
+        title: "NEON_DRIFT",
+        desc: "Satisfying momentum. Drift through the technical void.",
+        href: "/game/drift",
+        icon: Triangle,
+        colorClass: "bg-cyber-blue",
+        textClass: "text-cyber-blue",
+        tag: "ONE_TAP"
+      },
+      {
         id: "beyond",
         title: "BIT_BEYOND",
         desc: "Gravity inversion runner. Flip your world to survive.",
@@ -73,6 +83,16 @@ export const CATEGORIES = [
     icon: MousePointer2,
     color: "text-electric-volt",
     games: [
+      {
+        id: "dash",
+        title: "GLITCH_DASH",
+        desc: "Rhythm survival. Sync your jumps with the neural mainframe.",
+        href: "/game/dash",
+        icon: Activity,
+        colorClass: "bg-electric-volt",
+        textClass: "text-electric-volt",
+        tag: "RHYTHM_DASH"
+      },
       {
         id: "strike",
         title: "CYBER_STRIKE",
