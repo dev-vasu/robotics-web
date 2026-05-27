@@ -24,7 +24,12 @@ const FEATURES = [
 ];
 
 export default function FeedbackPage() {
-  const [formData, setFormData] = useState({ email: "", feature: "GENERAL_WEBSITE", feedback: "" });
+  const [formData, setFormData] = useState({ 
+    email: "", 
+    feature: "GENERAL_WEBSITE", 
+    feedback: "",
+    type: "FEEDBACK" as "FEEDBACK" | "BUG_REPORT"
+  });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [ticketId, setTicketId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -53,9 +58,9 @@ export default function FeedbackPage() {
 
       if (res.ok) {
         const data = await res.json();
-        setTicketId(data.ticketId);
+        setTicketId(data.ticketId || "");
         setStatus("success");
-        setFormData({ email: "", feature: "GENERAL_WEBSITE", feedback: "" });
+        setFormData({ email: "", feature: "GENERAL_WEBSITE", feedback: "", type: "FEEDBACK" });
       } else {
         setStatus("error");
       }
@@ -76,13 +81,13 @@ export default function FeedbackPage() {
             Vibe_Check_Portal
           </div>
           <h1 className="text-6xl md:text-8xl font-black italic text-white uppercase leading-none mb-6">
-            REPORT A <br />
+            UPLINK <br />
             <span className="text-[#ffaa00] text-glitch">
-              PROBLEM
+              STATION
             </span>
           </h1>
           <p className="text-white/40 uppercase tracking-widest font-black text-sm">
-            TELL US WHAT IS BROKEN, WHAT GOES HARD, AND WHAT WE SHOULD BUILD NEXT. YOU WILL BE ASSIGNED A SUPPORT TICKET.
+            SELECT YOUR TRANSMISSION TYPE AND HELP US OPTIMIZE THE SQUAD EXPERIENCE.
           </p>
         </div>
 
@@ -93,6 +98,20 @@ export default function FeedbackPage() {
           <div className="bg-black p-8 md:p-12 relative overflow-hidden">
             <div className="space-y-10 relative z-10">
               
+              {/* Type Selector */}
+              <div className="flex gap-4">
+                 {["FEEDBACK", "BUG_REPORT"].map(type => (
+                   <button 
+                    key={type}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, type: type as any })}
+                    className={`flex-1 py-4 border-2 font-black italic text-sm transition-all ${formData.type === type ? "bg-white text-black border-white" : "bg-black text-white/40 border-white/10 hover:border-white/40"}`}
+                   >
+                     {type.replace('_', ' ')}
+                   </button>
+                 ))}
+              </div>
+
               {/* Custom Gen-Z Dropdown */}
               <div className="relative" ref={dropdownRef}>
                 <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">TARGET_MODULE (Select Game/Feature)</label>
@@ -121,7 +140,7 @@ export default function FeedbackPage() {
               </div>
 
               <div className="relative">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIGITAL_ADDRESS (For Ticket Updates)</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIGITAL_ADDRESS (For Contact)</label>
                 <input
                   type="email"
                   placeholder="USER@DOMAIN.COM"
@@ -133,9 +152,9 @@ export default function FeedbackPage() {
               </div>
 
               <div className="relative">
-                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIAGNOSTIC_DATA (Describe the problem)</label>
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#ffaa00] mb-2">DIAGNOSTIC_DATA ({formData.type === 'FEEDBACK' ? 'Your Thoughts' : 'Describe the bug'})</label>
                 <textarea
-                  placeholder="HOW CAN WE IMPROVE THIS MODULE? FOUND A BUG? BE BRUTAL."
+                  placeholder={formData.type === 'FEEDBACK' ? "WHAT'S ON YOUR MIND? SUGGESTIONS? LOVE LETTERS?" : "HOW CAN WE IMPROVE THIS MODULE? FOUND A BUG? BE BRUTAL."}
                   required
                   rows={5}
                   className="w-full bg-transparent border-b-2 border-white/20 pb-4 text-xl md:text-2xl font-black uppercase text-white focus:outline-none focus:border-[#ffaa00] transition-colors placeholder:text-white/20 resize-none"
@@ -149,18 +168,22 @@ export default function FeedbackPage() {
                 disabled={status === "loading" || status === "success"}
                 className="w-full py-8 bg-white text-black font-black text-2xl uppercase italic tracking-widest hover:bg-[#ffaa00] transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50"
               >
-                {status === "loading" ? "UPLOADING_DIAGNOSTICS..." : "SUBMIT_REPORT"}
+                {status === "loading" ? "UPLOADING..." : formData.type === 'FEEDBACK' ? "SEND_VIBE" : "SUBMIT_REPORT"}
               </button>
 
               {status === "success" && (
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[#ffaa00] bg-[#ffaa00]/10 p-6 border-l-4 border-[#ffaa00]">
                   <div className="flex items-center gap-4">
                     <CheckCircle2 className="w-8 h-8" />
-                    <span className="font-black uppercase tracking-widest text-lg">ISSUE_LOGGED.</span>
+                    <span className="font-black uppercase tracking-widest text-lg">
+                      {formData.type === 'FEEDBACK' ? "FEEDBACK_LOGGED. GG." : "ISSUE_LOGGED."}
+                    </span>
                   </div>
-                  <div className="text-xl font-black italic tracking-tighter bg-black px-4 py-2 border border-[#ffaa00]">
-                    TICKET: {ticketId}
-                  </div>
+                  {ticketId && (
+                    <div className="text-xl font-black italic tracking-tighter bg-black px-4 py-2 border border-[#ffaa00]">
+                      TICKET: {ticketId}
+                    </div>
+                  )}
                 </div>
               )}
 

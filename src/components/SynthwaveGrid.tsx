@@ -17,43 +17,42 @@ export default function SynthwaveGrid() {
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
       
-      // Draw grid horizon fade
+      // Horizon gradient
       const grad = ctx.createLinearGradient(0, h/2, 0, h);
       grad.addColorStop(0, "rgba(255, 0, 122, 0)");
-      grad.addColorStop(0.2, "rgba(255, 0, 122, 0.05)");
+      grad.addColorStop(0.2, "rgba(255, 0, 122, 0.1)");
       grad.addColorStop(1, "rgba(255, 0, 122, 0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, h/2, w, h/2);
 
       ctx.save();
-      ctx.translate(w / 2, h / 2 + 50); // Move origin to center horizon
+      ctx.translate(w / 2, h / 2 + 50);
       
       const gridSpacing = 40;
       const fov = 250;
       
-      ctx.strokeStyle = "rgba(0, 240, 255, 0.4)"; // Cyber Blue
       ctx.lineWidth = 1;
 
-      // Draw horizontal lines moving forward towards viewer
-      const speed = 1.5;
+      // Draw horizontal lines
+      const speed = 1.2;
       time = (time + speed) % gridSpacing;
 
-      ctx.beginPath();
       for (let z = 10; z < 600; z += gridSpacing) {
         const pz = z - time;
         if (pz <= 0) continue;
         const scale = fov / pz;
-        const y = 80 * scale; // camera height
+        const y = 80 * scale;
         
-        ctx.strokeStyle = `rgba(0, 240, 255, ${Math.max(0, 0.6 - pz/600)})`;
+        ctx.strokeStyle = `rgba(255, 0, 122, ${Math.max(0, 0.4 - pz/600)})`;
+        ctx.beginPath();
         ctx.moveTo(-w * scale, y);
         ctx.lineTo(w * scale, y);
+        ctx.stroke();
       }
-      ctx.stroke();
 
-      // Draw vertical lines vanishing to center
-      ctx.beginPath();
+      // Draw vertical lines
       for (let x = -w*2; x <= w*2; x += gridSpacing * 2) {
+        ctx.beginPath();
         let first = true;
         for (let z = 10; z < 600; z += gridSpacing) {
           const pz = z - time;
@@ -62,7 +61,6 @@ export default function SynthwaveGrid() {
           const px = x * scale;
           const py = 80 * scale;
           
-          ctx.strokeStyle = `rgba(0, 240, 255, ${Math.max(0, 0.6 - pz/600)})`;
           if (first) {
             ctx.moveTo(px, py);
             first = false;
@@ -70,8 +68,9 @@ export default function SynthwaveGrid() {
             ctx.lineTo(px, py);
           }
         }
+        ctx.strokeStyle = `rgba(255, 0, 122, 0.2)`;
+        ctx.stroke();
       }
-      ctx.stroke();
 
       ctx.restore();
       animationId = requestAnimationFrame(draw);
@@ -94,7 +93,7 @@ export default function SynthwaveGrid() {
   return (
     <canvas 
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 opacity-30 mix-blend-screen"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 opacity-40 mix-blend-screen"
     />
   );
 }
