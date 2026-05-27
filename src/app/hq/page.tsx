@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Activity as ActivityIcon, Download, MessageSquare, Mail, Terminal, BarChart3, Settings } from "lucide-react";
+import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Activity as ActivityIcon, Download, MessageSquare, Mail, Terminal, BarChart3, Settings, Trophy } from "lucide-react";
 
 type Record = {
   id: number;
@@ -274,9 +274,41 @@ export default function AdminHQ() {
                   })}
                 </div>
               ) : activeTab === "LEADERBOARDS" ? (
-                <table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-white/10 text-[10px] uppercase text-white/40"><th className="pb-3 px-4">Game</th><th className="pb-3 px-4">ID</th><th className="pb-3 px-4">Pts</th><th className="pb-3 px-4 text-right">Action</th></tr></thead><tbody>
-                  {leaderboardScores.map(s => (<tr key={s.id} className="border-b border-white/5 hover:bg-white/5"><td className="py-4 px-4 text-xs font-black text-cyber-blue uppercase">{s.game_id}</td><td className="py-4 px-4 font-bold text-white">{s.initials}</td><td className="py-4 px-4 font-black italic text-electric-volt">{s.score}</td><td className="py-4 px-4 text-right"><button onClick={() => handleDeleteScore(s.id)} className="text-red-500 hover:text-white transition-colors"><ShieldAlert className="w-5 h-5" /></button></td></tr>))}
-                </tbody></table>
+                <div className="space-y-12">
+                  {Array.from(new Set(leaderboardScores.map(s => s.game_id))).map(gameId => (
+                    <div key={gameId} className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-cyber-blue/30 pb-2">
+                        <Trophy className="w-4 h-4 text-cyber-blue" />
+                        <h3 className="text-xl font-black italic text-white uppercase tracking-wider">{gameId}</h3>
+                      </div>
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-white/10 text-[10px] uppercase text-white/40">
+                            <th className="pb-2 px-4 font-black">ID</th>
+                            <th className="pb-2 px-4 font-black">Pts</th>
+                            <th className="pb-2 px-4 font-black text-right">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {leaderboardScores.filter(s => s.game_id === gameId).map(s => (
+                            <tr key={s.id} className="border-b border-white/5 hover:bg-white/5">
+                              <td className="py-3 px-4 font-bold text-white text-sm">{s.initials}</td>
+                              <td className="py-3 px-4 font-black italic text-electric-volt tabular-nums">{s.score}</td>
+                              <td className="py-3 px-4 text-right">
+                                <button onClick={() => handleDeleteScore(s.id)} className="text-red-500 hover:text-white transition-colors">
+                                  <ShieldAlert className="w-5 h-5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                  {leaderboardScores.length === 0 && (
+                    <div className="text-center text-white/30 font-mono text-sm py-10">NO_SCORES_FOUND</div>
+                  )}
+                </div>
               ) : !selectedEmail ? (
                 <table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-white/10 text-[10px] uppercase text-white/40"><th className="pb-3 px-4">Category</th><th className="pb-3 px-4">Node</th><th className="pb-3 px-4 text-right">Time</th></tr></thead><tbody>
                   {Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
