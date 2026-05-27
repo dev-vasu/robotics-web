@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Download, Mail, Settings, Trophy, Sparkles } from "lucide-react";
 import gsap from "gsap";
+import { CATEGORIES } from "@/lib/constants";
 
 type Record = {
   id: number;
@@ -154,13 +155,25 @@ export default function AdminHQ() {
   };
 
   const handleInjectNewSims = () => {
-    // Filter features that are enabled and marked as new
-    const newGames = features
+    const newSimsInfo = features
       .filter((f: any) => f.is_new)
-      .map((f: any) => f.id.toUpperCase());
+      .map((f: any) => {
+        let fullName = f.id.toUpperCase();
+        let category = "UNCATEGORIZED";
 
-    if (newGames.length > 0) {
-      const msg = `🚀 NEW SIMS LIVE: ${newGames.join(", ")} // BOOT THEM NOW IN THE ARCADE HUB!`;
+        for (const cat of CATEGORIES) {
+          const game = cat.games.find(g => g.id === f.id);
+          if (game) {
+            fullName = game.title.replace("_", " ");
+            category = cat.title.replace("_", " ");
+            break;
+          }
+        }
+        return `${fullName} (${category})`;
+      });
+
+    if (newSimsInfo.length > 0) {
+      const msg = `🚀 NEW SIMS LIVE: ${newSimsInfo.join(", ")} // BOOT THEM NOW IN THE ARCADE HUB!`;
       setActiveBroadcast(msg);
     } else {
       alert("NO GAMES CURRENTLY HAVE 'NEW_SIM' ENABLED. GO TO SYSTEMS SECTOR TO ENABLE.");
