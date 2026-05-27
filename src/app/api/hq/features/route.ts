@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const sql = neon(process.env.DATABASE_URL);
     
     const result = await sql`
-      SELECT id, is_enabled 
+      SELECT id, is_enabled, is_new 
       FROM feature_flags 
       ORDER BY id ASC
     `;
@@ -32,10 +32,10 @@ export async function POST(req: Request) {
   }
 }
 
-// Toggle a feature
+// Toggle a feature (Enabled or New status)
 export async function PUT(req: Request) {
   try {
-    const { passcode, id, isEnabled } = await req.json();
+    const { passcode, id, isEnabled, isNew } = await req.json();
     const validPasscode = process.env.ADMIN_PASSCODE || "ROBOVIBE7749";
 
     if (passcode !== validPasscode) {
@@ -48,13 +48,21 @@ export async function PUT(req: Request) {
 
     const sql = neon(process.env.DATABASE_URL);
     
-    // Upsert logic
-    await sql`
-      INSERT INTO feature_flags (id, is_enabled)
-      VALUES (${id}, ${isEnabled})
-      ON CONFLICT (id) DO UPDATE 
-      SET is_enabled = EXCLUDED.is_enabled, updated_at = CURRENT_TIMESTAMP
-    `;
+    if (isEnabled !== undefined) {
+      await sql`
+        INSERT INTO feature_flags (id, is_enabled)
+        VALUES (${id}, ${isEnabled})
+        ON CONFLICT (id) DO UPDATE 
+        SET is_enabled = EXCLUDED.is_enabled, updated_at = CURRENT_TIMESTAMP
+      `;
+    } else if (isNew !== undefined) {
+      await sql`
+        INSERT INTO feature_flags (id, is_new)
+        VALUES (${id}, ${isNew})
+        ON CONFLICT (id) DO UPDATE 
+        SET is_new = EXCLUDED.is_new, updated_at = CURRENT_TIMESTAMP
+      `;
+    }
 
     return NextResponse.json({ message: "Feature Updated" }, { status: 200 });
   } catch (error) {

@@ -28,9 +28,17 @@ export async function setupDatabase() {
     CREATE TABLE IF NOT EXISTS feature_flags (
       id VARCHAR(50) PRIMARY KEY,
       is_enabled BOOLEAN DEFAULT true,
+      is_new BOOLEAN DEFAULT false,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  // Migration: Add is_new column if it doesn't exist
+  try {
+    await sql`ALTER TABLE feature_flags ADD COLUMN IF NOT EXISTS is_new BOOLEAN DEFAULT false;`;
+  } catch (e) {
+    console.warn("Migration warning (is_new column might already exist):", e);
+  }
 
   await sql`
     CREATE TABLE IF NOT EXISTS broadcasts (

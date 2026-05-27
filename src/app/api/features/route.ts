@@ -7,29 +7,35 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const featureId = searchParams.get('id');
 
-    if (!featureId) {
-      return NextResponse.json({ error: "Feature ID required" }, { status: 400 });
-    }
-
     if (!process.env.DATABASE_URL) {
-      return NextResponse.json({ isEnabled: true }, { status: 200 }); // Default true if no DB
+      return NextResponse.json({ isEnabled: true, isNew: false }, { status: 200 });
     }
 
     await setupDatabase();
     const sql = neon(process.env.DATABASE_URL);
-    
-    const result = await sql`
-      SELECT is_enabled 
-      FROM feature_flags 
-      WHERE id = ${featureId}
-    `;
 
-    if (result.length === 0) {
-      // Feature not in DB yet, default to true
-      return NextResponse.json({ isEnabled: true }, { status: 200 });
+    // If ID is provided, return specific feature
+    if (featureId) {
+      const result = await sql`
+        SELECT is_enabled, is_new 
+        FROM feature_flags 
+        WHERE id = ${featureId}
+      `;
+
+      if (result.length === 0) {
+        return NextResponse.json({ isEnabled: true, isNew: false }, { status: 200 });
+      }
+
+      return NextResponse.json({ 
+        isEnabled: result[0].is_enabled, 
+        isNew: result[0].is_new 
+      }, { status: 200 });
     }
 
-    return NextResponse.json({ isEnabled: result[0].is_enabled }, { status: 200 });
+    // Otherwise return all features
+    const allResult = await sql`SELECT id, is_enabled, is_new FROM feature_flags`;
+    return NextResponse.json({ features: allResult }, { status: 200 });
+
   } catch (error) {
     console.error("Feature Fetch Error:", error);
     return NextResponse.json({ error: "Failed to fetch feature status" }, { status: 500 });
