@@ -4,9 +4,16 @@ import { useEffect, useRef, useState } from "react";
 export default function SynthwaveGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [isEnabled, setIsEnabled] = useState(true);
 
   useEffect(() => {
-    // 0. Theme Detection
+    // 0. Check Grid Status
+    fetch("/api/features?id=vibe_grid")
+      .then(res => res.json())
+      .then(data => setIsEnabled(data.isEnabled !== false))
+      .catch(() => setIsEnabled(true));
+
+    // 1. Theme Detection
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "data-theme") {
@@ -135,6 +142,8 @@ export default function SynthwaveGrid() {
       observer.disconnect();
     };
   }, []);
+
+  if (!isEnabled) return null;
 
   return (
     <canvas 

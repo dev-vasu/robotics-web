@@ -117,31 +117,33 @@ export default function Footer() {
 
           <div>
             <h4 className="text-electric-volt font-black mb-10 uppercase text-xs tracking-[0.4em]">_JOIN_SQUAD</h4>
-            <p className="text-dim font-bold mb-6 text-sm">DROP YOUR DIGITAL SIGNATURE FOR UPDATES.</p>
-            <div className="space-y-4">
-              <input 
-                type="email" 
-                placeholder="USER@DOMAIN.XYZ" 
-                required
-                className="w-full bg-foreground/5 border-2 border-foreground/10 p-4 font-black uppercase text-sm focus:outline-none focus:border-electric-volt text-foreground"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <button 
-                onClick={handleSubscribe}
-                disabled={status === "loading"}
-                className={`w-full py-4 font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
-                  status === "success" ? "bg-electric-volt text-background" : 
-                  status === "error" ? "bg-red-500 text-foreground" :
-                  "bg-hyper-pink text-background hover:bg-foreground disabled:opacity-50"
-                }`}
-              >
-                {status === "loading" ? "UPLOADING..." : 
-                 status === "success" ? <><Check className="w-4 h-4" /> SIGNED_UP</> :
-                 status === "error" ? "FAIL_RETRY" :
-                 "_SUBSCRIBE"}
-              </button>
-            </div>
+            <FeatureToggle featureId="newsletter">
+              <p className="text-dim font-bold mb-6 text-sm">DROP YOUR DIGITAL SIGNATURE FOR UPDATES.</p>
+              <div className="space-y-4">
+                <input 
+                  type="email" 
+                  placeholder="USER@DOMAIN.XYZ" 
+                  required
+                  className="w-full bg-foreground/5 border-2 border-foreground/10 p-4 font-black uppercase text-sm focus:outline-none focus:border-electric-volt text-foreground"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <button 
+                  onClick={handleSubscribe}
+                  disabled={status === "loading"}
+                  className={`w-full py-4 font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+                    status === "success" ? "bg-electric-volt text-background" : 
+                    status === "error" ? "bg-red-500 text-foreground" :
+                    "bg-hyper-pink text-background hover:bg-foreground disabled:opacity-50"
+                  }`}
+                >
+                  {status === "loading" ? "UPLOADING..." : 
+                   status === "success" ? <><Check className="w-4 h-4" /> SIGNED_UP</> :
+                   status === "error" ? "FAIL_RETRY" :
+                   "_SUBSCRIBE"}
+                </button>
+              </div>
+            </FeatureToggle>
           </div>
         </div>
 

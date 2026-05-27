@@ -16,6 +16,12 @@ export async function GET(req: Request) {
 
     // If ID is provided, return specific feature
     if (featureId) {
+      // 1. Check Global Site Wide Maintenance first
+      const globalCheck = await sql`SELECT is_enabled FROM feature_flags WHERE id = 'site_wide'`;
+      if (globalCheck.length > 0 && !globalCheck[0].is_enabled && featureId !== 'site_wide') {
+        return NextResponse.json({ isEnabled: false, isNew: false, globalMaintenance: true }, { status: 200 });
+      }
+
       const result = await sql`
         SELECT is_enabled, is_new 
         FROM feature_flags 

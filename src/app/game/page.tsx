@@ -3,18 +3,23 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Zap } from "lucide-react";
+import { Zap, ShieldAlert, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CATEGORIES } from "@/lib/constants";
 
 export default function ArcadeHub() {
   const [features, setFeatures] = useState<any[]>([]);
+  const [isSiteOffline, setIsSiteSiteOffline] = useState(false);
 
   useEffect(() => {
     fetch("/api/features")
       .then(res => res.json())
       .then(data => {
-        if (data.features) setFeatures(data.features);
+        if (data.features) {
+          setFeatures(data.features);
+          const global = data.features.find((f: any) => f.id === 'site_wide');
+          if (global && !global.is_enabled) setIsSiteSiteOffline(true);
+        }
       })
       .catch(console.error);
   }, []);
@@ -49,7 +54,20 @@ export default function ArcadeHub() {
                   const isNew = feat ? feat.is_new : false;
                   const isEnabled = feat ? feat.is_enabled : true;
 
-                  if (!isEnabled) return null;
+                  if (!isEnabled || isSiteOffline) {
+                    return (
+                      <div key={game.id} className="relative p-1 bg-red-500/20 grayscale group">
+                         <div className="arcade-card-inner bg-background p-10 h-full relative overflow-hidden flex flex-col items-center justify-center text-center">
+                            <ShieldAlert className="w-12 h-12 text-red-500 mb-4 animate-pulse" />
+                            <h3 className="text-2xl font-black italic text-foreground/40 uppercase mb-2">{game.title}</h3>
+                            <p className="text-[10px] text-red-500 font-black uppercase tracking-widest">MODULE_OFFLINE</p>
+                            <div className="mt-4 px-3 py-1 bg-red-500/10 border border-red-500/30 text-[8px] font-mono text-red-500 uppercase">
+                              MAINTENANCE_IN_PROGRESS
+                            </div>
+                         </div>
+                      </div>
+                    );
+                  }
 
                   return (
                     <Link 
