@@ -13,15 +13,15 @@
 }
 
 [data-theme="light"] {
-  --background: #ffffff !important;
-  --foreground: #000000 !important;
-  --text-dim: rgba(0, 0, 0, 0.6) !important;
-  --hyper-pink: #ff007a !important;
-  --electric-volt: #336600 !important;
-  --cyber-blue: #006688 !important;
-  --grid-color: rgba(0, 0, 0, 0.05) !important;
-  --panel-bg: rgba(245, 245, 245, 0.9) !important;
-  --border-color: rgba(0, 0, 0, 0.1) !important;
+  --background: #ffffff;
+  --foreground: #000000;
+  --text-dim: rgba(0, 0, 0, 0.6);
+  --hyper-pink: #ff007a;
+  --electric-volt: #336600;
+  --cyber-blue: #006688;
+  --grid-color: rgba(0, 0, 0, 0.05);
+  --panel-bg: rgba(245, 245, 245, 0.9);
+  --border-color: rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
@@ -38,8 +38,8 @@
 }
 
 body {
-  background-color: var(--background) !important;
-  color: var(--foreground) !important;
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui;
   overflow-x: hidden;
   cursor: crosshair;
@@ -53,7 +53,7 @@ h1, h2, h3, h4, h5, h6, p, span, div, input, textarea, button, a {
 
 /* Utility for Dimmed Text */
 .text-dim {
-  color: var(--text-dim) !important;
+  color: var(--text-dim);
 }
 
 /* Original Hyper-Pink Grid */
@@ -92,7 +92,6 @@ h1, h2, h3, h4, h5, h6, p, span, div, input, textarea, button, a {
 }
 
 .arcade-card-inner {
-  background: var(--background);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
