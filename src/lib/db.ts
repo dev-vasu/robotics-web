@@ -31,6 +31,15 @@ export async function setupDatabase() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS broadcasts (
+      id SERIAL PRIMARY KEY,
+      content TEXT NOT NULL,
+      is_active BOOLEAN DEFAULT true,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
   
   return true;
 }
