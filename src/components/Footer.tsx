@@ -34,6 +34,26 @@ export default function Footer() {
     }
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: "ROBOVIBE // ARCADE",
+      text: "YO! CHECK OUT THIS GEN-Z CREATIVE PLAYGROUND. IT GOES HARD. NO CAP.",
+      url: window.location.origin,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Share failed:", err);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      navigator.clipboard.writeText(window.location.origin);
+      alert("LINK_COPIED_TO_CLIPBOARD. GG.");
+    }
+  };
+
   return (
     <footer className="bg-background border-t-4 border-hyper-pink pt-24 pb-12 overflow-hidden relative">
       <div className="absolute top-0 right-0 text-[20rem] font-black italic text-foreground/[0.02] -translate-y-1/2 translate-x-1/4 select-none">
@@ -55,11 +75,29 @@ export default function Footer() {
               WE BUILD THE TOOLS. YOU BUILD THE FUTURE. WELCOME TO THE ULTIMATE CREATIVE HUB.
             </p>
             <div className="flex gap-6">
-              {[Globe, Share2, ExternalLink].map((Icon, i) => (
-                <a key={i} href="#" className="w-14 h-14 bg-foreground/5 flex items-center justify-center hover:bg-hyper-pink hover:text-background transition-all border border-foreground/10">
-                  <Icon className="w-6 h-6" />
-                </a>
-              ))}
+              <Link 
+                href="/" 
+                className="w-14 h-14 bg-foreground/5 flex items-center justify-center hover:bg-hyper-pink hover:text-background transition-all border border-foreground/10 group"
+                title="SITE_ROOT"
+              >
+                <Globe className="w-6 h-6 group-hover:rotate-12" />
+              </Link>
+              <button 
+                onClick={handleShare}
+                className="w-14 h-14 bg-foreground/5 flex items-center justify-center hover:bg-[#00f0ff] hover:text-background transition-all border border-foreground/10 group"
+                title="SHARE_VIBE"
+              >
+                <Share2 className="w-6 h-6 group-hover:scale-110" />
+              </button>
+              <a 
+                href="https://github.com/dev-vasu" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-14 h-14 bg-foreground/5 flex items-center justify-center hover:bg-[#ccff00] hover:text-background transition-all border border-foreground/10 group"
+                title="GITHUB_INTEL"
+              >
+                <ExternalLink className="w-6 h-6 group-hover:-translate-y-1 group-hover:translate-x-1" />
+              </a>
             </div>
           </div>
 
