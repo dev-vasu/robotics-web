@@ -28,7 +28,9 @@ const EMAIL_TEMPLATES = [
 
 const BROADCAST_TEMPLATES = [
   { label: "MAINTENANCE", msg: "⚠️ SYSTEM RELOAD IN PROGRESS. DON'T PANIC. JUST ADDING MORE RIZZ TO THE CORE. BACK IN 2 HOURS. STAY HYDRATED." },
-  { label: "NEW_GAME", msg: "🚀 NEW SIMULATION DETECTED! A NEW GAME JUST DROPPED IN THE ARCADE. IT GOES HARD. BOOT IT NOW." },
+  { label: "NEW_MOBILE", msg: "📱 NEW MOBILE SIMULATIONS DETECTED! GET YOUR FINGERS READY. DROPPING IN THE HUB SOON. FR FR." },
+  { label: "NEW_PC", msg: "🖥️ PC MASTER RACE UPLINK INCOMING. NEW KEYBOARD-ONLY SIMS ARE BEING CALIBRATED. STAY STOCKED." },
+  { label: "NEW_PLAYGROUND", msg: "🧪 THE PLAYGROUND IS EXPANDING. NEW CREATIVE SECTORS DETECTED. PREPARE TO BUILD THE FUTURE." },
   { label: "SQUAD", msg: "🔥 THE SQUAD IS ABSOLUTELY BLOWING UP. 100+ NEW NODES CONNECTED TODAY. WE ARE LITERALLY GLOBAL NOW." }
 ];
 
@@ -151,6 +153,15 @@ export default function AdminHQ() {
     } catch (error) { console.error(error); }
   };
 
+  const handleInjectNewSims = () => {
+    const newGames = features.filter(f => f.is_new).map(f => f.id.toUpperCase());
+    if (newGames.length > 0) {
+      setActiveBroadcast(`🚀 NEW SIMS LIVE: ${newGames.join(", ")} // BOOT THEM NOW IN THE ARCADE HUB!`);
+    } else {
+      alert("NO GAMES CURRENTLY HAVE 'NEW_SIM' ENABLED.");
+    }
+  };
+
   const handleSquadBlast = async () => {
     if (!confirm("Send blast to ALL members?")) return;
     setStatus("loading");
@@ -247,7 +258,29 @@ export default function AdminHQ() {
 
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
               {activeTab === "GLOBAL_ALERT" ? (
-                <div className="p-10 space-y-8 animate-in fade-in zoom-in duration-500"><div className="flex items-center justify-between mb-4 border-b border-hyper-pink/20 pb-4"><div className="flex items-center gap-4 text-hyper-pink"><Radio className="w-12 h-12 animate-pulse" /><h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3></div><div className="flex gap-2">{BROADCAST_TEMPLATES.map(bt => (<button key={bt.label} onClick={() => setActiveBroadcast(bt.msg)} className="text-[8px] font-black border border-foreground/10 px-3 py-1.5 hover:bg-hyper-pink hover:text-background transition-all uppercase bg-foreground/5 rounded-sm">{bt.label}</button>))}</div></div><div className="space-y-6"><textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_GLOBAL_MESSAGE..." className="w-full bg-background border-2 border-foreground/10 p-8 text-2xl text-foreground font-mono focus:border-hyper-pink focus:outline-none h-60 placeholder:text-foreground/5" /><button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[15px_15px_0_0_white] active:translate-y-1 active:shadow-none">ACTIVATE_GLOBAL_UPLINK</button></div></div>
+                <div className="p-10 space-y-8 animate-in fade-in zoom-in duration-500">
+                  <div className="flex items-center justify-between mb-4 border-b border-hyper-pink/20 pb-4">
+                    <div className="flex items-center gap-4 text-hyper-pink">
+                      <Radio className="w-12 h-12 animate-pulse" />
+                      <h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2 justify-end max-w-md">
+                      <button 
+                        onClick={handleInjectNewSims} 
+                        className="text-[8px] font-black border-2 border-hyper-pink px-3 py-1.5 hover:bg-hyper-pink hover:text-background transition-all uppercase bg-background shadow-[4px_4px_0_0_#ff007a]"
+                      >
+                        ✨ AUTO_NEW_SIMS
+                      </button>
+                      {BROADCAST_TEMPLATES.map(bt => (
+                        <button key={bt.label} onClick={() => setActiveBroadcast(bt.msg)} className="text-[8px] font-black border border-foreground/10 px-3 py-1.5 hover:bg-hyper-pink hover:text-background transition-all uppercase bg-foreground/5 rounded-sm">{bt.label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_GLOBAL_MESSAGE..." className="w-full bg-background border-2 border-foreground/10 p-8 text-2xl text-foreground font-mono focus:border-hyper-pink focus:outline-none h-60 placeholder:text-foreground/5" />
+                    <button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[15px_15px_0_0_white] active:translate-y-1 active:shadow-none">ACTIVATE_GLOBAL_UPLINK</button>
+                  </div>
+                </div>
               ) : activeTab === "MAINTENANCE" ? (
                 <div className="grid md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-right-5 duration-500">{["beyond", "orb", "tap", "strike", "beat", "typer", "run", "pong", "snake", "brick", "stacks", "maze", "dodge", "jump", "canvas", "beats", "terminal"].map(id => {
                   const feat = features.find(f => f.id === id); 
