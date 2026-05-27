@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Activity as ActivityIcon, Download } from "lucide-react";
+import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Activity as ActivityIcon, Download, MessageSquare, Mail, Terminal, BarChart3, Settings } from "lucide-react";
 
 type Record = {
   id: number;
@@ -12,6 +12,12 @@ type Record = {
   content: string;
   created_at: string;
 };
+
+const SECTORS = [
+  { id: "COMMUNICATIONS", label: "COMM_SECTOR", icon: Mail, sub: ["ALL", "QUERIES", "FEEDBACK", "SQUAD"] },
+  { id: "SYSTEMS", label: "SYSTEM_SECTOR", icon: Settings, sub: ["MAINTENANCE", "LEADERBOARDS"] },
+  { id: "ALERTS", label: "BROADCAST_SECTOR", icon: Radio, sub: ["GLOBAL_ALERT"] }
+];
 
 export default function AdminHQ() {
   const [passcode, setPasscode] = useState("");
@@ -29,14 +35,16 @@ export default function AdminHQ() {
   const [isLoadingRecords, setIsLoadingRecords] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"ALL" | "QUERIES" | "FEEDBACK" | "SQUAD" | "LEADERBOARDS" | "MAINTENANCE" | "BROADCAST">("ALL");
+  
+  const [activeSector, setActiveSector] = useState("COMMUNICATIONS");
+  const [activeTab, setActiveTab] = useState("ALL");
 
   const filteredRecords = records.filter(r => {
     const isNewsletter = r.type === "NEWSLETTER" || r.subject === "New Newsletter Subscription";
     if (activeTab === "ALL") return true;
     if (activeTab === "FEEDBACK") return r.type === "FEEDBACK";
     if (activeTab === "SQUAD") return isNewsletter;
-    if (activeTab === "QUERIES") return !isNewsletter && r.type !== "FEEDBACK";
+    if (activeTab === "QUERIES") return !isNewsletter && r.type !== "FEEDBACK" && (r.type === "RECEIVED" || r.type === "SENT");
     return true;
   });
 
@@ -60,19 +68,16 @@ export default function AdminHQ() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode: currentPasscode }),
       });
-      
       const resLeader = await fetch("/api/hq/leaderboard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode: currentPasscode }),
       });
-
       const resFeatures = await fetch("/api/hq/features", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode: currentPasscode }),
       });
-
       const resBroadcast = await fetch(`/api/hq/broadcast?passcode=${currentPasscode}`);
 
       if (resMsg.ok && resLeader.ok && resFeatures.ok && resBroadcast.ok) {
@@ -102,16 +107,12 @@ export default function AdminHQ() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode, id, isEnabled: !currentState }),
       });
-      if (res.ok) {
-        fetchRecords(passcode);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      if (res.ok) fetchRecords(passcode);
+    } catch (error) { console.error(error); }
   };
 
   const handleDeleteScore = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this score?")) return;
+    if (!confirm("Are you sure?")) return;
     try {
       const res = await fetch("/api/hq/leaderboard", {
         method: "DELETE",
@@ -119,9 +120,7 @@ export default function AdminHQ() {
         body: JSON.stringify({ passcode, id }),
       });
       if (res.ok) fetchRecords(passcode);
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) { console.error(error); }
   };
 
   const handleUpdateBroadcast = async () => {
@@ -131,17 +130,12 @@ export default function AdminHQ() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode, content: activeBroadcast }),
       });
-      if (res.ok) {
-        alert("Broadcast System Updated Globally");
-        fetchRecords(passcode);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      if (res.ok) { alert("Broadcast Updated"); fetchRecords(passcode); }
+    } catch (error) { console.error(error); }
   };
 
   const handleSquadBlast = async () => {
-    if (!confirm("ATTENTION: This will send a stylized email to ALL squad members at once. Proceed?")) return;
+    if (!confirm("Send blast to ALL members?")) return;
     setStatus("loading");
     try {
       const res = await fetch("/api/hq/squad-blast", {
@@ -149,24 +143,13 @@ export default function AdminHQ() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode, subject, message }),
       });
-      if (res.ok) {
-        setStatus("success");
-        fetchRecords(passcode);
-      } else {
-        setStatus("error");
-        setErrorMsg("BLAST_PROTOCOL_FAILED");
-      }
-    } catch (error) {
-      setStatus("error");
-    }
+      if (res.ok) { setStatus("success"); fetchRecords(passcode); }
+      else { setStatus("error"); setErrorMsg("BLAST_FAILED"); }
+    } catch (error) { setStatus("error"); }
   };
 
   const handleExportData = () => {
-    const data = {
-      messages: records,
-      scores: leaderboardScores,
-      features: features
-    };
+    const data = { messages: records, scores: leaderboardScores, features };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -182,36 +165,17 @@ export default function AdminHQ() {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!passcode || !to || !subject || !message) {
-      setErrorMsg("ALL_FIELDS_REQUIRED");
-      setStatus("error");
-      return;
-    }
+    if (!passcode || !to || !subject || !message) { setErrorMsg("FIELDS_REQUIRED"); setStatus("error"); return; }
     setStatus("loading");
-    setErrorMsg("");
     try {
       const res = await fetch("/api/hq/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode, to, subject, message }),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setStatus("success");
-        setTo("");
-        setSubject("");
-        setMessage("");
-        fetchRecords(passcode);
-        setTimeout(() => setStatus("idle"), 5000);
-      } else {
-        setErrorMsg(data.error || "TRANSMISSION_FAILED");
-        setStatus("error");
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMsg("NETWORK_FAILURE");
-      setStatus("error");
-    }
+      if (res.ok) { setStatus("success"); setTo(""); setSubject(""); setMessage(""); fetchRecords(passcode); setTimeout(() => setStatus("idle"), 5000); }
+      else { const d = await res.json(); setErrorMsg(d.error || "FAILED"); setStatus("error"); }
+    } catch (error) { setErrorMsg("NETWORK_ERROR"); setStatus("error"); }
   };
 
   if (!isAuthenticated) {
@@ -221,16 +185,8 @@ export default function AdminHQ() {
           <Lock className="w-16 h-16 text-cyber-blue mx-auto mb-6" />
           <h1 className="text-3xl font-black italic text-white uppercase tracking-tighter mb-6">ROBOVIBE_HQ</h1>
           <form onSubmit={handleAuth} className="space-y-4">
-            <input 
-              type="password"
-              placeholder="ENTER_ADMIN_PASSCODE..."
-              value={passcode}
-              onChange={(e) => setPasscode(e.target.value)}
-              className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-center text-white font-mono focus:outline-none focus:border-cyber-blue"
-            />
-            <button type="submit" className="w-full py-4 bg-cyber-blue text-black font-black uppercase tracking-widest hover:bg-white transition-all">
-              {isLoadingRecords ? "AUTHENTICATING..." : "ACCESS_CORE"}
-            </button>
+            <input type="password" placeholder="ENTER_ADMIN_PASSCODE..." value={passcode} onChange={(e) => setPasscode(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-center text-white font-mono focus:outline-none focus:border-cyber-blue" />
+            <button type="submit" className="w-full py-4 bg-cyber-blue text-black font-black uppercase tracking-widest hover:bg-white transition-all">{isLoadingRecords ? "AUTHENTICATING..." : "ACCESS_CORE"}</button>
           </form>
         </div>
       </main>
@@ -242,204 +198,106 @@ export default function AdminHQ() {
   return (
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 px-6 pb-20 relative overflow-x-hidden">
       <div className="fixed top-6 left-6 z-40">
-        <Link 
-          href="/" 
-          className="flex items-center gap-2 px-4 py-2 bg-black border border-white/10 hover:border-cyber-blue hover:text-cyber-blue transition-all group glass-panel"
-        >
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[10px] font-black uppercase tracking-widest">Exit_HQ</span>
-        </Link>
+        <Link href="/" className="flex items-center gap-2 px-4 py-2 bg-black border border-white/10 hover:border-cyber-blue hover:text-cyber-blue transition-all group glass-panel"><ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /><span className="text-[10px] font-black uppercase tracking-widest">Exit_HQ</span></Link>
       </div>
 
-      <div className="container mx-auto max-w-7xl grid lg:grid-cols-2 gap-10">
-        {/* Left Column: Transmission Form */}
-        <div className="flex flex-col gap-10">
-          <div className="glass-panel border-4 border-cyber-blue/30 bg-black/80 p-8">
-            <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-cyber-blue rounded-full shadow-[0_0_15px_#00f0ff]">
-                   <Send className="w-6 h-6 text-black" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-black italic text-white uppercase tracking-tighter">TRANSMITTER</h2>
-                  <p className="text-cyber-blue font-black uppercase tracking-[0.4em] text-[10px]">SECURE_UPLINK</p>
-                </div>
-              </div>
-              {activeTab === "SQUAD" && (
-                 <button 
-                  onClick={handleSquadBlast}
-                  className="px-4 py-2 bg-[#ccff00] text-black font-black text-[10px] uppercase tracking-widest hover:bg-white transition-all"
-                 >
-                   SQUAD_BLAST
-                 </button>
-              )}
-            </div>
-
-            <form onSubmit={handleSend} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">TARGET_NODE</label>
-                  <input type="email" placeholder="CLIENT@DOMAIN.COM" value={to} onChange={(e) => setTo(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors" />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">SUBJECT</label>
-                  <input type="text" placeholder="RE: YOUR INQUIRY" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">DATA_PAYLOAD</label>
-                <textarea rows={8} placeholder="TYPE YOUR RESPONSE HERE..." value={message} onChange={(e) => setMessage(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors resize-none" />
-              </div>
-              <button type="submit" disabled={status === "loading"} className="w-full py-5 bg-cyber-blue text-black font-black text-xl uppercase italic hover:bg-white transition-all flex items-center justify-center gap-3 shadow-[8px_8px_0_0_rgba(255,255,255,0.2)] disabled:opacity-50">
-                {status === "loading" ? "ENCRYPTING_DATA..." : "TRANSMIT"}
-              </button>
-            </form>
-          </div>
-
-          {/* Quick Pulse Dashboard */}
-          <div className="grid grid-cols-3 gap-4">
-             <div className="glass-panel p-6 border-l-4 border-cyber-blue">
-                <div className="text-[10px] font-black text-white/40 uppercase mb-2">SQUAD_SIZE</div>
-                <div className="text-3xl font-black italic text-white">{squadCount}</div>
-             </div>
-             <div className="glass-panel p-6 border-l-4 border-hyper-pink">
-                <div className="text-[10px] font-black text-white/40 uppercase mb-2">TOTAL_LOGS</div>
-                <div className="text-3xl font-black italic text-white">{records.length}</div>
-             </div>
-             <button onClick={handleExportData} className="glass-panel p-6 border-l-4 border-[#ffaa00] hover:bg-white/5 transition-all text-left">
-                <div className="text-[10px] font-black text-white/40 uppercase mb-2">BACKUP_DB</div>
-                <div className="flex items-center gap-2 text-xl font-black italic text-[#ffaa00]">
-                   <Download className="w-5 h-5" /> EXPORT
-                </div>
+      <div className="container mx-auto max-w-[1600px] flex flex-col gap-10">
+        
+        {/* TOP SECTOR NAVIGATION */}
+        <div className="flex flex-wrap gap-4 border-b-4 border-white/5 pb-8">
+           {SECTORS.map(s => (
+             <button 
+              key={s.id} 
+              onClick={() => { setActiveSector(s.id); setActiveTab(s.sub[0]); setSelectedEmail(null); }}
+              className={`flex items-center gap-4 px-8 py-5 border-2 transition-all ${activeSector === s.id ? "bg-white text-black border-white" : "bg-black text-white/40 border-white/10 hover:border-white/40"}`}
+             >
+                <s.icon className="w-6 h-6" />
+                <span className="text-xl font-black italic uppercase tracking-tighter">{s.label}</span>
              </button>
-          </div>
+           ))}
         </div>
 
-        {/* Right Column: Database Logs */}
-        <div className="glass-panel border-4 border-hyper-pink/30 bg-black/80 p-8 flex flex-col" style={{ height: "calc(100vh - 120px)" }}>
-          <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-6 shrink-0">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-hyper-pink rounded-full shadow-[0_0_15px_#ff007a]">
-                 <Database className="w-6 h-6 text-black" />
+        <div className="grid lg:grid-cols-12 gap-10">
+          {/* TRANSMITTER PANEL (Takes 4 cols) */}
+          <div className="lg:col-span-4 flex flex-col gap-10">
+            <div className="glass-panel border-4 border-cyber-blue/30 bg-black/80 p-8">
+              <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-6">
+                <div className="flex items-center gap-4"><div className="p-3 bg-cyber-blue rounded-full shadow-[0_0_15px_#00f0ff]"><Send className="w-6 h-6 text-black" /></div><div><h2 className="text-3xl font-black italic text-white uppercase tracking-tighter">TRANSMITTER</h2><p className="text-cyber-blue font-black uppercase tracking-[0.4em] text-[10px]">SECURE_UPLINK</p></div></div>
+                {activeTab === "SQUAD" && <button onClick={handleSquadBlast} className="px-4 py-2 bg-[#ccff00] text-black font-black text-[10px] uppercase tracking-widest hover:bg-white transition-all">SQUAD_BLAST</button>}
               </div>
-              <div>
-                <h2 className="text-3xl font-black italic text-white uppercase tracking-tighter">DATA_LOGS</h2>
-                <p className="text-hyper-pink font-black uppercase tracking-[0.4em] text-[10px]">NEON_DB_ACTIVE</p>
-              </div>
+              <form onSubmit={handleSend} className="space-y-6">
+                <div className="space-y-4">
+                  <div><label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">TARGET_NODE</label><input type="email" placeholder="CLIENT@DOMAIN.COM" value={to} onChange={(e) => setTo(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors" /></div>
+                  <div><label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">SUBJECT</label><input type="text" placeholder="RE: YOUR INQUIRY" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors" /></div>
+                  <div><label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">DATA_PAYLOAD</label><textarea rows={6} placeholder="TYPE RESPONSE..." value={message} onChange={(e) => setMessage(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors resize-none" /></div>
+                </div>
+                <button type="submit" disabled={status === "loading"} className="w-full py-5 bg-cyber-blue text-black font-black text-xl uppercase italic hover:bg-white transition-all shadow-[8px_8px_0_0_rgba(255,255,255,0.2)] disabled:opacity-50">{status === "loading" ? "ENCRYPTING..." : "TRANSMIT"}</button>
+              </form>
             </div>
-            <div className="flex items-center gap-4">
-              {selectedEmail && (
-                <button onClick={() => { setSelectedEmail(null); setTo(""); setSubject(""); }} className="px-4 py-2 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded text-[10px] font-black tracking-widest uppercase">BACK_TO_LIST</button>
-              )}
-              <button onClick={() => fetchRecords(passcode)} className="p-3 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded">
-                 <RefreshCcw className={`w-5 h-5 ${isLoadingRecords ? "animate-spin" : ""}`} />
-              </button>
+            <div className="grid grid-cols-2 gap-4">
+               <div className="glass-panel p-6 border-l-4 border-cyber-blue"><div className="text-[10px] font-black text-white/40 uppercase mb-2">SQUAD</div><div className="text-3xl font-black italic text-white">{squadCount}</div></div>
+               <button onClick={handleExportData} className="glass-panel p-6 border-l-4 border-[#ffaa00] hover:bg-white/5 transition-all text-left"><div className="text-[10px] font-black text-white/40 uppercase mb-2">BACKUP</div><div className="flex items-center gap-2 text-xl font-black italic text-[#ffaa00]"><Download className="w-5 h-5" /> EXPORT</div></button>
             </div>
           </div>
 
-          {!selectedEmail && (
-            <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 shrink-0 overflow-x-auto custom-scrollbar">
-              {["ALL", "QUERIES", "FEEDBACK", "SQUAD", "LEADERBOARDS", "MAINTENANCE", "BROADCAST"].map(tab => (
-                <button key={tab} onClick={() => setActiveTab(tab as any)} className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase transition-all rounded whitespace-nowrap ${activeTab === tab ? "bg-hyper-pink text-black" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}>
-                  {tab}
-                </button>
-              ))}
+          {/* DATA CENTER (Takes 8 cols) */}
+          <div className="lg:col-span-8 glass-panel border-4 border-hyper-pink/30 bg-black/80 p-8 flex flex-col" style={{ height: "800px" }}>
+            <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-6 shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-hyper-pink rounded-full shadow-[0_0_15px_#ff007a]"><Database className="w-6 h-6 text-black" /></div>
+                <div><h2 className="text-3xl font-black italic text-white uppercase tracking-tighter">{activeSector}</h2><p className="text-hyper-pink font-black uppercase tracking-[0.4em] text-[10px]">INTELLIGENCE_MODULE_ACTIVE</p></div>
+              </div>
+              <div className="flex items-center gap-4">
+                {selectedEmail && <button onClick={() => { setSelectedEmail(null); setTo(""); setSubject(""); }} className="px-4 py-2 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded text-[10px] font-black tracking-widest uppercase">CLOSE_THREAD</button>}
+                <button onClick={() => fetchRecords(passcode)} className="p-3 bg-white/10 hover:bg-hyper-pink hover:text-black transition-all text-white rounded"><RefreshCcw className={`w-5 h-5 ${isLoadingRecords ? "animate-spin" : ""}`} /></button>
+              </div>
             </div>
-          )}
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar pr-4 space-y-4">
-            {activeTab === "BROADCAST" ? (
-              <div className="p-8 space-y-8">
-                 <div className="flex items-center gap-4 text-hyper-pink mb-4">
-                    <Radio className="w-10 h-10" />
-                    <h3 className="text-4xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3>
-                 </div>
-                 <div className="space-y-4">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-white/40">ANNOUNCEMENT_CONTENT</label>
-                    <textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_TEXT_TO_SCROLL_GLOBALLY..." className="w-full bg-black border-2 border-white/10 p-6 text-white font-mono focus:border-hyper-pink focus:outline-none h-40 resize-none" />
-                    <button onClick={handleUpdateBroadcast} className="w-full py-6 bg-hyper-pink text-black font-black text-2xl uppercase italic hover:bg-white transition-all shadow-[10px_10px_0_0_white]">PUSH_TO_ALL_NODES</button>
-                 </div>
+            {!selectedEmail && (
+              <div className="flex gap-4 mb-8 bg-white/5 p-2 border border-white/10 rounded-lg shrink-0">
+                {SECTORS.find(s => s.id === activeSector)?.sub.map(tab => (
+                  <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 text-[10px] font-black tracking-[0.2em] uppercase transition-all ${activeTab === tab ? "bg-hyper-pink text-black shadow-[0_0_15px_#ff007a]" : "text-white/40 hover:text-white"}`}>
+                    {tab.replace('_', ' ')}
+                  </button>
+                ))}
               </div>
-            ) : activeTab === "MAINTENANCE" ? (
-              <div className="space-y-4">
-                {["strike", "beat", "typer", "run", "pong", "snake", "brick", "stacks", "maze", "dodge", "jump", "canvas", "beats", "terminal"].map(id => {
-                  const feat = features.find(f => f.id === id);
-                  const isEnabled = feat ? feat.is_enabled : true;
-                  return (
-                    <div key={id} className="flex items-center justify-between p-6 bg-black/50 border-l-4 border-white/10 hover:border-hyper-pink transition-all">
-                       <div><div className="text-[10px] font-black text-white/40 uppercase mb-1">MODULE_ID</div><div className="text-xl font-black italic text-white uppercase">{id}</div></div>
-                       <button onClick={() => handleToggleFeature(id, isEnabled)} className={`px-8 py-3 font-black uppercase italic transition-all ${isEnabled ? "bg-electric-volt text-black shadow-[5px_5px_0_0_white]" : "bg-red-500 text-white shadow-[5px_5px_0_0_black]"}`}>{isEnabled ? "ACTIVE" : "OFFLINE"}</button>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : activeTab === "LEADERBOARDS" ? (
-              <div className="w-full overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b-2 border-white/10 text-[10px] uppercase tracking-widest text-white/40">
-                      <th className="pb-3 px-4 font-black">Simulation</th><th className="pb-3 px-4 font-black">Alias</th><th className="pb-3 px-4 font-black">Score</th><th className="pb-3 px-4 font-black text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {leaderboardScores.length === 0 ? (
-                      <tr><td colSpan={4} className="text-center text-white/30 font-mono text-sm py-10">NO_SCORES_FOUND</td></tr>
-                    ) : (
-                      leaderboardScores.map(score => (
-                        <tr key={score.id} className="border-b border-white/5 hover:bg-white/10 transition-all group">
-                          <td className="py-4 px-4 font-black text-xs text-cyber-blue uppercase tracking-widest">{score.game_id}</td>
-                          <td className="py-4 px-4 font-bold text-white text-sm">{score.initials}</td>
-                          <td className="py-4 px-4 font-black italic text-electric-volt tabular-nums">{score.score}</td>
-                          <td className="py-4 px-4 text-right"><button onClick={() => handleDeleteScore(score.id)} className="px-3 py-1 bg-red-500/20 text-red-500 border border-red-500/50 hover:bg-red-500 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest rounded">DELETE</button></td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            ) : filteredRecords.length === 0 ? (
-               <div className="text-center text-white/30 font-mono text-sm py-10">NO_RECORDS_FOUND</div>
-            ) : !selectedEmail ? (
-              <div className="w-full overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b-2 border-white/10 text-[10px] uppercase tracking-widest text-white/40">
-                      <th className="pb-3 px-4 font-black">Type</th><th className="pb-3 px-4 font-black">Client Node</th><th className="pb-3 px-4 font-black hidden md:table-cell">Latest Subject</th><th className="pb-3 px-4 font-black text-right">Timestamp</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
-                      const thread = filteredRecords.filter(r => r.email === email);
-                      const latest = thread[0];
-                      let typeColor = "text-hyper-pink";
-                      let typeLabel = "MIXED";
-                      if (thread.every(t => t.type === "NEWSLETTER")) { typeColor = "text-[#ccff00]"; typeLabel = "SQUAD"; }
-                      else if (thread.every(t => t.type === "FEEDBACK")) { typeColor = "text-[#ffaa00]"; typeLabel = "FEEDBACK"; }
-                      else if (thread.some(t => t.type === "RECEIVED")) { typeColor = "text-electric-volt"; typeLabel = "QUERY"; }
-                      return (
-                        <tr key={email} onClick={() => handleSelectConversation(email)} className="border-b border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
-                          <td className="py-4 px-4 whitespace-nowrap"><span className={`inline-flex items-center px-2 py-1 bg-${typeColor.replace('text-', '')}/10 border border-${typeColor.replace('text-', '')}/30 ${typeColor} text-[10px] font-black tracking-widest uppercase rounded-sm`}>{typeLabel} <span className="text-white/40 ml-2">[{thread.length}]</span></span></td>
-                          <td className="py-4 px-4 font-bold text-white text-sm group-hover:text-hyper-pink transition-colors whitespace-nowrap">{email}</td>
-                          <td className="py-4 px-4 text-xs text-white/60 truncate max-w-[200px] hidden md:table-cell group-hover:text-white transition-colors">{latest.subject}</td>
-                          <td className="py-4 px-4 text-[10px] text-white/40 font-mono text-right whitespace-nowrap group-hover:text-hyper-pink transition-colors">{new Date(latest.created_at).toLocaleString()}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              filteredRecords.filter(r => r.email === selectedEmail).map(record => (
-                <div key={record.id} className={`p-4 border-l-4 bg-black/50 ${record.type === 'RECEIVED' ? 'border-electric-volt' : record.type === 'FEEDBACK' ? 'border-[#ffaa00]' : record.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue'}`}>
-                  <div className="flex justify-between items-start mb-2">
-                    <span className={`text-[10px] font-black tracking-widest uppercase ${record.type === 'RECEIVED' ? 'text-electric-volt' : record.type === 'FEEDBACK' ? 'text-[#ffaa00]' : record.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>{record.type === 'RECEIVED' ? 'INCOMING' : record.type === 'FEEDBACK' ? 'FEEDBACK' : record.type === 'NEWSLETTER' ? 'SQUAD' : 'REPLY'}</span>
-                    <span className="text-[10px] text-white/40 font-mono">{new Date(record.created_at).toLocaleString()}</span>
-                  </div>
-                  <div className="text-xs text-white/60 mb-3 truncate border-b border-white/10 pb-2">{record.subject}</div>
-                  <div className="text-xs font-mono text-white/80 whitespace-pre-wrap">{record.content}</div>
-                </div>
-              ))
             )}
+
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
+              {activeTab === "GLOBAL_ALERT" ? (
+                <div className="p-10 space-y-8"><div className="flex items-center gap-4 text-hyper-pink mb-4"><Radio className="w-12 h-12" /><h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3></div><div className="space-y-6"><textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_GLOBAL_MESSAGE..." className="w-full bg-black border-2 border-white/10 p-8 text-2xl text-white font-mono focus:border-hyper-pink focus:outline-none h-60" /><button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-black font-black text-3xl uppercase italic hover:bg-white transition-all shadow-[15px_15px_0_0_white]">ACTIVATE_UPLINK</button></div></div>
+              ) : activeTab === "MAINTENANCE" ? (
+                <div className="grid md:grid-cols-2 gap-4">
+                  {["strike", "beat", "typer", "run", "pong", "snake", "brick", "stacks", "maze", "dodge", "jump", "canvas", "beats", "terminal"].map(id => {
+                    const feat = features.find(f => f.id === id); const isEnabled = feat ? feat.is_enabled : true;
+                    return ( <div key={id} className="flex items-center justify-between p-6 bg-black/50 border-2 border-white/5 hover:border-white/20"><div className="text-xl font-black italic text-white uppercase">{id}</div><button onClick={() => handleToggleFeature(id, isEnabled)} className={`px-6 py-2 font-black uppercase text-xs ${isEnabled ? "bg-electric-volt text-black" : "bg-red-500 text-white"}`}>{isEnabled ? "ACTIVE" : "OFFLINE"}</button></div> );
+                  })}
+                </div>
+              ) : activeTab === "LEADERBOARDS" ? (
+                <table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-white/10 text-[10px] uppercase text-white/40"><th className="pb-3 px-4">Game</th><th className="pb-3 px-4">ID</th><th className="pb-3 px-4">Pts</th><th className="pb-3 px-4 text-right">Action</th></tr></thead><tbody>
+                  {leaderboardScores.map(s => (<tr key={s.id} className="border-b border-white/5 hover:bg-white/5"><td className="py-4 px-4 text-xs font-black text-cyber-blue uppercase">{s.game_id}</td><td className="py-4 px-4 font-bold text-white">{s.initials}</td><td className="py-4 px-4 font-black italic text-electric-volt">{s.score}</td><td className="py-4 px-4 text-right"><button onClick={() => handleDeleteScore(s.id)} className="text-red-500 hover:text-white transition-colors"><ShieldAlert className="w-5 h-5" /></button></td></tr>))}
+                </tbody></table>
+              ) : !selectedEmail ? (
+                <table className="w-full text-left border-collapse"><thead><tr className="border-b-2 border-white/10 text-[10px] uppercase text-white/40"><th className="pb-3 px-4">Category</th><th className="pb-3 px-4">Node</th><th className="pb-3 px-4 text-right">Time</th></tr></thead><tbody>
+                  {Array.from(new Set(filteredRecords.map(r => r.email))).map(email => {
+                    const thread = filteredRecords.filter(r => r.email === email); const latest = thread[0]; let c = "text-hyper-pink"; let l = "MIXED";
+                    if (thread.every(t => t.type === "NEWSLETTER")) { c = "text-[#ccff00]"; l = "SQUAD"; }
+                    else if (thread.every(t => t.type === "FEEDBACK")) { c = "text-[#ffaa00]"; l = "FEEDBACK"; }
+                    else if (thread.some(t => t.type === "RECEIVED")) { c = "text-electric-volt"; l = "QUERY"; }
+                    return (<tr key={email} onClick={() => handleSelectConversation(email)} className="border-b border-white/5 hover:bg-white/5 cursor-pointer group"><td className={`py-4 px-4 text-[10px] font-black uppercase ${c}`}>{l} [{thread.length}]</td><td className="py-4 px-4 font-bold text-white group-hover:text-hyper-pink">{email}</td><td className="py-4 px-4 text-[10px] text-white/40 font-mono text-right">{new Date(latest.created_at).toLocaleDateString()}</td></tr>);
+                  })}
+                </tbody></table>
+              ) : (
+                <div className="space-y-6">
+                  {filteredRecords.filter(r => r.email === selectedEmail).map(r => (
+                    <div key={r.id} className={`p-6 border-l-4 bg-black/50 ${r.type === 'RECEIVED' ? 'border-electric-volt' : r.type === 'FEEDBACK' ? 'border-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue'}`}>
+                      <div className="flex justify-between items-start mb-4"><span className={`text-[10px] font-black uppercase tracking-widest ${r.type === 'RECEIVED' ? 'text-electric-volt' : r.type === 'FEEDBACK' ? 'text-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>{r.type}</span><span className="text-[10px] text-white/40 font-mono">{new Date(r.created_at).toLocaleString()}</span></div>
+                      <div className="text-sm font-bold text-white mb-2">{r.subject}</div><div className="text-sm font-mono text-white/80 whitespace-pre-wrap">{r.content}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
