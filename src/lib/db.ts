@@ -55,6 +55,18 @@ export async function setupDatabase() {
       last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      username VARCHAR(50) UNIQUE NOT NULL,
+      xp INTEGER DEFAULT 0,
+      level INTEGER DEFAULT 1,
+      unlocked_colors TEXT[] DEFAULT ARRAY['hyper-pink'],
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
   
   return true;
 }

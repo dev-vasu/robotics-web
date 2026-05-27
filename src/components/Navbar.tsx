@@ -47,6 +47,12 @@ export default function Navbar() {
             FEEDBACK
           </Link>
           <Link
+            href="/identity"
+            className="text-xs font-black uppercase tracking-[0.2em] text-cyber-blue hover:text-foreground transition-all"
+          >
+            IDENTITY
+          </Link>
+          <Link
             href="/contact"
             className="px-8 py-3 bg-electric-volt text-background text-xs font-black uppercase tracking-[0.3em] hover:bg-foreground transition-all transform hover:-translate-y-1 hover:shadow-[0_10px_0_0_#ff007a] active:translate-y-0"
           >

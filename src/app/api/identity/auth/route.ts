@@ -1,0 +1,38 @@
+import { NextResponse } from "next/server";
+import { neon } from '@neondatabase/serverless';
+import { setupDatabase } from "@/lib/db";
+
+export async function POST(req: Request) {
+  try {
+    const { email, username } = await req.json();
+    if (!email || !username) return NextResponse.json({ error: "MISSING_DATA" }, { status: 400 });
+
+    await setupDatabase();
+    const sql = neon(process.env.DATABASE_URL!);
+
+    // 1. Try to find user
+    let user = await sql`SELECT * FROM users WHERE email = ${email}`;
+
+    if (user.length === 0) {
+      // 2. Create new user if not exists
+      try {
+        const result = await sql`
+          INSERT INTO users (email, username)
+          VALUES (${email}, ${username.toUpperCase()})
+          RETURNING *
+        `;
+        user = result;
+      } catch (err: any) {
+        if (err.message.includes('unique constraint')) {
+          return NextResponse.json({ error: "USERNAME_TAKEN" }, { status: 400 });
+        }
+        throw err;
+      }
+    }
+
+    return NextResponse.json({ user: user[0] }, { status: 200 });
+  } catch (error) {
+    console.error("Auth Error:", error);
+    return NextResponse.json({ error: "SYSTEM_FAILURE" }, { status: 500 });
+  }
+}

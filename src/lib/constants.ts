@@ -1,4 +1,4 @@
-import { Crosshair, ShieldAlert, Zap, Terminal, Music, Smartphone, MousePointer2, Move, Ghost, Target, Eye, Layers, Circle } from "lucide-react";
+import { Crosshair, ShieldAlert, Zap, Terminal, Music, Smartphone, MousePointer2, Move, Ghost, Target, Eye, Layers, Circle, Triangle, Activity } from "lucide-react";
 
 export const CATEGORIES = [
   {

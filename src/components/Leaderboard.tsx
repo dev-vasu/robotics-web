@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Trophy, UploadCloud, CheckCircle2 } from "lucide-react";
 
@@ -14,10 +16,18 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
   const [leaders, setLeaders] = useState<{ initials: string; score: number }[]>([]);
 
   useEffect(() => {
+    // 1. Fetch scores
     fetch(`/api/leaderboard?gameId=${gameId}`)
       .then(res => res.json())
       .then(data => setLeaders(data.leaderboard || []))
       .catch(console.error);
+
+    // 2. SQUAD_IDENTITY: Auto-fill initials from user profile
+    const savedUser = localStorage.getItem("robo-user");
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setInitials(user.username.substring(0, 3).toUpperCase());
+    }
   }, [gameId, isSubmitted]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,12 +36,30 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
     
     setIsSubmitting(true);
     try {
-      await fetch("/api/leaderboard", {
+      const res = await fetch("/api/leaderboard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gameId, initials, score: currentScore }),
       });
-      setIsSubmitted(true);
+
+      if (res.ok) {
+        setIsSubmitted(true);
+        
+        // 3. SQUAD_IDENTITY: Award XP on successful submission
+        const savedUser = localStorage.getItem("robo-user");
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+          const xpRes = await fetch("/api/identity/xp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id, xpAmount: Math.floor(currentScore / 10) + 50 }),
+          });
+          if (xpRes.ok) {
+            const xpData = await xpRes.json();
+            localStorage.setItem("robo-user", JSON.stringify(xpData.user));
+          }
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -74,8 +102,8 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
           </div>
         </form>
       ) : (
-        <div className="mb-6 p-4 bg-electric-volt/10 border border-electric-volt text-electric-volt text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2">
-          <CheckCircle2 className="w-4 h-4" /> SCORE_UPLOADED
+        <div className="mb-6 p-4 bg-electric-volt/10 border border-electric-volt text-electric-volt text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 animate-in zoom-in duration-300">
+          <CheckCircle2 className="w-4 h-4" /> SCORE_LOGGED_XP_SYNCED
         </div>
       )}
 
