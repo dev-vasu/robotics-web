@@ -45,10 +45,12 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
       if (res.ok) {
         setIsSubmitted(true);
         
-        // 3. SQUAD_IDENTITY: Award XP on successful submission
+        // 3. SQUAD_IDENTITY: Award XP and Log History
         const savedUser = localStorage.getItem("robo-user");
         if (savedUser) {
           const user = JSON.parse(savedUser);
+          
+          // Award XP
           const xpRes = await fetch("/api/identity/xp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -58,6 +60,13 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
             const xpData = await xpRes.json();
             localStorage.setItem("robo-user", JSON.stringify(xpData.user));
           }
+
+          // Log History
+          await fetch("/api/identity/history", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id, gameId, score: currentScore }),
+          });
         }
       }
     } catch (error) {

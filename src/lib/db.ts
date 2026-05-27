@@ -85,6 +85,16 @@ export async function setupDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS simulation_history (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      game_id VARCHAR(50) NOT NULL,
+      score INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
   
   return true;
 }

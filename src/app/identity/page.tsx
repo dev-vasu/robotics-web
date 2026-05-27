@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw, MessageSquare } from "lucide-react";
+import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw, MessageSquare, Activity } from "lucide-react";
 import gsap from "gsap";
 import NeonChat from "@/components/NeonChat";
 
@@ -16,20 +16,36 @@ type UserData = {
   unlocked_colors: string[];
 };
 
+type SimHistory = {
+  id: number;
+  game_id: string;
+  score: number;
+  created_at: string;
+};
+
 export default function IdentityPage() {
   const [user, setUser] = useState<UserData | null>(null);
+  const [history, setHistory] = useState<SimHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [authForm, setAuthForm] = useState({ email: "", username: "" });
   const [isNewUser, setIsNewUser] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   
-  // Edit Username State
   const [isEditing, setIsEditing] = useState(false);
   const [newAlias, setNewAlias] = useState("");
   const [updateStatus, setUpdateStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // 1. NEURAL SYNC: Fetch latest authoritative data from DB
+  const fetchHistory = async (userId: number) => {
+    try {
+      const res = await fetch(`/api/identity/history?userId=${userId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setHistory(data.history || []);
+      }
+    } catch (e) { console.error(e); }
+  };
+
   const syncIdentity = async (userId: number) => {
     setIsSyncing(true);
     try {
@@ -38,6 +54,7 @@ export default function IdentityPage() {
         const data = await res.json();
         setUser(data.user);
         localStorage.setItem("robo-user", JSON.stringify(data.user));
+        fetchHistory(userId);
       }
     } catch (e) { console.error("Sync Failure:", e); }
     setIsSyncing(false);
@@ -68,6 +85,7 @@ export default function IdentityPage() {
       if (res.ok) {
         setUser(data.user);
         localStorage.setItem("robo-user", JSON.stringify(data.user));
+        fetchHistory(data.user.id);
         setStatus("idle");
       } else {
         if (data.error === "USERNAME_REQUIRED_FOR_INIT") {
@@ -113,6 +131,7 @@ export default function IdentityPage() {
   const handleLogout = () => {
     localStorage.removeItem("robo-user");
     setUser(null);
+    setHistory([]);
     setIsNewUser(false);
     setAuthForm({ email: "", username: "" });
   };
@@ -293,14 +312,41 @@ export default function IdentityPage() {
                <NeonChat user={{ id: user.id, username: user.username }} />
             </div>
 
-            {/* Simulation History Placeholder */}
+            {/* Simulation History */}
             <div className="glass-panel p-10 border-4 border-foreground/10 bg-background/80">
-               <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider mb-8 flex items-center gap-4">
-                  <Zap className="w-6 h-6 text-hyper-pink" /> RECENT_SIMULATIONS
+               <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider mb-10 flex items-center gap-4 border-b border-foreground/5 pb-6">
+                  <Activity className="w-6 h-6 text-hyper-pink" /> RECENT_SIMULATIONS
                </h3>
-               <div className="text-center py-20 border-2 border-dashed border-foreground/5">
-                  <p className="text-dim font-black uppercase tracking-[0.4em] text-xs">NO_DATA_LOGGED_YET</p>
-               </div>
+               
+               {history.length === 0 ? (
+                 <div className="text-center py-20 border-2 border-dashed border-foreground/5">
+                    <p className="text-dim font-black uppercase tracking-[0.4em] text-xs">NO_DATA_LOGGED_YET</p>
+                 </div>
+               ) : (
+                 <div className="space-y-4">
+                    {history.map(sim => (
+                      <div key={sim.id} className="flex items-center justify-between p-6 bg-foreground/5 border-l-4 border-hyper-pink hover:bg-foreground/10 transition-all group">
+                         <div className="flex items-center gap-6">
+                            <div className="text-[8px] font-black text-dim uppercase vertical-text border-r border-foreground/10 pr-4">LOG_ENTRY</div>
+                            <div>
+                               <h4 className="text-xl font-black italic text-foreground uppercase group-hover:text-hyper-pink transition-colors">
+                                  {sim.game_id.replace("_", " ")}
+                               </h4>
+                               <p className="text-[10px] text-dim font-mono uppercase">
+                                  {new Date(sim.created_at).toLocaleString()}
+                               </p>
+                            </div>
+                         </div>
+                         <div className="text-right">
+                            <div className="text-[8px] font-black text-dim uppercase mb-1">DATA_YIELD</div>
+                            <div className="text-2xl font-black italic text-electric-volt tabular-nums">
+                               {sim.score}
+                            </div>
+                         </div>
+                      </div>
+                    ))}
+                 </div>
+               )}
             </div>
           </div>
         )}
