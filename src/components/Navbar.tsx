@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Zap } from "lucide-react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
@@ -27,7 +28,7 @@ export default function Navbar() {
           <div className="p-1.5 bg-hyper-pink rounded-full group-hover:rotate-180 transition-transform duration-500">
             <Zap className="w-6 h-6 text-black fill-current" />
           </div>
-          <span className="text-3xl font-black italic tracking-tighter text-white uppercase leading-none">
+          <span className="text-3xl font-black italic tracking-tighter text-white uppercase leading-none border-b-2 border-transparent">
             ROBO<span className="text-hyper-pink">VIBE</span>
           </span>
         </Link>
@@ -46,23 +47,12 @@ export default function Navbar() {
             FEEDBACK
           </Link>
           <Link
-            href="/"
-            className="text-xs font-black uppercase tracking-[0.2em] text-white/60 hover:text-hyper-pink hover:line-through transition-all"
-          >
-            Sectors
-          </Link>
-          <Link
-            href="/"
-            className="text-xs font-black uppercase tracking-[0.2em] text-white/60 hover:text-electric-volt hover:line-through transition-all"
-          >
-            Tech_Stack
-          </Link>
-          <Link
             href="/contact"
             className="px-8 py-3 bg-electric-volt text-black text-xs font-black uppercase tracking-[0.3em] hover:bg-white transition-all transform hover:-translate-y-1 hover:shadow-[0_10px_0_0_#ff007a] active:translate-y-0"
           >
             Get_In
           </Link>
+          <ThemeToggle />
         </div>
       </nav>
     </header>
