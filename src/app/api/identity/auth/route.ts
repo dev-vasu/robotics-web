@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const sql = neon(process.env.DATABASE_URL!);
 
     // 1. Try to find user by email
-    let user = await sql`SELECT * FROM users WHERE email = ${email}`;
+    let user = await sql`SELECT id, email, username, xp, level, unlocked_colors, active_accent FROM users WHERE email = ${email}`;
 
     if (user.length === 0) {
       // 2. If new user, username is required
@@ -19,8 +19,8 @@ export async function POST(req: Request) {
       
       try {
         const result = await sql`
-          INSERT INTO users (email, username)
-          VALUES (${email}, ${username.toUpperCase()})
+          INSERT INTO users (email, username, unlocked_colors, active_accent)
+          VALUES (${email}, ${username.toUpperCase()}, ARRAY['#ff007a'], '#ff007a')
           RETURNING *
         `;
         user = result;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw, MessageSquare, Activity } from "lucide-react";
+import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw, MessageSquare, Activity, Palette } from "lucide-react";
 import gsap from "gsap";
 import NeonChat from "@/components/NeonChat";
 
@@ -14,6 +14,7 @@ type UserData = {
   xp: number;
   level: number;
   unlocked_colors: string[];
+  active_accent: string;
 };
 
 type SimHistory = {
@@ -61,11 +62,32 @@ export default function IdentityPage() {
     setLoading(false);
   };
 
+  const handleUpdateAccent = async (color: string) => {
+    if (!user) return;
+    try {
+      const res = await fetch("/api/identity/accent", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, color }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        localStorage.setItem("robo-user", JSON.stringify(data.user));
+        // Force global variable update
+        document.documentElement.style.setProperty('--hyper-pink', color);
+      }
+    } catch (e) { console.error(e); }
+  };
+
   useEffect(() => {
     const savedUser = localStorage.getItem("robo-user");
     if (savedUser) {
       const parsed = JSON.parse(savedUser);
       syncIdentity(parsed.id);
+      if (parsed.active_accent) {
+        document.documentElement.style.setProperty('--hyper-pink', parsed.active_accent);
+      }
     } else {
       setLoading(false);
     }
@@ -85,6 +107,9 @@ export default function IdentityPage() {
       if (res.ok) {
         setUser(data.user);
         localStorage.setItem("robo-user", JSON.stringify(data.user));
+        if (data.user.active_accent) {
+          document.documentElement.style.setProperty('--hyper-pink', data.user.active_accent);
+        }
         fetchHistory(data.user.id);
         setStatus("idle");
       } else {
@@ -130,6 +155,7 @@ export default function IdentityPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("robo-user");
+    document.documentElement.style.removeProperty('--hyper-pink');
     setUser(null);
     setHistory([]);
     setIsNewUser(false);
@@ -265,8 +291,13 @@ export default function IdentityPage() {
                   
                   <div className="mt-12 pt-8 border-t border-foreground/10 flex justify-between items-end">
                      <div className="flex gap-4">
-                        {user.unlocked_colors.map(color => (
-                           <div key={color} className={`w-8 h-8 rounded-full border-2 border-foreground/20 shadow-[0_0_10px_rgba(255,255,255,0.1)]`} style={{ backgroundColor: color === 'hyper-pink' ? '#ff007a' : color }} />
+                        {(user.unlocked_colors || ['#ff007a']).map(color => (
+                           <button 
+                             key={color} 
+                             onClick={() => handleUpdateAccent(color)}
+                             className={`w-10 h-10 rounded-full border-4 transition-all transform hover:scale-110 ${user.active_accent === color ? 'border-white scale-110' : 'border-foreground/10'}`} 
+                             style={{ backgroundColor: color }} 
+                           />
                         ))}
                      </div>
                      <button onClick={handleLogout} className="flex items-center gap-2 text-[10px] font-black text-red-500 uppercase hover:text-white transition-colors">
@@ -290,16 +321,16 @@ export default function IdentityPage() {
                   </div>
 
                   <div className="glass-panel p-8 border-l-4 border-cyber-blue bg-background/80">
-                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 bg-cyber-blue rounded-full text-background"><Trophy className="w-6 h-6" /></div>
+                     <div className="flex items-center gap-4 mb-4 text-cyber-blue">
+                        <Palette className="w-8 h-8" />
                         <div>
-                           <h3 className="text-xl font-black italic text-foreground uppercase">SQUAD_RANK</h3>
-                           <p className="text-[10px] text-dim font-bold uppercase">ELITE_PILOT</p>
+                           <h3 className="text-xl font-black italic text-foreground uppercase">CUSTOMIZER</h3>
+                           <p className="text-[10px] text-dim font-bold uppercase">RE-SKIN PLATFORM</p>
                         </div>
                      </div>
-                     <div className="flex items-center gap-2 text-3xl font-black italic text-foreground">
-                        # <span className="text-cyber-blue">248</span> / 1.2k
-                     </div>
+                     <p className="text-[10px] text-foreground/60 font-bold leading-relaxed uppercase">
+                        LEVEL UP TO UNLOCK NEW NEON ACCENTS FOR YOUR UI.
+                     </p>
                   </div>
                </div>
             </div>

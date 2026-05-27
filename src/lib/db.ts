@@ -71,10 +71,19 @@ export async function setupDatabase() {
       username VARCHAR(50) UNIQUE NOT NULL,
       xp INTEGER DEFAULT 0,
       level INTEGER DEFAULT 1,
-      unlocked_colors TEXT[] DEFAULT ARRAY['hyper-pink'],
+      unlocked_colors TEXT[] DEFAULT ARRAY['#ff007a'],
+      active_accent TEXT DEFAULT '#ff007a',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  // Migration: Add active_accent column if it doesn't exist
+  try {
+    await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS active_accent TEXT DEFAULT '#ff007a';`;
+    await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS unlocked_colors TEXT[] DEFAULT ARRAY['#ff007a'];`;
+  } catch (e) {
+    console.warn("Migration warning (users columns might already exist):", e);
+  }
 
   await sql`
     CREATE TABLE IF NOT EXISTS chat_messages (

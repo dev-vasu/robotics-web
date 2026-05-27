@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     await setupDatabase();
     const sql = neon(process.env.DATABASE_URL!);
 
-    const user = await sql`SELECT id, email, username, xp, level, unlocked_colors FROM users WHERE id = ${userId}`;
+    const user = await sql`SELECT id, email, username, xp, level, unlocked_colors, active_accent FROM users WHERE id = ${userId}`;
 
     if (user.length === 0) return NextResponse.json({ error: "USER_NOT_FOUND" }, { status: 404 });
 

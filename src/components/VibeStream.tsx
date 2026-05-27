@@ -52,6 +52,15 @@ export default function VibeStream() {
     syncHeartbeat();
     const heartbeatInterval = setInterval(syncHeartbeat, 30000); // Every 30s
 
+    // 5. Global Accent Sync
+    const savedUser = localStorage.getItem("robo-user");
+    if (savedUser) {
+      const { active_accent } = JSON.parse(savedUser);
+      if (active_accent) {
+        document.documentElement.style.setProperty('--hyper-pink', active_accent);
+      }
+    }
+
     // 4. Dynamic News Ticker updates
     const tickerInterval = setInterval(() => {
       setItems(prev => {
