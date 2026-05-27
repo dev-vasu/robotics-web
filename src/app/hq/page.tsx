@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Lock, Send, ShieldAlert, CheckCircle2, ChevronLeft, Database, RefreshCcw, Radio, Users, Download, Mail, Settings, Trophy, Sparkles } from "lucide-react";
 import gsap from "gsap";
-import { CATEGORIES } from "@/lib/constants";
+import { CATEGORIES, SYSTEM_MODULES } from "@/lib/constants";
 
 type Record = {
   id: number;
@@ -299,8 +299,6 @@ export default function AdminHQ() {
                     <button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[15px_15px_0_0_white] active:translate-y-1 active:shadow-none">ACTIVATE_GLOBAL_UPLINK</button>
                   </div>
                 </div>
-import { CATEGORIES, SYSTEM_MODULES } from "@/lib/constants";
-...
               ) : activeTab === "MAINTENANCE" ? (
                 <div className="space-y-16 animate-in fade-in slide-in-from-right-5 duration-500 pb-20">
                   
