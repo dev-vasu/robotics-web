@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X } from "lucide-react";
+import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X, RefreshCcw } from "lucide-react";
 import gsap from "gsap";
 
 type UserData = {
@@ -26,13 +26,31 @@ export default function IdentityPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [newAlias, setNewAlias] = useState("");
   const [updateStatus, setUpdateStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // 1. NEURAL SYNC: Fetch latest authoritative data from DB
+  const syncIdentity = async (userId: number) => {
+    setIsSyncing(true);
+    try {
+      const res = await fetch(`/api/identity/sync?userId=${userId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        localStorage.setItem("robo-user", JSON.stringify(data.user));
+      }
+    } catch (e) { console.error("Sync Failure:", e); }
+    setIsSyncing(false);
+    setLoading(false);
+  };
 
   useEffect(() => {
     const savedUser = localStorage.getItem("robo-user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const parsed = JSON.parse(savedUser);
+      syncIdentity(parsed.id);
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -104,7 +122,7 @@ export default function IdentityPage() {
     <main className="min-h-screen bg-background grid-bg flex flex-col pt-20">
       <Navbar />
 
-      <div className="flex-1 container mx-auto px-6 py-20 flex flex-col items-center">
+      <div className="flex-1 container mx-auto px-6 py-20 flex flex-col items-center text-foreground">
         {!user ? (
           <div className="w-full max-w-lg animate-in fade-in zoom-in duration-700">
             <div className="text-center mb-12">
@@ -119,7 +137,7 @@ export default function IdentityPage() {
 
             <form onSubmit={handleAuth} className="glass-panel p-10 border-4 border-foreground/10 bg-background/80 relative overflow-hidden group">
                <div className="absolute top-0 left-0 w-full h-1 bg-hyper-pink shadow-[0_0_20px_#ff007a] animate-scan opacity-0 group-hover:opacity-100" />
-               <div className="space-y-8">
+               <div className="space-y-8 text-foreground">
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-widest text-dim mb-2">DIGITAL_NODE (Email)</label>
                     <input 
@@ -170,8 +188,13 @@ export default function IdentityPage() {
                      <Shield className="w-40 h-40 text-foreground/5 -rotate-12" />
                   </div>
                   <div className="relative z-10">
-                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-hyper-pink text-background text-[10px] font-black uppercase mb-8">
-                        <User className="w-3 h-3" /> SQUAD_MEMBER_ACTIVE
+                     <div className="flex justify-between items-start mb-8">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-hyper-pink text-background text-[10px] font-black uppercase">
+                           <User className="w-3 h-3" /> SQUAD_MEMBER_ACTIVE
+                        </div>
+                        <button onClick={() => syncIdentity(user.id)} title="Neural Sync" className={`p-2 bg-foreground/5 border border-foreground/10 rounded hover:bg-hyper-pink hover:text-background transition-all ${isSyncing ? 'animate-spin text-hyper-pink' : 'text-dim'}`}>
+                           <RefreshCcw className="w-4 h-4" />
+                        </button>
                      </div>
 
                      {isEditing ? (
