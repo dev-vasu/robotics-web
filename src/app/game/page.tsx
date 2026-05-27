@@ -18,8 +18,8 @@ const CATEGORIES = [
         desc: "One-tap survival. Jump over high-velocity laser beams.",
         href: "/game/jump",
         icon: Zap,
-        color: "bg-cyber-blue",
-        text: "text-cyber-blue",
+        colorClass: "bg-cyber-blue",
+        textClass: "text-cyber-blue",
         tag: "MOBILE_ONLY"
       },
       {
@@ -28,8 +28,8 @@ const CATEGORIES = [
         desc: "Precision timing. Build the highest tower in the void.",
         href: "/game/stacks",
         icon: Layers,
-        color: "bg-hyper-pink",
-        text: "text-hyper-pink",
+        colorClass: "bg-hyper-pink",
+        textClass: "text-hyper-pink",
         tag: "TOUCH_READY"
       },
       {
@@ -38,8 +38,8 @@ const CATEGORIES = [
         desc: "Evasion protocol. Dodge the void using touch or mouse.",
         href: "/game/dodge",
         icon: ShieldAlert,
-        color: "bg-electric-volt",
-        text: "text-electric-volt",
+        colorClass: "bg-electric-volt",
+        textClass: "text-electric-volt",
         tag: "HYBRID_TOUCH"
       }
     ]
@@ -55,8 +55,8 @@ const CATEGORIES = [
         desc: "Twin-stick combat. Eliminate rogue AI cores via mouse.",
         href: "/game/strike",
         icon: Crosshair,
-        color: "bg-electric-volt",
-        text: "text-electric-volt",
+        colorClass: "bg-electric-volt",
+        textClass: "text-electric-volt",
         tag: "MOUSE_REQUIRED"
       },
       {
@@ -65,8 +65,8 @@ const CATEGORIES = [
         desc: "Rhythm survival. Sync inputs with data streams (A,S,D,F).",
         href: "/game/beat",
         icon: Music,
-        color: "bg-cyber-blue",
-        text: "text-cyber-blue",
+        colorClass: "bg-cyber-blue",
+        textClass: "text-cyber-blue",
         tag: "KEYBOARD_SYNC"
       },
       {
@@ -75,8 +75,8 @@ const CATEGORIES = [
         desc: "Hacking simulation. Decrypt protocols at high velocity.",
         href: "/game/typer",
         icon: Terminal,
-        color: "bg-white",
-        text: "text-white",
+        colorClass: "bg-foreground",
+        textClass: "text-foreground",
         tag: "KEYBOARD_ONLY"
       },
       {
@@ -85,8 +85,8 @@ const CATEGORIES = [
         desc: "Infinite speed. Leap over firewalls in the matrix.",
         href: "/game/run",
         icon: Move,
-        color: "bg-hyper-pink",
-        text: "text-hyper-pink",
+        colorClass: "bg-hyper-pink",
+        textClass: "text-hyper-pink",
         tag: "SPACE_BAR"
       },
       {
@@ -95,8 +95,8 @@ const CATEGORIES = [
         desc: "Glow combat. Outplay the rogue AI in a duel of light.",
         href: "/game/pong",
         icon: Target,
-        color: "bg-electric-volt",
-        text: "text-electric-volt",
+        colorClass: "bg-electric-volt",
+        textClass: "text-electric-volt",
         tag: "MOUSE_ONLY"
       },
       {
@@ -105,8 +105,8 @@ const CATEGORIES = [
         desc: "Growth hack. Consume data packets to expand your link.",
         href: "/game/snake",
         icon: Ghost,
-        color: "bg-cyber-blue",
-        text: "text-cyber-blue",
+        colorClass: "bg-cyber-blue",
+        textClass: "text-cyber-blue",
         tag: "ARROWS_ONLY"
       },
       {
@@ -115,8 +115,8 @@ const CATEGORIES = [
         desc: "Deconstruction mode. Shatter the walls of the mainframe.",
         href: "/game/brick",
         icon: Target,
-        color: "bg-white",
-        text: "text-white",
+        colorClass: "bg-foreground",
+        textClass: "text-foreground",
         tag: "MOUSE_PLAY"
       },
       {
@@ -125,8 +125,8 @@ const CATEGORIES = [
         desc: "Pathfinding protocol. Find the exit before systems fail.",
         href: "/game/maze",
         icon: Eye,
-        color: "bg-hyper-pink",
-        text: "text-hyper-pink",
+        colorClass: "bg-hyper-pink",
+        textClass: "text-hyper-pink",
         tag: "NAVIGATION"
       }
     ]
@@ -140,7 +140,7 @@ export default function ArcadeHub() {
 
       <div className="flex-1 container mx-auto px-6 py-20">
         <div className="text-center mb-24">
-          <h1 className="text-6xl md:text-[10rem] font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-6xl md:text-[10rem] font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             ARCADE_<span className="text-hyper-pink">HUB</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">
@@ -151,9 +151,9 @@ export default function ArcadeHub() {
         <div className="space-y-32 max-w-7xl mx-auto">
           {CATEGORIES.map((cat) => (
             <div key={cat.title}>
-              <div className="flex items-center gap-6 mb-12 border-b-4 border-white/5 pb-6">
+              <div className="flex items-center gap-6 mb-12 border-b-4 border-border-main pb-6">
                 <cat.icon className={`w-12 h-12 ${cat.color}`} />
-                <h2 className={`text-4xl md:text-6xl font-black italic uppercase text-white`}>
+                <h2 className={`text-4xl md:text-6xl font-black italic uppercase text-foreground`}>
                   {cat.title}
                 </h2>
               </div>
@@ -170,7 +170,7 @@ export default function ArcadeHub() {
                         <game.icon className="w-40 h-40" />
                       </div>
                       <div className="relative z-10">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1 ${game.colorClass} text-black text-[10px] font-black uppercase mb-6`}>
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 ${game.colorClass} text-background text-[10px] font-black uppercase mb-6`}>
                           <Zap className="w-3 h-3" /> {game.tag}
                         </div>
                         <h2 className="text-4xl font-black italic text-foreground uppercase mb-4">

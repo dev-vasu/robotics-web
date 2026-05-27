@@ -137,7 +137,7 @@ export default function MazeGame() {
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter text-glitch">DARK_<span className="text-cyber-blue">MAZE</span></h1>
+          <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">DARK_<span className="text-cyber-blue">MAZE</span></h1>
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px]">LEVEL_{level}_PATH_CALCULATION</p>
         </div>
 
@@ -145,10 +145,10 @@ export default function MazeGame() {
           <canvas ref={canvasRef} width={600} height={600} />
           
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95">
               <Eye className="w-20 h-20 text-cyber-blue mb-8 animate-pulse" />
-              <button onClick={() => initGame(1)} className="px-16 py-8 bg-cyber-blue text-black font-black text-3xl uppercase italic shadow-[12px_12px_0_0_#ff007a]">BOOT_MAZE_V2</button>
-              <div className="mt-8 text-white/40 font-black uppercase text-[10px] tracking-widest text-center">
+              <button onClick={() => initGame(1)} className="px-16 py-8 bg-cyber-blue text-background font-black text-3xl uppercase italic shadow-[12px_12px_0_0_#ff007a]">BOOT_MAZE_V2</button>
+              <div className="mt-8 text-foreground/40 font-black uppercase text-[10px] tracking-widest text-center">
                  USE_ARROWS_TO_NAVIGATE<br/>
                  FIND_THE_EXIT_PROTOCOL_
               </div>
@@ -157,23 +157,23 @@ export default function MazeGame() {
 
           {gameState === "WIN" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-electric-volt/20 backdrop-blur-md border-4 border-electric-volt">
-              <Trophy className="w-20 h-20 text-white mb-6 animate-bounce" />
-              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+              <Trophy className="w-20 h-20 text-foreground mb-6 animate-bounce" />
+              <h2 className="text-5xl md:text-6xl font-black text-foreground italic uppercase mb-2 text-center">
                  {level <= 1 ? "KINDA_MID" : 
                   level <= 3 ? "COOKING_RN" : 
                   level <= 5 ? "W_RIZZ" : 
                   "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
                  {level <= 1 ? "IT WAS JUST LEVEL 1 BRO." : 
                   level <= 3 ? "WE SEE YOU NAVIGATING." : 
                   level <= 5 ? "BRO KNOWS THE WAY." : 
                   "CERTIFIED MINOTAUR. TOUCH GRASS."}
               </p>
-              <div className="bg-black px-10 py-4 border-2 border-cyber-blue mb-8">
+              <div className="bg-background px-10 py-4 border-2 border-cyber-blue mb-8">
                 <span className="text-cyber-blue text-4xl font-black italic">LEVEL {level} DONE</span>
               </div>
-              <button onClick={nextLevel} className="flex items-center gap-4 px-12 py-6 bg-white text-black font-black text-2xl uppercase italic hover:bg-cyber-blue transition-all">
+              <button onClick={nextLevel} className="flex items-center gap-4 px-12 py-6 bg-foreground text-background font-black text-2xl uppercase italic hover:bg-cyber-blue transition-all">
                 NEXT_LEVEL <ChevronRight className="w-6 h-6" />
               </button>
             </div>
@@ -182,12 +182,12 @@ export default function MazeGame() {
 
         <div className="mt-8 flex gap-4 w-full max-w-[600px]">
            <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue">
-              <div className="text-[10px] font-black text-white/40 uppercase mb-1">INTEL_POINTS</div>
-              <div className="text-3xl font-black italic text-white tabular-nums">{score}</div>
+              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">INTEL_POINTS</div>
+              <div className="text-3xl font-black italic text-foreground tabular-nums">{score}</div>
            </div>
            <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink">
-              <div className="text-[10px] font-black text-white/40 uppercase mb-1">MAZE_DENSITY</div>
-              <div className="text-3xl font-black italic text-white">{gridCountRef.current}x{gridCountRef.current}</div>
+              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">MAZE_DENSITY</div>
+              <div className="text-3xl font-black italic text-foreground">{gridCountRef.current}x{gridCountRef.current}</div>
            </div>
         </div>
       </div>

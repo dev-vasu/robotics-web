@@ -134,37 +134,37 @@ export default function BrickGame() {
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter text-glitch">BIT_<span className="text-cyber-blue">CRUSH</span></h1>
+          <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">BIT_<span className="text-cyber-blue">CRUSH</span></h1>
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px]">DECONSTRUCTION_MODE_ON</p>
         </div>
         <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-none" style={{ width: 800, height: 600 }} onMouseMove={handleMouseMove} onClick={() => gameState !== "PLAYING" && initGame()}>
           <canvas ref={canvasRef} width={800} height={600} />
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90">
-              <button className="px-10 py-5 bg-cyber-blue text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">BOOT_DESTRUCTOR</button>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
+              <button className="px-10 py-5 bg-cyber-blue text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">BOOT_DESTRUCTOR</button>
             </div>
           )}
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95">
               <ShieldAlert className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl font-black text-white italic uppercase mb-2">SYSTEM_CRASH</h2>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-LINK</button>
+              <h2 className="text-5xl font-black text-foreground italic uppercase mb-2">SYSTEM_CRASH</h2>
+              <button className="px-10 py-5 bg-foreground text-background font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]">RE-LINK</button>
             </div>
           )}
           {gameState === "WIN" && (
              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-electric-volt/20 backdrop-blur-md">
-               <Zap className="w-20 h-20 text-white mb-6 animate-ping" />
-               <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+               <Zap className="w-20 h-20 text-foreground mb-6 animate-ping" />
+               <h2 className="text-5xl md:text-6xl font-black text-foreground italic uppercase mb-2 text-center">
                  {score >= 2000 ? "MAIN_CHARACTER" : "W_RIZZ"}
                </h2>
-               <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+               <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
                  {score >= 2000 ? "PERFECT CLEAR. NO CAP." : "YOU COOKED BRO."}
                </p>
-               <button className="px-10 py-5 bg-black text-white font-black text-xl uppercase" onClick={() => initGame()}>NEXT_STAGE</button>
+               <button className="px-10 py-5 bg-background text-foreground font-black text-xl uppercase" onClick={() => initGame()}>NEXT_STAGE</button>
              </div>
           )}
           {gameState === "PLAYING" && (
-            <div className="absolute top-6 right-8 text-white font-black italic text-4xl tabular-nums opacity-20">{score}</div>
+            <div className="absolute top-6 right-8 text-foreground font-black italic text-4xl tabular-nums opacity-20">{score}</div>
           )}
         </div>
       </div>

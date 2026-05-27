@@ -144,21 +144,21 @@ export default function RunGame() {
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">RUN</span></h1>
+          <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">RUN</span></h1>
           <p className="text-cyber-blue font-black uppercase tracking-[0.3em] text-[10px]">SPEED_CORE_ACTIVE</p>
         </div>
         <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer" style={{ width: 800, height: 400 }} onClick={jump}>
           <canvas ref={canvasRef} width={800} height={400} />
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90">
-              <button className="px-10 py-5 bg-hyper-pink text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff]">BOOT_RUNNER</button>
-              <p className="mt-6 text-white/40 font-black uppercase text-[10px]">TAP_OR_SPACE_TO_JUMP</p>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
+              <button className="px-10 py-5 bg-hyper-pink text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff]">BOOT_RUNNER</button>
+              <p className="mt-6 text-foreground/40 font-black uppercase text-[10px]">TAP_OR_SPACE_TO_JUMP</p>
             </div>
           )}
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95">
               <Ghost className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+              <h2 className="text-5xl md:text-6xl font-black text-foreground italic uppercase mb-2 text-center">
                 {score <= 500 ? "NPC_BEHAVIOR" : 
                  score <= 1500 ? "SKILL_ISSUE" : 
                  score <= 3000 ? "KINDA_MID" : 
@@ -166,7 +166,7 @@ export default function RunGame() {
                  score <= 10000 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
                 {score <= 500 ? "BRO TRIPPED ON AIR 💀" : 
                  score <= 1500 ? "NOT VERY DEMURE HURDLE SKILLS." : 
                  score <= 3000 ? "KINDA MID. NEED MORE AGILITY." : 
@@ -175,11 +175,11 @@ export default function RunGame() {
                  "CERTIFIED SPEEDSTER. TOUCH GRASS NOW."}
               </p>
               <div className="text-hyper-pink text-3xl font-black mb-8 italic uppercase">INTEL: {score}</div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic shadow-[8px_8px_0_0_#ff007a]" onClick={initGame}>RE-IGNITE</button>
+              <button className="px-10 py-5 bg-foreground text-background font-black text-xl uppercase italic shadow-[8px_8px_0_0_#ff007a]" onClick={initGame}>RE-IGNITE</button>
             </div>
           )}
           {gameState === "PLAYING" && (
-            <div className="absolute top-6 right-8 text-white font-black italic text-4xl tabular-nums select-none">{score}</div>
+            <div className="absolute top-6 right-8 text-foreground font-black italic text-4xl tabular-nums select-none">{score}</div>
           )}
         </div>
       </div>

@@ -169,7 +169,7 @@ export default function JumpGame() {
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-5xl md:text-7xl font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             CYBER_<span className="text-cyber-blue">JUMP</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-[10px] mt-2">
@@ -185,12 +185,12 @@ export default function JumpGame() {
           <canvas ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
 
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 p-8 text-center">
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff] mb-6">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90 p-8 text-center">
+              <button className="px-10 py-5 bg-foreground text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff] mb-6">
                 START_MISSION
               </button>
               <div className="p-4 border-2 border-cyber-blue bg-cyber-blue/5 rounded-lg">
-                <p className="text-[10px] font-black text-white uppercase tracking-widest leading-relaxed">
+                <p className="text-[10px] font-black text-foreground uppercase tracking-widest leading-relaxed">
                   SYSTEM_RE-BALANCED<br/>
                   VELOCITY: MINIMAL<br/>
                   GRAVITY: LIGHT<br/>
@@ -202,7 +202,7 @@ export default function JumpGame() {
 
           {gameState === "COUNTDOWN" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
-              <div className="text-white text-[12rem] font-black italic animate-ping opacity-50 tabular-nums">
+              <div className="text-foreground text-[12rem] font-black italic animate-ping opacity-50 tabular-nums">
                 {countdown}
               </div>
               <div className="text-cyber-blue font-black uppercase tracking-[0.4em] text-xs">UPLINKING...</div>
@@ -211,8 +211,8 @@ export default function JumpGame() {
 
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl border-4 border-red-500/30 text-center px-4 overflow-y-auto py-8">
-              <Ghost className="w-12 h-12 text-white mb-2 animate-pulse" />
-              <h2 className="text-3xl md:text-4xl font-black text-white italic uppercase mb-1">
+              <Ghost className="w-12 h-12 text-foreground mb-2 animate-pulse" />
+              <h2 className="text-3xl md:text-4xl font-black text-foreground italic uppercase mb-1">
                 {score <= 2 ? "NPC_BEHAVIOR" : 
                  score <= 10 ? "SKILL_ISSUE" : 
                  score <= 20 ? "KINDA_MID" : 
@@ -220,7 +220,7 @@ export default function JumpGame() {
                  score <= 70 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-4">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-4">
                 {score <= 2 ? "BRO FELL OFF BEFORE IT EVEN STARTED 💀" : 
                  score <= 10 ? "NOT VERY DEMURE OF YOU TO CRASH SO SOON." : 
                  score <= 20 ? "YOU AIN'T BUILT FOR THE VOID YET." : 
@@ -228,7 +228,7 @@ export default function JumpGame() {
                  score <= 70 ? "LOWKEY A GOATED RUN. NO CAP." : 
                  "CERTIFIED SWEAT. TOUCH GRASS IMMEDIATELY."}
               </p>
-              <div className="bg-black px-6 py-2 border-2 border-cyber-blue mb-4">
+              <div className="bg-background px-6 py-2 border-2 border-cyber-blue mb-4">
                 <span className="text-cyber-blue text-2xl font-black italic tabular-nums">SCORE: {score}</span>
               </div>
               
@@ -238,19 +238,19 @@ export default function JumpGame() {
 
           {(gameState === "PLAYING" || gameState === "COUNTDOWN") && (
             <div className="absolute top-10 left-0 w-full text-center pointer-events-none">
-              <div className="text-white text-9xl font-black italic tracking-tighter opacity-10 tabular-nums select-none">{score}</div>
+              <div className="text-foreground text-9xl font-black italic tracking-tighter opacity-10 tabular-nums select-none">{score}</div>
             </div>
           )}
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-[400px]">
            <div className="bg-white/5 p-4 border-l-4 border-cyber-blue flex justify-between items-center">
-              <span className="text-[8px] font-black text-white/40 uppercase">RECORD</span>
-              <span className="text-xl font-black italic text-white tabular-nums">{highScore}</span>
+              <span className="text-[8px] font-black text-foreground/40 uppercase">RECORD</span>
+              <span className="text-xl font-black italic text-foreground tabular-nums">{highScore}</span>
            </div>
            <div className="bg-white/5 p-4 border-l-4 border-hyper-pink flex justify-between items-center">
-              <span className="text-[8px] font-black text-white/40 uppercase">V_INDEX</span>
-              <span className="text-xl font-black italic text-white tabular-nums">{(START_SPEED + score * 0.05).toFixed(1)}x</span>
+              <span className="text-[8px] font-black text-foreground/40 uppercase">V_INDEX</span>
+              <span className="text-xl font-black italic text-foreground tabular-nums">{(START_SPEED + score * 0.05).toFixed(1)}x</span>
            </div>
         </div>
       </div>

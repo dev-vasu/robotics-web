@@ -44,7 +44,7 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
       {!isOpen && (
         <button 
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 bg-black border-2 border-[#ffaa00]/50 text-[#ffaa00] hover:bg-[#ffaa00] hover:text-black transition-all group glass-panel shadow-[0_0_15px_rgba(255,170,0,0.2)]"
+          className="flex items-center gap-2 px-4 py-3 bg-background border-2 border-[#ffaa00]/50 text-[#ffaa00] hover:bg-[#ffaa00] hover:text-background transition-all group glass-panel shadow-[0_0_15px_rgba(255,170,0,0.2)]"
         >
           <MessageSquareWarning className="w-5 h-5" />
           <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">REPORT_BUG</span>
@@ -52,8 +52,8 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
       )}
 
       {isOpen && (
-        <div className="w-80 bg-black/95 border-2 border-[#ffaa00] p-6 shadow-[0_0_30px_rgba(255,170,0,0.3)] glass-panel relative animate-in slide-in-from-bottom-5">
-          <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-white/50 hover:text-[#ffaa00] transition-colors">
+        <div className="w-80 bg-background/95 border-2 border-[#ffaa00] p-6 shadow-[0_0_30px_rgba(255,170,0,0.3)] glass-panel relative animate-in slide-in-from-bottom-5">
+          <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-foreground/50 hover:text-[#ffaa00] transition-colors">
             <X className="w-5 h-5" />
           </button>
           
@@ -69,7 +69,7 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
               placeholder="USER@DOMAIN.XYZ"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs font-mono text-white focus:outline-none focus:border-[#ffaa00] transition-colors"
+              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs font-mono text-foreground focus:outline-none focus:border-[#ffaa00] transition-colors"
             />
             <textarea
               required
@@ -77,12 +77,12 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
               placeholder="WHAT'S BROKEN? BE BRUTAL."
               value={feedback}
               onChange={e => setFeedback(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs font-mono text-white focus:outline-none focus:border-[#ffaa00] resize-none transition-colors"
+              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs font-mono text-foreground focus:outline-none focus:border-[#ffaa00] resize-none transition-colors"
             />
             <button 
               type="submit"
               disabled={status === "loading" || status === "success"}
-              className="w-full py-4 bg-[#ffaa00] text-black text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] disabled:opacity-50"
+              className="w-full py-4 bg-[#ffaa00] text-background text-[10px] font-black uppercase tracking-widest hover:bg-foreground transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] disabled:opacity-50"
             >
               {status === "loading" ? "SENDING..." : 
                status === "success" ? <><CheckCircle2 className="w-4 h-4" /> {ticketId}</> : 

@@ -137,15 +137,15 @@ export default function NeonCanvas() {
         <Navbar />
         
         <div className="fixed top-24 left-6 z-40">
-          <Link href="/playground" className="flex items-center gap-2 px-4 py-2 bg-black border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel">
+          <Link href="/playground" className="flex items-center gap-2 px-4 py-2 bg-background border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel">
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/60 group-hover:text-white">Exit_to_Lab</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 group-hover:text-foreground">Exit_to_Lab</span>
           </Link>
         </div>
 
         <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10 relative">
           <div className="text-center mb-6">
-            <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+            <h1 className="text-5xl md:text-8xl font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
               NEON_<span className="text-hyper-pink">CANVAS</span>
             </h1>
             <p className="text-cyber-blue font-black uppercase tracking-[0.5em] text-[10px] mt-2 italic">
@@ -153,7 +153,7 @@ export default function NeonCanvas() {
             </p>
           </div>
 
-          <div ref={containerRef} className="relative w-full max-w-5xl aspect-video glass-panel border-4 border-white/10 shadow-[0_0_80px_rgba(255,0,122,0.15)] group bg-black overflow-hidden">
+          <div ref={containerRef} className="relative w-full max-w-5xl aspect-video glass-panel border-4 border-white/10 shadow-[0_0_80px_rgba(255,0,122,0.15)] group bg-background overflow-hidden">
             <canvas 
               ref={canvasRef}
               onPointerDown={handlePointerDown}
@@ -175,10 +175,10 @@ export default function NeonCanvas() {
             </div>
 
             <div className="absolute bottom-6 right-6 flex gap-4 z-20">
-              <button onClick={clearLab} className="p-4 bg-black border border-white/10 text-white/60 hover:text-red-500 hover:border-red-500 transition-all glass-panel group">
+              <button onClick={clearLab} className="p-4 bg-background border border-white/10 text-foreground/60 hover:text-red-500 hover:border-red-500 transition-all glass-panel group">
                  <Trash2 className="w-6 h-6 group-active:scale-90" />
               </button>
-              <button onClick={exportData} className="p-4 bg-white text-black hover:bg-hyper-pink hover:text-white transition-all shadow-[6px_6px_0_0_#ff007a] group">
+              <button onClick={exportData} className="p-4 bg-foreground text-background hover:bg-hyper-pink hover:text-foreground transition-all shadow-[6px_6px_0_0_#ff007a] group">
                  <Download className="w-6 h-6 group-active:scale-90" />
               </button>
             </div>
@@ -186,26 +186,26 @@ export default function NeonCanvas() {
             {activeUnits === 0 && !isDrawing.current && (
                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="text-center animate-pulse">
-                     <MousePointer2 className="w-16 h-16 text-white/10 mx-auto mb-4" />
-                     <p className="text-white/20 font-black uppercase tracking-[0.6em] text-xs italic">INITIATE_TOUCH_TO_DRAW</p>
+                     <MousePointer2 className="w-16 h-16 text-foreground/10 mx-auto mb-4" />
+                     <p className="text-foreground/20 font-black uppercase tracking-[0.6em] text-xs italic">INITIATE_TOUCH_TO_DRAW</p>
                   </div>
                </div>
             )}
           </div>
 
           <div className="mt-8 flex gap-6 w-full max-w-5xl hq-panel">
-             <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue flex items-center gap-4 bg-black/80">
+             <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue flex items-center gap-4 bg-background/80">
                 <Sparkles className="w-8 h-8 text-cyber-blue animate-spin-slow" />
                 <div>
-                   <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">SYSTEM_STATUS</div>
-                   <div className="text-xl font-black italic text-white uppercase">ULTRA_SYNC_READY</div>
+                   <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">SYSTEM_STATUS</div>
+                   <div className="text-xl font-black italic text-foreground uppercase">ULTRA_SYNC_READY</div>
                 </div>
              </div>
-             <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink flex items-center gap-4 bg-black/80">
+             <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink flex items-center gap-4 bg-background/80">
                 <ActivityIcon className="w-8 h-8 text-hyper-pink" />
                 <div>
-                   <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">ACTIVE_UNITS</div>
-                   <div className="text-2xl font-black italic text-white tabular-nums">{activeUnits}</div>
+                   <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">ACTIVE_UNITS</div>
+                   <div className="text-2xl font-black italic text-foreground tabular-nums">{activeUnits}</div>
                 </div>
              </div>
           </div>

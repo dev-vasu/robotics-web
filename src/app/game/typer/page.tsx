@@ -90,7 +90,7 @@ export default function TyperGame() {
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-12">
         <div className="text-center mb-16">
-          <h1 className="text-6xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-6xl md:text-8xl font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             CYBER_<span className="text-hyper-pink">TYPER</span>
           </h1>
           <p className="text-cyber-blue font-black uppercase tracking-[0.5em] text-xs mt-4">
@@ -109,18 +109,18 @@ export default function TyperGame() {
               <Terminal className="w-20 h-20 text-cyber-blue mx-auto mb-8 animate-pulse" />
               <button 
                 onClick={startGame}
-                className="px-16 py-8 bg-cyber-blue text-black font-black text-3xl uppercase italic hover:bg-white transition-all shadow-[12px_12px_0_0_#ff007a]"
+                className="px-16 py-8 bg-cyber-blue text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[12px_12px_0_0_#ff007a]"
               >
                 INITIATE_HACK
               </button>
               <div className="mt-12 grid grid-cols-2 gap-8 max-w-md mx-auto">
                  <div className="text-center p-4 border border-white/10 glass-panel">
                     <div className="text-[10px] text-cyber-blue font-black tracking-widest uppercase mb-2">CONTROLS</div>
-                    <div className="text-white font-bold text-xs uppercase">KEYBOARD: TYPE_CODE</div>
+                    <div className="text-foreground font-bold text-xs uppercase">KEYBOARD: TYPE_CODE</div>
                  </div>
                  <div className="text-center p-4 border border-white/10 glass-panel">
                     <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
-                    <div className="text-white font-bold text-xs uppercase">DECRYPT_PROTOCOLS<br/>BEFORE_TIME_OUT</div>
+                    <div className="text-foreground font-bold text-xs uppercase">DECRYPT_PROTOCOLS<br/>BEFORE_TIME_OUT</div>
                  </div>
               </div>
             </div>
@@ -131,11 +131,11 @@ export default function TyperGame() {
               <div className="flex justify-between items-center mb-12">
                 <div className="flex gap-10">
                    <div>
-                     <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">TIME_REMAINING</div>
-                     <div className={`text-4xl font-black italic ${timeLeft < 10 ? "text-red-500 animate-pulse" : "text-white"}`}>{timeLeft}S</div>
+                     <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">TIME_REMAINING</div>
+                     <div className={`text-4xl font-black italic ${timeLeft < 10 ? "text-red-500 animate-pulse" : "text-foreground"}`}>{timeLeft}S</div>
                    </div>
                    <div>
-                     <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">BYTES_DECRYPTED</div>
+                     <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">BYTES_DECRYPTED</div>
                      <div className="text-4xl font-black italic text-electric-volt">{score}</div>
                    </div>
                 </div>
@@ -144,9 +144,9 @@ export default function TyperGame() {
                 </div>
               </div>
 
-              <div className="mb-8 p-10 bg-black/80 border-2 border-white/10 rounded-xl">
+              <div className="mb-8 p-10 bg-background/80 border-2 border-white/10 rounded-xl">
                  <div className="text-xs font-mono text-cyber-blue mb-4 tracking-tighter opacity-50">&gt; TARGET_PROTOCOL:</div>
-                 <div className="text-4xl md:text-5xl font-mono font-bold tracking-tighter text-white break-all">
+                 <div className="text-4xl md:text-5xl font-mono font-bold tracking-tighter text-foreground break-all">
                     {targetText.split("").map((char, i) => (
                       <span key={i} className={i < userInput.length ? (char === userInput[i] ? "text-electric-volt" : "text-red-500 bg-red-500/20") : ""}>
                         {char}
@@ -160,7 +160,7 @@ export default function TyperGame() {
                 type="text"
                 value={userInput}
                 onChange={handleInput}
-                className="w-full bg-white/5 border-4 border-cyber-blue p-8 text-3xl font-mono font-black uppercase text-white focus:outline-none placeholder:text-white/10 shadow-[0_0_30px_rgba(0,240,255,0.1)]"
+                className="w-full bg-white/5 border-4 border-cyber-blue p-8 text-3xl font-mono font-black uppercase text-foreground focus:outline-none placeholder:text-foreground/10 shadow-[0_0_30px_rgba(0,240,255,0.1)]"
                 placeholder="TYPE_HERE_TO_DECRYPT..."
               />
             </div>
@@ -169,7 +169,7 @@ export default function TyperGame() {
           {gameState === "GAMEOVER" && (
             <div className="relative z-10 text-center py-6">
               <CheckCircle2 className="w-24 h-24 text-electric-volt mx-auto mb-6" />
-              <h2 className="text-5xl md:text-7xl font-black text-white italic uppercase mb-2">
+              <h2 className="text-5xl md:text-7xl font-black text-foreground italic uppercase mb-2">
                 {score <= 50 ? "NPC_BEHAVIOR" : 
                  score <= 100 ? "SKILL_ISSUE" : 
                  score <= 150 ? "KINDA_MID" : 
@@ -177,7 +177,7 @@ export default function TyperGame() {
                  score <= 350 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6">
                 {score <= 50 ? "BRO TYPES WITH TWO FINGERS 💀" : 
                  score <= 100 ? "GRANDMA TYPES FASTER THAN YOU." : 
                  score <= 150 ? "NOT BAD, BUT NOT HACKERMAN LEVEL." : 
@@ -187,17 +187,17 @@ export default function TyperGame() {
               </p>
               <div className="flex justify-center gap-12 mb-10">
                  <div>
-                   <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">SPEED</div>
+                   <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">SPEED</div>
                    <div className="text-5xl font-black italic text-cyber-blue">{wpm} <span className="text-xl">WPM</span></div>
                  </div>
                  <div>
-                   <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">TOTAL_DATA</div>
+                   <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">TOTAL_DATA</div>
                    <div className="text-5xl font-black italic text-electric-volt">{score} <span className="text-xl">B</span></div>
                  </div>
               </div>
               <button 
                 onClick={startGame}
-                className="px-12 py-6 bg-white text-black font-black text-2xl uppercase italic hover:bg-cyber-blue transition-all shadow-[10px_10px_0_0_#ff007a]"
+                className="px-12 py-6 bg-foreground text-background font-black text-2xl uppercase italic hover:bg-cyber-blue transition-all shadow-[10px_10px_0_0_#ff007a]"
               >
                 RE-LINK_UPLINK
               </button>
@@ -209,15 +209,15 @@ export default function TyperGame() {
            <div className="flex-1 glass-panel p-6 flex items-center gap-4">
               <Zap className="w-8 h-8 text-electric-volt" />
               <div>
-                 <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">MULTIPLIER</div>
-                 <div className="text-2xl font-black italic text-white">x{(1 + score / 500).toFixed(1)}</div>
+                 <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">MULTIPLIER</div>
+                 <div className="text-2xl font-black italic text-foreground">x{(1 + score / 500).toFixed(1)}</div>
               </div>
            </div>
            <div className="flex-1 glass-panel p-6 flex items-center gap-4">
               <AlertTriangle className="w-8 h-8 text-hyper-pink" />
               <div>
-                 <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">ACCURACY</div>
-                 <div className="text-2xl font-black italic text-white">99.8%</div>
+                 <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">ACCURACY</div>
+                 <div className="text-2xl font-black italic text-foreground">99.8%</div>
               </div>
            </div>
         </div>

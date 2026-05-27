@@ -114,20 +114,20 @@ export default function StacksGame() {
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">STACKS</span></h1>
+          <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">STACKS</span></h1>
           <p className="text-cyber-blue font-black uppercase tracking-[0.5em] text-[10px]">STRUCTURAL_INTEGRITY_REQUIRED</p>
         </div>
         <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer" style={{ width: 400, height: 600 }} onClick={placeBlock}>
           <canvas ref={canvasRef} width={400} height={600} />
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90">
-              <button className="px-10 py-5 bg-cyber-blue text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">BOOT_STACKER</button>
-              <p className="mt-6 text-white/40 font-black uppercase text-[10px]">TAP_TO_STACK</p>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
+              <button className="px-10 py-5 bg-cyber-blue text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">BOOT_STACKER</button>
+              <p className="mt-6 text-foreground/40 font-black uppercase text-[10px]">TAP_TO_STACK</p>
             </div>
           )}
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95 text-center">
-              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95 text-center">
+              <h2 className="text-5xl md:text-6xl font-black text-foreground italic uppercase mb-2">
                 {score <= 3 ? "NPC_BEHAVIOR" : 
                  score <= 8 ? "SKILL_ISSUE" : 
                  score <= 15 ? "KINDA_MID" : 
@@ -135,7 +135,7 @@ export default function StacksGame() {
                  score <= 40 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6">
                 {score <= 3 ? "BRO CAN'T EVEN STACK 3 BLOCKS 💀" : 
                  score <= 8 ? "YOUR TIMING IS LITERALLY TRASH." : 
                  score <= 15 ? "MID STACKS. TRY HARDER." : 
@@ -144,11 +144,11 @@ export default function StacksGame() {
                  "CERTIFIED BUILDER. TOUCH GRASS NOW."}
               </p>
               <div className="text-cyber-blue text-3xl font-black mb-8 italic">STACKS: {score}</div>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]" onClick={initGame}>RE-BUILD</button>
+              <button className="px-10 py-5 bg-foreground text-background font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]" onClick={initGame}>RE-BUILD</button>
             </div>
           )}
           {gameState === "PLAYING" && (
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white font-black italic text-6xl tabular-nums opacity-20 select-none">{score}</div>
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 text-foreground font-black italic text-6xl tabular-nums opacity-20 select-none">{score}</div>
           )}
         </div>
       </div>

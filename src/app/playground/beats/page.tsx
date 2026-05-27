@@ -13,7 +13,7 @@ const TRACKS = [
   { id: "kick", label: "INDUSTRIAL_KICK", color: "text-hyper-pink", bg: "bg-hyper-pink" },
   { id: "snare", label: "NEURAL_SNARE", color: "text-cyber-blue", bg: "bg-cyber-blue" },
   { id: "hihat", label: "CYBER_HAT", color: "text-electric-volt", bg: "bg-electric-volt" },
-  { id: "perc", label: "GLITCH_CORE", color: "text-white", bg: "bg-white" }
+  { id: "perc", label: "GLITCH_CORE", color: "text-foreground", bg: "bg-foreground" }
 ];
 
 export default function RoboBeats() {
@@ -55,7 +55,7 @@ export default function RoboBeats() {
       <div className="fixed top-24 left-6 z-40 flex flex-col gap-4">
         <Link 
           href="/playground" 
-          className="flex items-center gap-2 px-4 py-2 bg-black border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel"
+          className="flex items-center gap-2 px-4 py-2 bg-background border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel"
         >
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-[10px] font-black uppercase tracking-widest">Exit_to_Lab</span>
@@ -64,7 +64,7 @@ export default function RoboBeats() {
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10 relative">
         <div className="text-center mb-10">
-          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             ROBO_<span className="text-electric-volt">BEATS</span>
           </h1>
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px] mt-2">
@@ -78,29 +78,29 @@ export default function RoboBeats() {
             <div className="flex gap-6">
               <button 
                 onClick={() => setIsPlaying(!isPlaying)}
-                className={`flex items-center gap-3 px-8 py-4 font-black uppercase italic transition-all ${isPlaying ? "bg-red-500 text-white shadow-[0_0_20px_red]" : "bg-electric-volt text-black shadow-[10px_10px_0_0_#ff007a]"}`}
+                className={`flex items-center gap-3 px-8 py-4 font-black uppercase italic transition-all ${isPlaying ? "bg-red-500 text-foreground shadow-[0_0_20px_red]" : "bg-electric-volt text-background shadow-[10px_10px_0_0_#ff007a]"}`}
               >
                 {isPlaying ? <><Square className="w-6 h-6 fill-current" /> STOP_CORE</> : <><Play className="w-6 h-6 fill-current" /> BOOT_SEQUENCE</>}
               </button>
               
               <div className="flex items-center gap-4 px-6 bg-white/5 border border-white/10">
-                 <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">BPM</span>
+                 <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">BPM</span>
                  <input 
                   type="range" min="60" max="180" value={bpm} 
                   onChange={(e) => setBpm(parseInt(e.target.value))}
                   className="w-32 accent-electric-volt"
                  />
-                 <span className="text-xl font-black italic text-white tabular-nums">{bpm}</span>
+                 <span className="text-xl font-black italic text-foreground tabular-nums">{bpm}</span>
               </div>
             </div>
 
             <div className="hidden md:flex gap-8">
                <div className="text-right">
-                  <div className="text-[10px] font-black text-white/40 uppercase">STATUS</div>
+                  <div className="text-[10px] font-black text-foreground/40 uppercase">STATUS</div>
                   <div className="text-electric-volt font-black italic">SYNC_ACTIVE</div>
                </div>
                <div className="text-right">
-                  <div className="text-[10px] font-black text-white/40 uppercase">ENGINE</div>
+                  <div className="text-[10px] font-black text-foreground/40 uppercase">ENGINE</div>
                   <div className="text-hyper-pink font-black italic">industrial.vibe</div>
                </div>
             </div>
@@ -131,7 +131,7 @@ export default function RoboBeats() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-12 pt-8 border-t border-white/5 flex justify-between items-center text-white/20">
+          <div className="mt-12 pt-8 border-t border-white/5 flex justify-between items-center text-foreground/20">
              <div className="flex gap-2">
                 {Array(16).fill(0).map((_, i) => (
                   <div key={i} className={`w-2 h-2 rounded-full ${currentStep === i && isPlaying ? "bg-electric-volt shadow-[0_0_10px_#ccff00]" : "bg-white/10"}`} />
@@ -145,15 +145,15 @@ export default function RoboBeats() {
            <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue flex items-center gap-4">
               <Activity className="w-8 h-8 text-cyber-blue" />
               <div>
-                 <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">OSCILLATOR</div>
-                 <div className="text-xl font-black italic text-white">RESONANT_WAVE_FORM</div>
+                 <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">OSCILLATOR</div>
+                 <div className="text-xl font-black italic text-foreground">RESONANT_WAVE_FORM</div>
               </div>
            </div>
            <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink flex items-center gap-4">
               <Volume2 className="w-8 h-8 text-hyper-pink" />
               <div>
-                 <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">OUTPUT</div>
-                 <div className="text-xl font-black italic text-white">LOW_LATENCY_DRIVE</div>
+                 <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">OUTPUT</div>
+                 <div className="text-xl font-black italic text-foreground">LOW_LATENCY_DRIVE</div>
               </div>
            </div>
         </div>

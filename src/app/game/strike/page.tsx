@@ -253,7 +253,7 @@ export default function GamePage() {
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10 relative">
         <div className="text-center mb-6 z-10">
-          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             CYBER_<span className="text-electric-volt">STRIKE</span>
           </h1>
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px] mt-2">
@@ -262,7 +262,7 @@ export default function GamePage() {
         </div>
 
         <div 
-          className="relative bg-black border-4 border-white/10 shadow-[0_0_50px_rgba(204,255,0,0.1)] group"
+          className="relative bg-background border-4 border-white/10 shadow-[0_0_50px_rgba(204,255,0,0.1)] group"
           style={{ width: 800, height: 500 }}
         >
           <canvas 
@@ -274,24 +274,24 @@ export default function GamePage() {
           />
 
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90 backdrop-blur-md">
               <div className="w-20 h-20 border-4 border-electric-volt flex items-center justify-center mb-8 animate-spin">
                  <Crosshair className="w-10 h-10 text-electric-volt" />
               </div>
               <button 
                 onClick={initGame}
-                className="px-12 py-6 bg-electric-volt text-black font-black text-2xl uppercase italic hover:bg-white transition-all shadow-[10px_10px_0_0_#ff007a]"
+                className="px-12 py-6 bg-electric-volt text-background font-black text-2xl uppercase italic hover:bg-foreground transition-all shadow-[10px_10px_0_0_#ff007a]"
               >
                 START_MISSION
               </button>
               <div className="mt-8 grid grid-cols-2 gap-8 max-w-md">
                  <div className="text-center p-4 border border-white/10 glass-panel">
                     <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">CONTROLS</div>
-                    <div className="text-white font-bold text-xs uppercase">MOUSE: MOVE_CORE<br/>LEFT_CLICK: FIRE_LASER</div>
+                    <div className="text-foreground font-bold text-xs uppercase">MOUSE: MOVE_CORE<br/>LEFT_CLICK: FIRE_LASER</div>
                  </div>
                  <div className="text-center p-4 border border-white/10 glass-panel">
                     <div className="text-[10px] text-hyper-pink font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
-                    <div className="text-white font-bold text-xs uppercase">ELIMINATE_ENEMIES<br/>DODGE_COLLISIONS</div>
+                    <div className="text-foreground font-bold text-xs uppercase">ELIMINATE_ENEMIES<br/>DODGE_COLLISIONS</div>
                  </div>
               </div>
             </div>
@@ -299,8 +299,8 @@ export default function GamePage() {
 
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-900/40 backdrop-blur-xl px-4 py-8 overflow-y-auto">
-              <ShieldAlert className="w-16 h-16 text-white mb-2 animate-pulse" />
-              <h2 className="text-4xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+              <ShieldAlert className="w-16 h-16 text-foreground mb-2 animate-pulse" />
+              <h2 className="text-4xl md:text-6xl font-black text-foreground italic uppercase mb-2 text-center">
                 {score <= 500 ? "NPC_BEHAVIOR" : 
                  score <= 1500 ? "SKILL_ISSUE" : 
                  score <= 3000 ? "KINDA_MID" : 
@@ -308,7 +308,7 @@ export default function GamePage() {
                  score <= 10000 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-4 text-center">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-4 text-center">
                 {score <= 500 ? "BRO GOT CLAPPED BY THE FIRST BOT 💀" : 
                  score <= 1500 ? "AIM ASSIST COULDN'T EVEN SAVE YOU." : 
                  score <= 3000 ? "NOT BAD, BUT NOT VERY DEMURE." : 
@@ -326,8 +326,8 @@ export default function GamePage() {
           {gameState === "PLAYING" && (
             <div className="absolute top-4 left-4 flex gap-8 pointer-events-none">
                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white/40 uppercase">DATA_HARVESTED</span>
-                  <span className="text-white text-4xl font-black italic tracking-tighter">{score}</span>
+                  <span className="text-[10px] font-black text-foreground/40 uppercase">DATA_HARVESTED</span>
+                  <span className="text-foreground text-4xl font-black italic tracking-tighter">{score}</span>
                </div>
             </div>
           )}
@@ -335,12 +335,12 @@ export default function GamePage() {
 
         <div className="mt-8 flex gap-4 w-full max-w-[800px]">
            <div className="flex-1 p-4 glass-panel border-l-4 border-hyper-pink">
-              <div className="text-[10px] font-black text-white/40 uppercase mb-1">HIGHSCORE_INTEL</div>
-              <div className="text-2xl font-black italic text-white">{highScore}</div>
+              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">HIGHSCORE_INTEL</div>
+              <div className="text-2xl font-black italic text-foreground">{highScore}</div>
            </div>
            <div className="flex-1 p-4 glass-panel border-l-4 border-electric-volt">
-              <div className="text-[10px] font-black text-white/40 uppercase mb-1">SYSTEM_LOAD</div>
-              <div className="text-2xl font-black italic text-white">{enemiesRef.current.length} UNIT(S)</div>
+              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">SYSTEM_LOAD</div>
+              <div className="text-2xl font-black italic text-foreground">{enemiesRef.current.length} UNIT(S)</div>
            </div>
         </div>
       </div>

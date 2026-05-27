@@ -116,7 +116,7 @@ export default function DodgeGame() {
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-12">
         <div className="text-center mb-10">
-          <h1 className="text-6xl md:text-[8rem] font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-6xl md:text-[8rem] font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             CYBER_<span className="text-hyper-pink">DODGE</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">EVADE_OR_BE_DELETED</p>
@@ -124,24 +124,24 @@ export default function DodgeGame() {
 
         <div ref={containerRef} className="relative glass-panel border-8 border-white/5 overflow-hidden cursor-none" style={{ width: GAME_WIDTH, height: GAME_HEIGHT }}>
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 backdrop-blur-md">
-              <button onClick={startGame} className="px-16 py-8 bg-white text-black font-black text-3xl uppercase italic hover:bg-electric-volt transition-all shadow-[15px_15px_0_0_#ff007a]">BOOT_DODGE</button>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90 backdrop-blur-md">
+              <button onClick={startGame} className="px-16 py-8 bg-foreground text-background font-black text-3xl uppercase italic hover:bg-electric-volt transition-all shadow-[15px_15px_0_0_#ff007a]">BOOT_DODGE</button>
               <div className="mt-12 grid grid-cols-2 gap-8 max-w-md">
                  <div className="text-center p-4 border border-white/10 glass-panel">
                     <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">CONTROLS</div>
-                    <div className="text-white font-bold text-xs uppercase">MOUSE: MOVE_CORE</div>
+                    <div className="text-foreground font-bold text-xs uppercase">MOUSE: MOVE_CORE</div>
                  </div>
                  <div className="text-center p-4 border border-white/10 glass-panel">
                     <div className="text-[10px] text-hyper-pink font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
-                    <div className="text-white font-bold text-xs uppercase">EVADE_PINK_VOID<br/>SURVIVE_OVERLOAD</div>
+                    <div className="text-foreground font-bold text-xs uppercase">EVADE_PINK_VOID<br/>SURVIVE_OVERLOAD</div>
                  </div>
               </div>
             </div>
           )}
           {gameState === "GAMEOVER" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-red-600/20 backdrop-blur-xl">
-              <Skull className="w-24 h-24 text-white mb-6" />
-              <h2 className="text-6xl md:text-7xl font-black text-white italic uppercase mb-2 text-center">
+              <Skull className="w-24 h-24 text-foreground mb-6" />
+              <h2 className="text-6xl md:text-7xl font-black text-foreground italic uppercase mb-2 text-center">
                 {score <= 300 ? "NPC_BEHAVIOR" : 
                  score <= 1000 ? "SKILL_ISSUE" : 
                  score <= 2000 ? "KINDA_MID" : 
@@ -149,7 +149,7 @@ export default function DodgeGame() {
                  score <= 5000 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
                 {score <= 300 ? "BRO GOT DELETED INSTANTLY 💀" : 
                  score <= 1000 ? "YOUR MOVEMENT IS LITERALLY TRASH." : 
                  score <= 2000 ? "COULD DO BETTER. KINDA MID NGGL." : 
@@ -157,8 +157,8 @@ export default function DodgeGame() {
                  score <= 5000 ? "BRO IS NEO FROM THE MATRIX." : 
                  "LITERALLY UNTOUCHABLE. GO TOUCH GRASS."}
               </p>
-              <div className="text-white text-5xl font-black italic mb-10">SCORE: {score}</div>
-              <button onClick={startGame} className="px-12 py-6 bg-white text-black font-black text-2xl uppercase italic">RETRY</button>
+              <div className="text-foreground text-5xl font-black italic mb-10">SCORE: {score}</div>
+              <button onClick={startGame} className="px-12 py-6 bg-foreground text-background font-black text-2xl uppercase italic">RETRY</button>
             </div>
           )}
           {gameState === "PLAYING" && (
@@ -167,7 +167,7 @@ export default function DodgeGame() {
               {enemiesRef.current.map(e => (
                 <div key={e.id} className="absolute bg-hyper-pink rounded-sm shadow-[0_0_20px_#ff007a]" style={{ width: ENEMY_SIZE, height: ENEMY_SIZE, left: e.x, top: e.y }} />
               ))}
-              <div className="absolute top-8 left-8 text-white text-5xl font-black italic">{score}</div>
+              <div className="absolute top-8 left-8 text-foreground text-5xl font-black italic">{score}</div>
             </>
           )}
         </div>

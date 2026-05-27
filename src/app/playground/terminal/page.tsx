@@ -49,7 +49,7 @@ export default function DataVault() {
       <div className="fixed top-24 left-6 z-40 flex flex-col gap-4">
         <Link 
           href="/playground" 
-          className="flex items-center gap-2 px-4 py-2 bg-black border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel"
+          className="flex items-center gap-2 px-4 py-2 bg-background border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel"
         >
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-[10px] font-black uppercase tracking-widest">Exit_to_Lab</span>
@@ -58,7 +58,7 @@ export default function DataVault() {
 
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10 relative">
         <div className="text-center mb-10">
-          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-5xl md:text-8xl font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             DATA_<span className="text-cyber-blue">VAULT</span>
           </h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-[10px] mt-2">
@@ -66,20 +66,20 @@ export default function DataVault() {
           </p>
         </div>
 
-        <div className="w-full max-w-4xl glass-panel border-4 border-white/5 bg-black/60 relative overflow-hidden flex flex-col" style={{ height: 500 }}>
+        <div className="w-full max-w-4xl glass-panel border-4 border-white/5 bg-background/60 relative overflow-hidden flex flex-col" style={{ height: 500 }}>
           {/* Terminal Scanline */}
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-20 w-full animate-scan z-10" />
           
           <div className="flex-1 p-8 overflow-y-auto font-mono text-sm md:text-lg custom-scrollbar">
             {history.map((line, i) => (
-              <div key={i} className={line.startsWith(">") ? "text-cyber-blue" : "text-white/80"}>
+              <div key={i} className={line.startsWith(">") ? "text-cyber-blue" : "text-foreground/80"}>
                 {line}
               </div>
             ))}
             <div ref={bottomRef} />
           </div>
 
-          <form onSubmit={handleCommand} className="p-6 border-t border-white/10 bg-black/80 relative z-20">
+          <form onSubmit={handleCommand} className="p-6 border-t border-white/10 bg-background/80 relative z-20">
             <div className="flex items-center gap-4">
                <span className="text-cyber-blue font-black tracking-widest">&gt;</span>
                <input 
@@ -88,7 +88,7 @@ export default function DataVault() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="INPUT_COMMAND_..."
-                className="flex-1 bg-transparent border-none text-white focus:outline-none uppercase font-black placeholder:text-white/10"
+                className="flex-1 bg-transparent border-none text-foreground focus:outline-none uppercase font-black placeholder:text-foreground/10"
                />
             </div>
           </form>
@@ -98,15 +98,15 @@ export default function DataVault() {
            <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue flex items-center gap-4">
               <ShieldAlert className="w-8 h-8 text-cyber-blue" />
               <div>
-                 <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">ENCRYPTION</div>
-                 <div className="text-xl font-black italic text-white">SHA-512_SECURE</div>
+                 <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">ENCRYPTION</div>
+                 <div className="text-xl font-black italic text-foreground">SHA-512_SECURE</div>
               </div>
            </div>
            <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink flex items-center gap-4">
               <Eye className="w-8 h-8 text-hyper-pink" />
               <div>
-                 <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">ACCESS_LEVEL</div>
-                 <div className="text-xl font-black italic text-white">OVERSEER_ADMIN</div>
+                 <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">ACCESS_LEVEL</div>
+                 <div className="text-xl font-black italic text-foreground">OVERSEER_ADMIN</div>
               </div>
            </div>
         </div>

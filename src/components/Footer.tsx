@@ -35,8 +35,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-black border-t-4 border-hyper-pink pt-24 pb-12 overflow-hidden relative">
-      <div className="absolute top-0 right-0 text-[20rem] font-black italic text-white/[0.02] -translate-y-1/2 translate-x-1/4 select-none">
+    <footer className="bg-background border-t-4 border-hyper-pink pt-24 pb-12 overflow-hidden relative">
+      <div className="absolute top-0 right-0 text-[20rem] font-black italic text-foreground/[0.02] -translate-y-1/2 translate-x-1/4 select-none">
         ROBOVIBE
       </div>
       
@@ -45,18 +45,18 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-10">
               <div className="p-1.5 bg-hyper-pink rounded-full">
-                <Zap className="w-8 h-8 text-black fill-current" />
+                <Zap className="w-8 h-8 text-background fill-current" />
               </div>
-              <span className="text-4xl font-black italic tracking-tighter text-white uppercase">
+              <span className="text-4xl font-black italic tracking-tighter text-foreground uppercase">
                 ROBO<span className="text-hyper-pink">VIBE</span>
               </span>
             </Link>
-            <p className="text-white/40 text-xl font-bold leading-tight max-w-md mb-10 italic">
+            <p className="text-text-dim text-xl font-bold leading-tight max-w-md mb-10 italic">
               WE BUILD THE TOOLS. YOU BUILD THE FUTURE. WELCOME TO THE ULTIMATE CREATIVE HUB.
             </p>
             <div className="flex gap-6">
               {[Globe, Share2, ExternalLink].map((Icon, i) => (
-                <a key={i} href="#" className="w-14 h-14 bg-white/5 flex items-center justify-center hover:bg-hyper-pink hover:text-black transition-all border border-white/10">
+                <a key={i} href="#" className="w-14 h-14 bg-foreground/5 flex items-center justify-center hover:bg-hyper-pink hover:text-background transition-all border border-foreground/10">
                   <Icon className="w-6 h-6" />
                 </a>
               ))}
@@ -68,7 +68,7 @@ export default function Footer() {
             <ul className="space-y-6">
               {["PLAYGROUND", "ARCADE", "CANVAS", "COMMS", "FEEDBACK"].map((item) => (
                 <li key={item}>
-                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : item === "FEEDBACK" ? "/feedback" : "/contact"} className="text-white/60 hover:text-white font-black text-lg transition-colors flex items-center gap-2 group">
+                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : item === "FEEDBACK" ? "/feedback" : "/contact"} className="text-foreground/60 hover:text-foreground font-black text-lg transition-colors flex items-center gap-2 group">
                     <span className="w-0 group-hover:w-4 h-1 bg-hyper-pink transition-all" />
                     {item}
                   </Link>
@@ -79,13 +79,13 @@ export default function Footer() {
 
           <div>
             <h4 className="text-electric-volt font-black mb-10 uppercase text-xs tracking-[0.4em]">_JOIN_SQUAD</h4>
-            <p className="text-white/40 font-bold mb-6 text-sm">DROP YOUR DIGITAL SIGNATURE FOR UPDATES.</p>
+            <p className="text-text-dim font-bold mb-6 text-sm">DROP YOUR DIGITAL SIGNATURE FOR UPDATES.</p>
             <div className="space-y-4">
               <input 
                 type="email" 
                 placeholder="USER@DOMAIN.XYZ" 
                 required
-                className="w-full bg-white/5 border-2 border-white/10 p-4 font-black uppercase text-sm focus:outline-none focus:border-electric-volt text-white"
+                className="w-full bg-foreground/5 border-2 border-foreground/10 p-4 font-black uppercase text-sm focus:outline-none focus:border-electric-volt text-foreground"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -93,9 +93,9 @@ export default function Footer() {
                 onClick={handleSubscribe}
                 disabled={status === "loading"}
                 className={`w-full py-4 font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
-                  status === "success" ? "bg-electric-volt text-black" : 
-                  status === "error" ? "bg-red-500 text-white" :
-                  "bg-hyper-pink text-black hover:bg-white disabled:opacity-50"
+                  status === "success" ? "bg-electric-volt text-background" : 
+                  status === "error" ? "bg-red-500 text-foreground" :
+                  "bg-hyper-pink text-background hover:bg-foreground disabled:opacity-50"
                 }`}
               >
                 {status === "loading" ? "UPLOADING..." : 
@@ -107,11 +107,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t-2 border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-white/20 text-[10px] font-black tracking-widest uppercase">
+        <div className="border-t-2 border-foreground/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
+          <p className="text-foreground/20 text-[10px] font-black tracking-widest uppercase">
             © 2026 ROBOVIBE_SYSTEMS_GLOBAL. BUILT_FOR_THE_SQUAD.
           </p>
-          <div className="flex gap-12 text-[10px] font-black text-white/20 uppercase tracking-widest">
+          <div className="flex gap-12 text-[10px] font-black text-foreground/20 uppercase tracking-widest">
             <a href="#" className="hover:text-hyper-pink transition-colors">PRIVACY_VOID</a>
             <a href="#" className="hover:text-cyber-blue transition-colors">TERMS_OF_CHAOS</a>
             <a href="#" className="hover:text-electric-volt transition-colors">CORE_LOGS</a>

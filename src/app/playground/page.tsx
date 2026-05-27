@@ -60,11 +60,11 @@ export default function PlaygroundHub() {
 
       <div className="flex-1 container mx-auto px-6 py-20">
         <div className="text-center mb-24">
-          <div className="inline-flex items-center gap-2 px-4 py-1 bg-white text-black text-[10px] font-black uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1 bg-foreground text-background text-[10px] font-black uppercase tracking-widest mb-6">
             <Cpu className="w-3 h-3" />
             Central_Playground_Core
           </div>
-          <h1 className="text-6xl md:text-[10rem] font-black italic uppercase text-white tracking-tighter text-glitch leading-none">
+          <h1 className="text-6xl md:text-[10rem] font-black italic uppercase text-foreground tracking-tighter text-glitch leading-none">
             VIBE_<span className="text-hyper-pink">LABS</span>
           </h1>
           <p className="text-cyber-blue font-black uppercase tracking-[0.5em] text-sm mt-4">
@@ -77,29 +77,29 @@ export default function PlaygroundHub() {
             <Link 
               key={sector.id}
               href={sector.href} 
-              className={`sector-card group relative block p-1 bg-white/10 hover:bg-white transition-all`}
+              className={`sector-card group relative block p-1 bg-white/10 hover:bg-foreground transition-all`}
             >
-              <div className="bg-black p-12 h-full relative overflow-hidden">
+              <div className="bg-background p-12 h-full relative overflow-hidden">
                 <div className={`absolute -bottom-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity text-${sector.color}`}>
                   <sector.icon className="w-64 h-64" />
                 </div>
                 
                 <div className="relative z-10">
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 bg-${sector.color} text-black text-[10px] font-black uppercase mb-8`}>
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 bg-${sector.color} text-background text-[10px] font-black uppercase mb-8`}>
                     <Zap className="w-3 h-3" /> {sector.tag}_ACTIVE
                   </div>
                   
-                  <h2 className="text-5xl font-black italic text-white uppercase mb-6 leading-none">
+                  <h2 className="text-5xl font-black italic text-foreground uppercase mb-6 leading-none">
                     {sector.title.split("_")[0]}<br/>
                     <span className={`text-${sector.color}`}>{sector.title.split("_")[1]}</span>
                   </h2>
                   
-                  <p className="text-white/40 font-bold mb-10 text-lg leading-relaxed max-w-sm">
+                  <p className="text-foreground/40 font-bold mb-10 text-lg leading-relaxed max-w-sm">
                     {sector.desc}
                   </p>
                   
                   <div className={`text-${sector.color} font-black italic tracking-[0.3em] text-xs group-hover:translate-x-4 transition-transform flex items-center gap-2`}>
-                    ENTER_SECTOR <span className="text-white">&gt;&gt;</span>
+                    ENTER_SECTOR <span className="text-foreground">&gt;&gt;</span>
                   </div>
                 </div>
               </div>

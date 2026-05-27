@@ -129,20 +129,20 @@ export default function PongGame() {
       <BackToArcade />
       <div className="flex-1 container mx-auto px-6 flex flex-col items-center justify-center py-10">
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter text-glitch">VOID_<span className="text-cyber-blue">PONG</span></h1>
+          <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">VOID_<span className="text-cyber-blue">PONG</span></h1>
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px]">PADDLE_LINK_STABLE</p>
         </div>
         <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-none" style={{ width: 800, height: 500 }} onMouseMove={handleMouseMove} onClick={() => gameState !== "PLAYING" && initGame()}>
           <canvas ref={canvasRef} width={800} height={500} />
           {gameState === "IDLE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90">
-              <button className="px-10 py-5 bg-cyber-blue text-black font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">INITIALIZE_PADDLE</button>
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
+              <button className="px-10 py-5 bg-cyber-blue text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">INITIALIZE_PADDLE</button>
             </div>
           )}
           {gameState === "GAMEOVER" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/95">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95">
               <ShieldAlert className="w-16 h-16 text-red-500 mb-6" />
-              <h2 className="text-5xl md:text-6xl font-black text-white italic uppercase mb-2 text-center">
+              <h2 className="text-5xl md:text-6xl font-black text-foreground italic uppercase mb-2 text-center">
                 {score <= 50 ? "NPC_BEHAVIOR" : 
                  score <= 150 ? "SKILL_ISSUE" : 
                  score <= 300 ? "KINDA_MID" : 
@@ -150,7 +150,7 @@ export default function PongGame() {
                  score <= 1000 ? "W_RIZZ" : 
                  "MAIN_CHARACTER"}
               </h2>
-              <p className="text-white/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
+              <p className="text-foreground/80 font-black uppercase tracking-widest text-[10px] mb-6 text-center">
                 {score <= 50 ? "BRO MISSED THE SLOWEST BALL EVER 💀" : 
                  score <= 150 ? "LITERALLY ZERO REFLEXES." : 
                  score <= 300 ? "MID RALLIES NGGL." : 
@@ -158,11 +158,11 @@ export default function PongGame() {
                  score <= 1000 ? "BRO IS ROGER FEDERER." : 
                  "CERTIFIED PONG GOD. TOUCH GRASS."}
               </p>
-              <button className="px-10 py-5 bg-white text-black font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]" onClick={() => initGame()}>RE-LINK</button>
+              <button className="px-10 py-5 bg-foreground text-background font-black text-xl uppercase shadow-[8px_8px_0_0_#ff007a]" onClick={() => initGame()}>RE-LINK</button>
             </div>
           )}
           {gameState === "PLAYING" && (
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white/20 font-black italic text-8xl select-none">{score}</div>
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 text-foreground/20 font-black italic text-8xl select-none">{score}</div>
           )}
         </div>
       </div>

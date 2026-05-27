@@ -3,34 +3,36 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.4);
+  --text-dim: rgba(255, 255, 255, 0.4);
   --hyper-pink: #ff007a;
   --electric-volt: #ccff00;
   --cyber-blue: #00f0ff;
   --grid-color: rgba(255, 0, 122, 0.1);
   --panel-bg: rgba(0, 0, 0, 0.7);
-  --card-bg: #000000;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="light"] {
   --background: #ffffff;
   --foreground: #000000;
-  --text-muted: rgba(0, 0, 0, 0.5);
+  --text-dim: rgba(0, 0, 0, 0.5);
   --hyper-pink: #ff007a;
-  --electric-volt: #558800; /* Darker green for contrast on white */
-  --cyber-blue: #0088cc; /* Darker blue for contrast on white */
+  --electric-volt: #447700;
+  --cyber-blue: #0077aa;
   --grid-color: rgba(0, 0, 0, 0.05);
-  --panel-bg: rgba(255, 255, 255, 0.8);
-  --card-bg: #f5f5f5;
+  --panel-bg: rgba(240, 240, 240, 0.8);
+  --border-color: rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
   --color-hyper-pink: var(--hyper-pink);
   --color-electric-volt: var(--electric-volt);
   --color-cyber-blue: var(--cyber-blue);
+  --color-panel: var(--panel-bg);
+  --color-border-main: var(--border-color);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -44,7 +46,7 @@ body {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Theme-Aware Grid */
+/* Original Hyper-Pink Grid */
 .grid-bg {
   background-image: 
     linear-gradient(var(--grid-color) 1px, transparent 1px),
@@ -52,10 +54,6 @@ body {
   background-size: 50px 50px;
   background-position: center center;
 }
-
-/* Theme-Aware Typography */
-.text-main { color: var(--foreground); }
-.text-dim { color: var(--text-muted); }
 
 .text-glitch {
   text-shadow: 
@@ -71,25 +69,16 @@ body {
   15% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 122, 0.75), 0.025em 0.025em 0 rgba(0, 240, 255, 0.75); }
   49% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 122, 0.75), 0.025em 0.025em 0 rgba(0, 240, 255, 0.75); }
   50% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 122, 0.75), 0.05em 0 0 rgba(0, 240, 255, 0.75); }
-  99% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 122, 0.75), 0.05em 0 0 rgba(0, 240, 250, 0.75); }
+  99% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 122, 0.75), 0.05em 0 0 rgba(0, 240, 240, 0.75); }
   100% { text-shadow: -0.025em 0 0 rgba(255, 0, 122, 0.75), -0.025em -0.025em 0 rgba(0, 240, 255, 0.75); }
 }
 
 .glass-panel {
   background: var(--panel-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(128, 128, 128, 0.2);
+  border: 1px solid var(--border-color);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  transition: background-color 0.4s ease, border-color 0.4s ease;
-}
-
-.arcade-card-inner {
-  background: var(--card-bg);
-  transition: background-color 0.4s ease;
-}
-
-.glow-pink {
-  filter: drop-shadow(0 0 15px var(--hyper-pink));
+  transition: all 0.4s ease;
 }
 
 @keyframes scan {
