@@ -21,15 +21,15 @@ const SECTORS = [
 ];
 
 const EMAIL_TEMPLATES = [
-  { id: "WELCOME", label: "WELCOME", subj: "WELCOME_TO_THE_SQUAD", msg: "WELCOME TO THE ROBOVIBE SQUAD. WE ARE THRILLED TO HAVE YOU IN THE LABS." },
-  { id: "FIXED", label: "FIXED", subj: "RE: SYSTEM_UPDATE // ISSUE_RESOLVED", msg: "DIAGNOSTICS COMPLETE. THE ISSUE YOU REPORTED HAS BEEN NEUTRALIZED. CORE STABILITY RESTORED." },
-  { id: "SUPPORT", label: "SUPPORT", subj: "RE: SUPPORT_REQUEST", msg: "WE HAVE RECEIVED YOUR DATA PAYLOAD. OUR ENGINEERING SQUAD IS ANALYZING THE PROTOCOLS." }
+  { id: "WELCOME", label: "WELCOME", subj: "WELCOME_TO_THE_SQUAD // ACCESS_GRANTED", msg: "AYO! WELCOME TO THE INNER CIRCLE. YOUR VIBE-CHECK PASSED. PREPARE FOR EXCLUSIVE DATA DROPS AND ABSOLUTE CHAOS. NO CAP." },
+  { id: "BUG_FIX", label: "FIXED", subj: "RE: SYSTEM_UPDATE // ISSUE_NEUTRALIZED", msg: "DIAGNOSTICS COMPLETE. THAT BUG YOU REPORTED? GONE. NUKED. DELETED. WE'RE COOKING NOW. THANKS FOR THE INTEL, GOAT." },
+  { id: "SUPPORT", label: "SUPPORT", subj: "RE: SUPPORT_REQUEST // UPLINK_STABLE", msg: "WE HEAR YOU. OUR ENGINEERING SQUAD IS ON IT FR FR. STAY VIBEY WHILE WE RECALIBRATE YOUR CORE. WE'LL HIT YOU UP SHORTLY." }
 ];
 
 const BROADCAST_TEMPLATES = [
-  { label: "MAINTENANCE", msg: "SYSTEM MAINTENANCE IN PROGRESS. CERTAIN SECTORS MAY BE OFFLINE. EXPECT STABILITY RESTORED IN 2 HOURS." },
-  { label: "NEW_GAME", msg: "NEW SIMULATION DETECTED! 'CYBER_BEAT' IS NOW LIVE IN THE ARCADE HUB. BOOT IT NOW." },
-  { label: "SQUAD", msg: "SQUAD SIZE GROWING EXPONENTIALLY. THANKS FOR BUILDING THE FUTURE WITH US." }
+  { label: "MAINTENANCE", msg: "⚠️ SYSTEM RELOAD IN PROGRESS. DON'T PANIC. JUST ADDING MORE RIZZ TO THE CORE. BACK IN 2 HOURS. STAY HYDRATED." },
+  { label: "NEW_GAME", msg: "🚀 NEW SIMULATION DETECTED! A NEW GAME JUST DROPPED IN THE ARCADE. IT GOES HARD. BOOT IT NOW." },
+  { label: "SQUAD", msg: "🔥 THE SQUAD IS ABSOLUTELY BLOWING UP. 100+ NEW NODES CONNECTED TODAY. WE ARE LITERALLY GLOBAL NOW." }
 ];
 
 export default function AdminHQ() {
@@ -274,13 +274,27 @@ export default function AdminHQ() {
 }
 
 function DataStreamBackground() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="fixed inset-0 pointer-events-none -z-5 overflow-hidden">
       <div className="absolute inset-0 bg-black opacity-60" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,0,122,0.05),transparent_80%)] animate-pulse" />
       <div className="absolute top-0 left-0 w-full h-full opacity-30">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div key={i} className="absolute text-[10px] font-mono text-hyper-pink whitespace-pre leading-none animate-data-fall" style={{ left: `${i * 3.33}%`, animationDelay: `${Math.random() * 8}s`, animationDuration: `${8 + Math.random() * 15}s` }}>
+        {mounted && Array.from({ length: 30 }).map((_, i) => (
+          <div 
+            key={i} 
+            className="absolute text-[10px] font-mono text-hyper-pink whitespace-pre leading-none animate-data-fall" 
+            style={{ 
+              left: `${i * 3.33}%`, 
+              animationDelay: `${Math.random() * 8}s`, 
+              animationDuration: `${8 + Math.random() * 15}s` 
+            }}
+          >
             {Array.from({ length: 60 }).map(() => Math.round(Math.random())).join('\n')}
           </div>
         ))}
