@@ -17,17 +17,43 @@ const ACTIONS = [
 
 export default function VibeStream() {
   const [items, setItems] = useState<{ id: number; text: string }[]>([]);
+  const [onlineCount, setOnlineCount] = useState(1);
 
   useEffect(() => {
-    // Initial data
+    // 1. Initial News Data
     const initial = Array.from({ length: 5 }).map((_, i) => ({
       id: i,
       text: `${SQUAD_NAMES[Math.floor(Math.random() * SQUAD_NAMES.length)]} // ${ACTIONS[Math.floor(Math.random() * ACTIONS.length)]}`
     }));
     setItems(initial);
 
-    // Dynamic updates
-    const interval = setInterval(() => {
+    // 2. Generate a local Session ID if not exists
+    let sid = localStorage.getItem('robo-sid');
+    if (!sid) {
+      sid = Math.random().toString(36).substring(7);
+      localStorage.setItem('robo-sid', sid);
+    }
+
+    // 3. Heartbeat Function (Fetch real users)
+    const syncHeartbeat = async () => {
+      try {
+        const res = await fetch("/api/heartbeat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId: sid })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setOnlineCount(data.count || 1);
+        }
+      } catch (e) { console.error(e); }
+    };
+
+    syncHeartbeat();
+    const heartbeatInterval = setInterval(syncHeartbeat, 30000); // Every 30s
+
+    // 4. Dynamic News Ticker updates
+    const tickerInterval = setInterval(() => {
       setItems(prev => {
         const newItem = {
           id: Date.now(),
@@ -37,7 +63,10 @@ export default function VibeStream() {
       });
     }, 4000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(heartbeatInterval);
+      clearInterval(tickerInterval);
+    };
   }, []);
 
   return (
@@ -55,7 +84,6 @@ export default function VibeStream() {
               {item.text}
             </div>
           ))}
-          {/* Double up for seamless marquee */}
           {items.map(item => (
             <div key={`clone-${item.id}`} className="flex items-center gap-4 text-[10px] font-black italic tracking-widest text-foreground group-hover:text-hyper-pink transition-colors">
               <Zap className="w-3 h-3 text-electric-volt" />
@@ -68,7 +96,7 @@ export default function VibeStream() {
       <div className="hidden md:flex items-center gap-6 px-10 h-full border-l border-foreground/10 shrink-0">
         <div className="flex items-center gap-2 text-cyber-blue">
           <Users className="w-3 h-3" />
-          <span className="text-[8px] font-black tabular-nums">4.2k_ONLINE</span>
+          <span className="text-[8px] font-black tabular-nums">{onlineCount}_NODES_ACTIVE</span>
         </div>
         <div className="flex items-center gap-2 text-electric-volt">
           <Shield className="w-3 h-3" />

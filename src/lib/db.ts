@@ -48,6 +48,13 @@ export async function setupDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id TEXT PRIMARY KEY,
+      last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
   
   return true;
 }
