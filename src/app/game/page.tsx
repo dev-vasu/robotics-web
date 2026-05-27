@@ -163,23 +163,23 @@ export default function ArcadeHub() {
                   <Link 
                     key={game.id}
                     href={game.href} 
-                    className={`group relative block p-1 bg-white/10 hover:bg-white transition-all`}
+                    className={`group relative block p-1 bg-foreground/10 hover:bg-foreground transition-all`}
                   >
-                    <div className="bg-black p-10 h-full relative overflow-hidden">
-                      <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity ${game.text}`}>
-                        <game.icon className="w-32 h-32" />
+                    <div className="arcade-card-inner p-10 h-full relative overflow-hidden">
+                      <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity ${game.textClass}`}>
+                        <game.icon className="w-40 h-40" />
                       </div>
                       <div className="relative z-10">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1 ${game.color} text-black text-[10px] font-black uppercase mb-6`}>
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 ${game.colorClass} text-black text-[10px] font-black uppercase mb-6`}>
                           <Zap className="w-3 h-3" /> {game.tag}
                         </div>
-                        <h3 className="text-3xl font-black italic text-white uppercase mb-4">
-                          {game.title.split("_")[0]}_<span className={game.text}>{game.title.split("_")[1]}</span>
-                        </h3>
-                        <p className="text-white/40 font-bold mb-8 text-sm leading-relaxed">
+                        <h2 className="text-4xl font-black italic text-foreground uppercase mb-4">
+                          {game.title.split("_")[0]}_<span className={game.textClass}>{game.title.split("_")[1]}</span>
+                        </h2>
+                        <p className="text-dim font-bold mb-8 text-sm leading-relaxed">
                           {game.desc}
                         </p>
-                        <div className={`${game.text} font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform`}>
+                        <div className={`${game.textClass} font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform`}>
                           INITIALIZE_LINK_ &gt;&gt;
                         </div>
                       </div>
