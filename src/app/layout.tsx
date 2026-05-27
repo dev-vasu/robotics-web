@@ -4,6 +4,7 @@ import "./globals.css";
 import GlobalAudio from "@/components/GlobalAudio";
 import SynthwaveGrid from "@/components/SynthwaveGrid";
 import BroadcastBanner from "@/components/BroadcastBanner";
+import VibeStream from "@/components/VibeStream";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RoboVibe | Creative Playground",
   description: "Advanced generative dynamics, high-fidelity simulations, and creative tools.",
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'RoboVibe',
+  },
   icons: {
     icon: '/icon.svg',
   },
@@ -39,6 +46,7 @@ export default function RootLayout({
         <SynthwaveGrid />
         <GlobalAudio />
         {children}
+        <VibeStream />
       </body>
     </html>
   );
