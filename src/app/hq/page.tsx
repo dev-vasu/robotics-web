@@ -336,3 +336,37 @@ export default function AdminHQ() {
     </main>
   );
 }
+
+function DataStreamBackground() {
+  return (
+    <div className="fixed inset-0 pointer-events-none -z-5 overflow-hidden opacity-20">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,240,255,0.1),transparent_70%)] animate-pulse" />
+      <div className="absolute top-0 left-0 w-full h-full">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div 
+            key={i}
+            className="absolute text-[8px] font-mono text-cyber-blue whitespace-nowrap animate-data-fall"
+            style={{
+              left: `${i * 5}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${5 + Math.random() * 10}s`
+            }}
+          >
+            {Array.from({ length: 40 }).map(() => Math.round(Math.random())).join('\n')}
+          </div>
+        ))}
+      </div>
+      <style jsx>{`
+        @keyframes data-fall {
+          0% { transform: translateY(-100%); opacity: 0; }
+          10% { opacity: 0.5; }
+          90% { opacity: 0.5; }
+          100% { transform: translateY(1000%); opacity: 0; }
+        }
+        .animate-data-fall {
+          animation: data-fall linear infinite;
+        }
+      `}</style>
+    </div>
+  );
+}
