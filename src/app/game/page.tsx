@@ -169,21 +169,20 @@ export default function ArcadeHub() {
                       <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity ${game.textClass}`}>
                         <game.icon className="w-40 h-40" />
                       </div>
-                      <div className="relative z-10">
+                      <div className="relative z-10 transition-colors duration-300 group-hover:text-background">
                         <div className={`inline-flex items-center gap-2 px-3 py-1 ${game.colorClass} text-background text-[10px] font-black uppercase mb-6`}>
                           <Zap className="w-3 h-3" /> {game.tag}
                         </div>
-                        <h2 className="text-4xl font-black italic text-foreground uppercase mb-4">
-                          {game.title.split("_")[0]}_<span className={game.textClass}>{game.title.split("_")[1]}</span>
+                        <h2 className="text-4xl font-black italic text-foreground group-hover:text-background uppercase mb-4 transition-colors">
+                          {game.title.split("_")[0]}_<span className={`${game.textClass} group-hover:text-background`}>{game.title.split("_")[1]}</span>
                         </h2>
-                        <p className="text-dim font-bold mb-8 text-sm leading-relaxed">
+                        <p className="text-dim group-hover:text-background/70 font-bold mb-8 text-sm leading-relaxed transition-colors">
                           {game.desc}
                         </p>
-                        <div className={`${game.textClass} font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-transform`}>
+                        <div className={`${game.textClass} group-hover:text-background font-black italic tracking-widest text-xs group-hover:translate-x-4 transition-all`}>
                           INITIALIZE_LINK_ &gt;&gt;
                         </div>
-                      </div>
-                    </div>
+                      </div>                    </div>
                   </Link>
                 ))}
               </div>
