@@ -83,7 +83,7 @@ export default function AdminHQ() {
     if (activeTab === "ALL") return true;
     if (activeTab === "FEEDBACK") return r.type === "FEEDBACK";
     if (activeTab === "TICKETS") return r.type === "TICKET";
-    if (activeTab === "SQUAD_MEMBERS") return false; // Handled by users list
+    if (activeTab === "SQUAD_MEMBERS") return false; 
     if (activeTab === "QUERIES") return !isNewsletter && r.type !== "FEEDBACK" && r.type !== "TICKET" && (r.type === "RECEIVED" || r.type === "SENT");
     return true;
   });
@@ -91,9 +91,8 @@ export default function AdminHQ() {
   const handleSelectConversation = (email: string) => {
     setSelectedEmail(email);
     setTo(email);
-    const originalMsg = records.find(r => r.email === email && r.type === 'RECEIVED');
     const lastMsg = records.find(r => r.email === email);
-    let subj = originalMsg ? originalMsg.subject : lastMsg?.subject || "";
+    let subj = lastMsg?.subject || "";
     if (subj && !subj.toUpperCase().startsWith("RE:")) {
       subj = "RE: " + subj;
     }
@@ -166,6 +165,18 @@ export default function AdminHQ() {
     } catch (e) { console.error(e); }
   };
 
+  const handleDeleteRecord = async (id: number) => {
+    if (!confirm("PERMANENTLY PURGE THIS DATA PACKET?")) return;
+    try {
+      const res = await fetch("/api/hq/records", { 
+        method: "DELETE", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ passcode, id }) 
+      });
+      if (res.ok) fetchRecords(passcode);
+    } catch (e) { console.error(e); }
+  };
+
   const handleAdjustXP = async (userId: number, xpAmount: number) => {
     try {
       const res = await fetch("/api/hq/users", { 
@@ -210,7 +221,6 @@ export default function AdminHQ() {
       .map((f: any) => {
         let fullName = f.id.toUpperCase();
         let category = "UNCATEGORIZED";
-
         for (const cat of CATEGORIES) {
           const game = cat.games.find(g => g.id === f.id);
           if (game) {
@@ -264,8 +274,6 @@ export default function AdminHQ() {
     );
   }
 
-  const squadCount = squadUsers.length;
-
   return (
     <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20 px-6 pb-20 relative overflow-x-hidden" ref={containerRef}>
       <DataStreamBackground />
@@ -305,7 +313,7 @@ export default function AdminHQ() {
               </form>
             </div>
             <div className="grid grid-cols-2 gap-4 hq-panel">
-               <div className="glass-panel p-6 border-l-4 border-cyber-blue bg-background/80 flex flex-col justify-between"><div className="text-[10px] font-black text-dim uppercase mb-2 flex items-center gap-2"><Users className="w-3 h-3" /> SQUAD</div><div className="text-4xl font-black italic text-foreground animate-pulse">{squadCount}</div></div>
+               <div className="glass-panel p-6 border-l-4 border-cyber-blue bg-background/80 flex flex-col justify-between"><div className="text-[10px] font-black text-dim uppercase mb-2 flex items-center gap-2"><Users className="w-3 h-3" /> SQUAD</div><div className="text-4xl font-black italic text-foreground animate-pulse">{squadUsers.length}</div></div>
                <button onClick={handleExportData} className="glass-panel p-6 border-l-4 border-[#ffaa00] bg-background/80 hover:bg-foreground/5 transition-all text-left flex flex-col justify-between group"><div className="text-[10px] font-black text-dim uppercase mb-2">BACKUP</div><div className="flex items-center gap-2 text-2xl font-black italic text-[#ffaa00] group-hover:translate-x-2 transition-transform"><Download className="w-5 h-5" /> EXPORT</div></button>
             </div>
           </div>
@@ -313,7 +321,7 @@ export default function AdminHQ() {
           <div className="lg:col-span-8 glass-panel border-4 border-hyper-pink/30 bg-background/80 p-8 flex flex-col hq-panel" style={{ height: "800px" }}>
             <div className="flex items-center justify-between mb-8 border-b border-foreground/10 pb-6 shrink-0">
               <div className="flex items-center gap-4"><div className="p-3 bg-hyper-pink rounded-full shadow-[0_0_15px_#ff007a] animate-pulse"><Database className="w-6 h-6 text-background" /></div><div><h2 className="text-3xl font-black italic text-foreground uppercase tracking-tighter leading-none">{activeSector}</h2><p className="text-hyper-pink font-black uppercase tracking-[0.4em] text-[10px] mt-1">CORE_INTELLIGENCE_ACTIVE</p></div></div>
-              <div className="flex items-center gap-4">{selectedEmail && <button onClick={() => { setSelectedEmail(null); setTo(""); setSubject(""); }} className="px-6 py-3 bg-foreground/5 border border-foreground/10 hover:bg-hyper-pink hover:text-background transition-all text-foreground rounded text-[10px] font-black tracking-widest uppercase shadow-[4px_4px_0_0_white]">CLOSE_THREAD</button>}<button onClick={() => fetchRecords(passcode)} className="p-4 bg-foreground/5 border border-foreground/10 hover:bg-hyper-pink hover:text-background transition-all text-foreground rounded"><RefreshCcw className={`w-6 h-6 ${isLoadingRecords ? "animate-spin" : ""}`} /></button></div>
+              <div className="flex items-center gap-4">{selectedEmail && <button onClick={() => { setSelectedEmail(null); setTo(""); setSubject(""); }} className="px-6 py-3 bg-foreground/5 border border-foreground/10 hover:bg-hyper-pink hover:text-background transition-all text-foreground rounded text-[10px] font-black tracking-widest uppercase shadow-[4px_4px_0_0_rgba(128,128,128,0.2)]">CLOSE_THREAD</button>}<button onClick={() => fetchRecords(passcode)} className="p-4 bg-foreground/5 border border-foreground/10 hover:bg-hyper-pink hover:text-background transition-all text-foreground rounded"><RefreshCcw className={`w-6 h-6 ${isLoadingRecords ? "animate-spin" : ""}`} /></button></div>
             </div>
 
             {!selectedEmail && (
@@ -329,16 +337,10 @@ export default function AdminHQ() {
                 <div className="p-10 space-y-8 animate-in fade-in zoom-in duration-500">
                   <div className="flex items-center justify-between mb-4 border-b border-hyper-pink/20 pb-4">
                     <div className="flex items-center gap-4 text-hyper-pink">
-                      <Radio className="w-12 h-12 animate-pulse" />
-                      <h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3>
+                      <Radio className="w-12 h-12 animate-pulse" /><h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3>
                     </div>
                     <div className="flex flex-wrap gap-2 justify-end max-w-md">
-                      <button 
-                        onClick={handleInjectNewSims} 
-                        className="text-[8px] font-black border-2 border-hyper-pink px-3 py-1.5 hover:bg-hyper-pink hover:text-background transition-all uppercase bg-background shadow-[4px_4px_0_0_#ff007a]"
-                      >
-                        ✨ AUTO_NEW_SIMS
-                      </button>
+                      <button onClick={handleInjectNewSims} className="text-[8px] font-black border-2 border-hyper-pink px-3 py-1.5 hover:bg-hyper-pink hover:text-background transition-all uppercase bg-background shadow-[4px_4px_0_0_#ff007a]">✨ AUTO_NEW_SIMS</button>
                       {BROADCAST_TEMPLATES.map(bt => (
                         <button key={bt.label} onClick={() => setActiveBroadcast(bt.msg)} className="text-[8px] font-black border border-foreground/10 px-3 py-1.5 hover:bg-hyper-pink hover:text-background transition-all uppercase bg-foreground/5 rounded-sm">{bt.label}</button>
                       ))}
@@ -346,7 +348,7 @@ export default function AdminHQ() {
                   </div>
                   <div className="space-y-6">
                     <textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_GLOBAL_MESSAGE..." className="w-full bg-background border-2 border-foreground/10 p-8 text-2xl text-foreground font-mono focus:border-hyper-pink focus:outline-none h-60 placeholder:text-foreground/5" />
-                    <button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[15px_15px_0_0_white] active:translate-y-1 active:shadow-none">ACTIVATE_GLOBAL_UPLINK</button>
+                    <button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[15px_15px_0_0_rgba(128,128,128,0.2)] active:translate-y-1 active:shadow-none">ACTIVATE_GLOBAL_UPLINK</button>
                   </div>
                 </div>
               ) : activeTab === "MAINTENANCE" ? (
@@ -384,9 +386,34 @@ export default function AdminHQ() {
                   return (<tr key={email} onClick={() => handleSelectConversation(email)} className="border-b border-foreground/5 hover:bg-foreground/10 transition-all cursor-pointer group"><td className="py-5 px-6 whitespace-nowrap"><span className={`inline-flex items-center px-3 py-1 bg-${c.replace('text-', '')}/10 border border-${c.replace('text-', '')}/30 ${c} text-[10px] font-black tracking-widest uppercase rounded-sm`}>{l} <span className="text-dim ml-2">[{thread.length}]</span></span></td><td className="py-5 px-6 font-bold text-foreground text-base group-hover:text-hyper-pink transition-colors">{email}</td><td className="py-5 px-6 text-[10px] text-dim font-mono text-right whitespace-nowrap uppercase">{new Date(latest.created_at).toLocaleString()}</td></tr>);
                 })}</tbody></table></div>
               ) : (
-                <div className="space-y-8 thread-view pb-10">{filteredRecords.filter(r => r.email === selectedEmail).map(r => (
-                  <div key={r.id} className={`p-8 border-l-8 bg-background/60 relative overflow-hidden group ${r.type === 'RECEIVED' ? 'border-electric-volt shadow-[0_0_20px_rgba(204,255,0,0.05)]' : r.type === 'FEEDBACK' ? 'border-cyber-blue' : r.type === 'TICKET' ? 'border-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue shadow-[0_0_20px_rgba(0,240,255,0.05)]'}`}><div className="flex justify-between items-start mb-6"><span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-foreground/5 border border-foreground/10 ${r.type === 'RECEIVED' ? 'text-electric-volt' : r.type === 'FEEDBACK' ? 'text-cyber-blue' : r.type === 'TICKET' ? 'text-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>{r.type === 'RECEIVED' ? 'INCOMING_UPLINK' : r.type === 'FEEDBACK' ? 'DIAGNOSTIC_DATA' : r.type === 'TICKET' ? 'SUPPORT_TICKET' : r.type === 'NEWSLETTER' ? 'SQUAD_INIT' : 'OUTGOING_SIGNAL'}</span><div className="flex items-center gap-4">{r.type === 'TICKET' && r.status === 'OPEN' && <button onClick={() => handleResolveTicket(r.id)} className="px-3 py-1 bg-electric-volt text-background text-[8px] font-black uppercase hover:bg-white transition-all">NEUTRALIZE_BUG</button>}<span className="text-[10px] text-foreground/30 font-mono uppercase italic">{new Date(r.created_at).toLocaleString()}</span></div></div><div className="text-lg font-black text-foreground mb-3 italic tracking-tighter">{r.subject} {r.status === 'RESOLVED' && <span className="text-electric-volt ml-4 underline">[NEUTRALIZED]</span>}</div><div className="text-base font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed border-t border-foreground/5 pt-4">{r.content}</div></div>
-                ))}</div>
+                <div className="space-y-8 thread-view pb-10">
+                  {records.filter(r => r.email === selectedEmail).map(r => (
+                    <div key={r.id} className={`p-8 border-l-8 bg-background/60 relative overflow-hidden group ${r.type === 'RECEIVED' ? 'border-electric-volt shadow-[0_0_20px_rgba(204,255,0,0.05)]' : r.type === 'FEEDBACK' ? 'border-cyber-blue' : r.type === 'TICKET' ? 'border-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'border-[#ccff00]' : 'border-cyber-blue shadow-[0_0_20px_rgba(0,240,255,0.05)]'}`}>
+                      <div className="flex justify-between items-start mb-6">
+                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-foreground/5 border border-foreground/10 ${r.type === 'RECEIVED' ? 'text-electric-volt' : r.type === 'FEEDBACK' ? 'text-cyber-blue' : r.type === 'TICKET' ? 'text-[#ffaa00]' : r.type === 'NEWSLETTER' ? 'text-[#ccff00]' : 'text-cyber-blue'}`}>
+                          {r.type === 'RECEIVED' ? 'INCOMING_UPLINK' : r.type === 'FEEDBACK' ? 'DIAGNOSTIC_DATA' : r.type === 'TICKET' ? 'SUPPORT_TICKET' : r.type === 'NEWSLETTER' ? 'SQUAD_INIT' : 'OUTGOING_SIGNAL'}
+                        </span>
+                        <div className="flex items-center gap-4">
+                          {r.type === 'TICKET' && r.status === 'OPEN' && (
+                            <button onClick={() => handleResolveTicket(r.id)} className="px-3 py-1 bg-electric-volt text-background text-[8px] font-black uppercase hover:bg-white transition-all">
+                              NEUTRALIZE_BUG
+                            </button>
+                          )}
+                          <button onClick={() => handleDeleteRecord(r.id)} className="p-1 text-red-500 hover:text-white transition-all opacity-40 hover:opacity-100">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          <span className="text-[10px] text-foreground/30 font-mono uppercase italic">{new Date(r.created_at).toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div className="text-lg font-black text-foreground mb-3 italic tracking-tighter">
+                        {r.subject} {r.status === 'RESOLVED' && <span className="text-electric-volt ml-4 underline">[NEUTRALIZED]</span>}
+                      </div>
+                      <div className="text-base font-mono text-foreground/70 whitespace-pre-wrap leading-relaxed border-t border-foreground/5 pt-4">
+                        {r.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
