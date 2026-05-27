@@ -5,16 +5,18 @@ import { setupDatabase } from "@/lib/db";
 export async function POST(req: Request) {
   try {
     const { email, username } = await req.json();
-    if (!email || !username) return NextResponse.json({ error: "MISSING_DATA" }, { status: 400 });
+    if (!email) return NextResponse.json({ error: "EMAIL_REQUIRED" }, { status: 400 });
 
     await setupDatabase();
     const sql = neon(process.env.DATABASE_URL!);
 
-    // 1. Try to find user
+    // 1. Try to find user by email
     let user = await sql`SELECT * FROM users WHERE email = ${email}`;
 
     if (user.length === 0) {
-      // 2. Create new user if not exists
+      // 2. If new user, username is required
+      if (!username) return NextResponse.json({ error: "USERNAME_REQUIRED_FOR_INIT" }, { status: 400 });
+      
       try {
         const result = await sql`
           INSERT INTO users (email, username)

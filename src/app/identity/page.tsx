@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint } from "lucide-react";
+import { User, Shield, Zap, Star, Trophy, LogOut, Loader2, Fingerprint, Edit3, Check, X } from "lucide-react";
 import gsap from "gsap";
 
 type UserData = {
@@ -19,7 +19,13 @@ export default function IdentityPage() {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [authForm, setAuthForm] = useState({ email: "", username: "" });
+  const [isNewUser, setIsNewUser] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  
+  // Edit Username State
+  const [isEditing, setIsEditing] = useState(false);
+  const [newAlias, setNewAlias] = useState("");
+  const [updateStatus, setUpdateStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   useEffect(() => {
     const savedUser = localStorage.getItem("robo-user");
@@ -39,22 +45,57 @@ export default function IdentityPage() {
         body: JSON.stringify(authForm),
       });
       const data = await res.json();
+      
       if (res.ok) {
         setUser(data.user);
         localStorage.setItem("robo-user", JSON.stringify(data.user));
         setStatus("idle");
       } else {
-        alert(data.error || "AUTH_FAILED");
-        setStatus("error");
+        if (data.error === "USERNAME_REQUIRED_FOR_INIT") {
+          setIsNewUser(true);
+          setStatus("idle");
+        } else {
+          alert(data.error || "AUTH_FAILED");
+          setStatus("error");
+        }
       }
     } catch (e) {
       setStatus("error");
     }
   };
 
+  const handleUpdateAlias = async () => {
+    if (!newAlias || !user) return;
+    setUpdateStatus("loading");
+    try {
+      const res = await fetch("/api/identity/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, newUsername: newAlias }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+        localStorage.setItem("robo-user", JSON.stringify(data.user));
+        setUpdateStatus("success");
+        setTimeout(() => {
+          setIsEditing(false);
+          setUpdateStatus("idle");
+        }, 1500);
+      } else {
+        alert(data.error || "UPDATE_FAILED");
+        setUpdateStatus("error");
+      }
+    } catch (e) {
+      setUpdateStatus("error");
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("robo-user");
     setUser(null);
+    setIsNewUser(false);
+    setAuthForm({ email: "", username: "" });
   };
 
   if (loading) return <div className="min-h-screen bg-background grid-bg flex items-center justify-center"><Loader2 className="w-12 h-12 text-hyper-pink animate-spin" /></div>;
@@ -72,24 +113,13 @@ export default function IdentityPage() {
                  NEURAL_<span className="text-hyper-pink">LINK</span>
                </h1>
                <p className="text-dim font-black uppercase tracking-[0.4em] text-xs">
-                 ESTABLISH_IDENTITY_FOR_SQUAD_XP
+                 {isNewUser ? "INITIATE_NEW_MEMBER_PROTOCOL" : "RE-ESTABLISH_SESSION_UPLINK"}
                </p>
             </div>
 
             <form onSubmit={handleAuth} className="glass-panel p-10 border-4 border-foreground/10 bg-background/80 relative overflow-hidden group">
                <div className="absolute top-0 left-0 w-full h-1 bg-hyper-pink shadow-[0_0_20px_#ff007a] animate-scan opacity-0 group-hover:opacity-100" />
                <div className="space-y-8">
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-dim mb-2">SQUAD_ALIAS</label>
-                    <input 
-                      type="text" 
-                      placeholder="X_USERNAME_X" 
-                      required
-                      className="w-full bg-foreground/5 border-2 border-foreground/10 p-4 font-black uppercase text-xl focus:outline-none focus:border-hyper-pink text-foreground transition-all"
-                      value={authForm.username}
-                      onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
-                    />
-                  </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-widest text-dim mb-2">DIGITAL_NODE (Email)</label>
                     <input 
@@ -101,12 +131,33 @@ export default function IdentityPage() {
                       onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
                     />
                   </div>
+                  
+                  {isNewUser && (
+                    <div className="animate-in slide-in-from-top-4 duration-500">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-hyper-pink mb-2">CHOOSE_SQUAD_ALIAS</label>
+                      <input 
+                        type="text" 
+                        placeholder="X_USERNAME_X" 
+                        required
+                        className="w-full bg-foreground/5 border-2 border-hyper-pink p-4 font-black uppercase text-xl focus:outline-none text-foreground transition-all"
+                        value={authForm.username}
+                        onChange={(e) => setAuthForm({ ...authForm, username: e.target.value })}
+                      />
+                    </div>
+                  )}
+
                   <button 
                     disabled={status === "loading"}
                     className="w-full py-6 bg-foreground text-background font-black text-2xl uppercase italic hover:bg-hyper-pink hover:text-foreground transition-all shadow-[12px_12px_0_0_#00f0ff] active:translate-y-1 active:shadow-none"
                   >
-                    {status === "loading" ? "SYNCING..." : "INITIALIZE_LINK"}
+                    {status === "loading" ? "SYNCING..." : isNewUser ? "CREATE_IDENTITY" : "RESYNC_UPLINK"}
                   </button>
+                  
+                  {!isNewUser && (
+                    <p className="text-center text-[10px] font-black text-dim uppercase tracking-widest">
+                      FIRST TIME? JUST ENTER EMAIL TO START.
+                    </p>
+                  )}
                </div>
             </form>
           </div>
@@ -122,9 +173,39 @@ export default function IdentityPage() {
                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-hyper-pink text-background text-[10px] font-black uppercase mb-8">
                         <User className="w-3 h-3" /> SQUAD_MEMBER_ACTIVE
                      </div>
-                     <h2 className="text-6xl md:text-8xl font-black italic text-foreground uppercase tracking-tighter leading-none mb-2">
-                        {user.username}
-                     </h2>
+
+                     {isEditing ? (
+                        <div className="mb-6 flex gap-4 items-center animate-in slide-in-from-left-4 duration-300">
+                           <input 
+                              autoFocus
+                              className="bg-foreground/10 border-b-4 border-hyper-pink text-4xl md:text-6xl font-black italic text-foreground uppercase focus:outline-none w-full max-w-lg"
+                              value={newAlias}
+                              onChange={(e) => setNewAlias(e.target.value)}
+                              placeholder={user.username}
+                           />
+                           <div className="flex gap-2">
+                              <button onClick={handleUpdateAlias} className="p-4 bg-electric-volt text-background hover:bg-white transition-all rounded">
+                                 {updateStatus === 'loading' ? <Loader2 className="w-6 h-6 animate-spin" /> : <Check className="w-6 h-6" />}
+                              </button>
+                              <button onClick={() => setIsEditing(false)} className="p-4 bg-background border border-foreground/20 text-foreground hover:bg-red-500 transition-all rounded">
+                                 <X className="w-6 h-6" />
+                              </button>
+                           </div>
+                        </div>
+                     ) : (
+                        <div className="group flex items-center gap-6 mb-2">
+                           <h2 className="text-6xl md:text-8xl font-black italic text-foreground uppercase tracking-tighter leading-none">
+                              {user.username}
+                           </h2>
+                           <button 
+                              onClick={() => { setIsEditing(true); setNewAlias(user.username); }}
+                              className="p-3 bg-foreground/5 border border-foreground/10 hover:bg-cyber-blue hover:text-background transition-all rounded opacity-0 group-hover:opacity-100"
+                           >
+                              <Edit3 className="w-5 h-5" />
+                           </button>
+                        </div>
+                     )}
+
                      <p className="text-dim font-mono text-sm tracking-widest uppercase mb-10">{user.email}</p>
                      
                      <div className="flex gap-12">
@@ -180,7 +261,6 @@ export default function IdentityPage() {
                </div>
             </div>
 
-            {/* Simulation History Placeholder */}
             <div className="glass-panel p-10 border-4 border-foreground/10 bg-background/80">
                <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider mb-8 flex items-center gap-4">
                   <Zap className="w-6 h-6 text-hyper-pink" /> RECENT_SIMULATIONS
