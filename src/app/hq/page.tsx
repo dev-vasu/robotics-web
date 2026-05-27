@@ -19,6 +19,18 @@ const SECTORS = [
   { id: "ALERTS", label: "BROADCAST_SECTOR", icon: Radio, sub: ["GLOBAL_ALERT"] }
 ];
 
+const EMAIL_TEMPLATES = [
+  { id: "WELCOME", label: "WELCOME", subj: "WELCOME_TO_THE_SQUAD", msg: "WELCOME TO THE ROBOVIBE SQUAD. WE ARE THRILLED TO HAVE YOU IN THE LABS. STAY TUNED FOR EXCLUSIVE DATA DROPS." },
+  { id: "BUG_FIX", label: "FIXED", subj: "RE: SYSTEM_UPDATE // ISSUE_RESOLVED", msg: "DIAGNOSTICS COMPLETE. THE ISSUE YOU REPORTED HAS BEEN NEUTRALIZED. CORE STABILITY RESTORED. THANKS FOR THE INTEL." },
+  { id: "SUPPORT", label: "SUPPORT", subj: "RE: SUPPORT_REQUEST", msg: "WE HAVE RECEIVED YOUR DATA PAYLOAD. OUR ENGINEERING SQUAD IS ANALYZING THE PROTOCOLS. EXPECT A FULL RESPONSE SHORTLY." }
+];
+
+const BROADCAST_TEMPLATES = [
+  { label: "MAINTENANCE", msg: "SYSTEM MAINTENANCE IN PROGRESS. CERTAIN SECTORS MAY BE OFFLINE. EXPECT STABILITY RESTORED IN 2 HOURS." },
+  { label: "NEW_GAME", msg: "NEW SIMULATION DETECTED! 'CYBER_BEAT' IS NOW LIVE IN THE ARCADE HUB. BOOT IT NOW." },
+  { label: "SQUAD", msg: "SQUAD SIZE GROWING EXPONENTIALLY. THANKS FOR BUILDING THE FUTURE WITH US." }
+];
+
 export default function AdminHQ() {
   const [passcode, setPasscode] = useState("");
   const [to, setTo] = useState("");
@@ -229,7 +241,24 @@ export default function AdminHQ() {
                 <div className="space-y-4">
                   <div><label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">TARGET_NODE</label><input type="email" placeholder="CLIENT@DOMAIN.COM" value={to} onChange={(e) => setTo(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors" /></div>
                   <div><label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">SUBJECT</label><input type="text" placeholder="RE: YOUR INQUIRY" value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors" /></div>
-                  <div><label className="block text-[10px] font-black uppercase tracking-widest text-white/50 mb-2">DATA_PAYLOAD</label><textarea rows={6} placeholder="TYPE RESPONSE..." value={message} onChange={(e) => setMessage(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors resize-none" /></div>
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-white/50">DATA_PAYLOAD</label>
+                      <div className="flex gap-2">
+                        {EMAIL_TEMPLATES.map(temp => (
+                          <button 
+                            key={temp.id}
+                            type="button"
+                            onClick={() => { setMessage(temp.msg); setSubject(temp.subj); }}
+                            className="text-[8px] font-black border border-white/10 px-2 py-0.5 hover:bg-cyber-blue hover:text-black transition-all uppercase"
+                          >
+                            {temp.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <textarea rows={6} placeholder="TYPE RESPONSE..." value={message} onChange={(e) => setMessage(e.target.value)} className="w-full bg-white/5 border-2 border-white/10 px-4 py-3 text-white font-mono focus:outline-none focus:border-cyber-blue transition-colors resize-none" />
+                  </div>
                 </div>
                 <button type="submit" disabled={status === "loading"} className="w-full py-5 bg-cyber-blue text-black font-black text-xl uppercase italic hover:bg-white transition-all shadow-[8px_8px_0_0_rgba(255,255,255,0.2)] disabled:opacity-50">{status === "loading" ? "ENCRYPTING..." : "TRANSMIT"}</button>
               </form>
@@ -265,7 +294,29 @@ export default function AdminHQ() {
 
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-4">
               {activeTab === "GLOBAL_ALERT" ? (
-                <div className="p-10 space-y-8"><div className="flex items-center gap-4 text-hyper-pink mb-4"><Radio className="w-12 h-12" /><h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3></div><div className="space-y-6"><textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_GLOBAL_MESSAGE..." className="w-full bg-black border-2 border-white/10 p-8 text-2xl text-white font-mono focus:border-hyper-pink focus:outline-none h-60" /><button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-black font-black text-3xl uppercase italic hover:bg-white transition-all shadow-[15px_15px_0_0_white]">ACTIVATE_UPLINK</button></div></div>
+                <div className="p-10 space-y-8">
+                 <div className="flex items-center justify-between mb-4 border-b border-hyper-pink/20 pb-4">
+                    <div className="flex items-center gap-4 text-hyper-pink">
+                      <Radio className="w-12 h-12" />
+                      <h3 className="text-5xl font-black italic uppercase tracking-tighter">LIVE_BROADCAST</h3>
+                    </div>
+                    <div className="flex gap-2">
+                       {BROADCAST_TEMPLATES.map(bt => (
+                         <button 
+                          key={bt.label}
+                          onClick={() => setActiveBroadcast(bt.msg)}
+                          className="text-[8px] font-black border border-white/10 px-2 py-0.5 hover:bg-hyper-pink hover:text-black transition-all uppercase"
+                         >
+                           {bt.label}
+                         </button>
+                       ))}
+                    </div>
+                 </div>
+                 <div className="space-y-6">
+                    <textarea value={activeBroadcast} onChange={(e) => setActiveBroadcast(e.target.value)} placeholder="ENTER_GLOBAL_MESSAGE..." className="w-full bg-black border-2 border-white/10 p-8 text-2xl text-white font-mono focus:border-hyper-pink focus:outline-none h-60" />
+                    <button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-black font-black text-3xl uppercase italic hover:bg-white transition-all shadow-[15px_15px_0_0_white]">ACTIVATE_UPLINK</button>
+                 </div>
+              </div>
               ) : activeTab === "MAINTENANCE" ? (
                 <div className="grid md:grid-cols-2 gap-4">
                   {["strike", "beat", "typer", "run", "pong", "snake", "brick", "stacks", "maze", "dodge", "jump", "canvas", "beats", "terminal"].map(id => {
