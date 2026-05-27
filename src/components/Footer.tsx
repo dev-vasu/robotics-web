@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Zap, Globe, Share2, Mail, ExternalLink, Check } from "lucide-react";
 import { useState } from "react";
+import FeatureToggle from "./FeatureToggle";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
