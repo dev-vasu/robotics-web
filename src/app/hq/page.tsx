@@ -299,35 +299,83 @@ export default function AdminHQ() {
                     <button onClick={handleUpdateBroadcast} className="w-full py-8 bg-hyper-pink text-background font-black text-3xl uppercase italic hover:bg-foreground transition-all shadow-[15px_15px_0_0_white] active:translate-y-1 active:shadow-none">ACTIVATE_GLOBAL_UPLINK</button>
                   </div>
                 </div>
+import { CATEGORIES, SYSTEM_MODULES } from "@/lib/constants";
+...
               ) : activeTab === "MAINTENANCE" ? (
-                <div className="grid md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-right-5 duration-500">{["beyond", "orb", "tap", "strike", "beat", "typer", "run", "pong", "snake", "brick", "stacks", "maze", "dodge", "jump", "canvas", "beats", "terminal"].map(id => {
-                  const feat = features.find(f => f.id === id); 
-                  const isEnabled = feat ? feat.is_enabled : true;
-                  const isNew = feat ? feat.is_new : false;
-                  return ( 
-                    <div key={id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-hyper-pink transition-all group relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-hyper-pink transition-colors" />
-                      <div>
-                        <div className="text-[8px] font-black text-foreground/30 uppercase mb-1">MODULE_ID</div>
-                        <div className="text-2xl font-black italic text-foreground uppercase group-hover:text-hyper-pink transition-colors">{id}</div>
+                <div className="space-y-16 animate-in fade-in slide-in-from-right-5 duration-500 pb-20">
+                  
+                  {/* 1. Global & Communications Category */}
+                  {SYSTEM_MODULES.map(group => (
+                    <div key={group.group} className="space-y-6">
+                      <div className="flex items-center gap-4 border-b border-foreground/10 pb-4">
+                        <Settings className="w-6 h-6 text-cyber-blue" />
+                        <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">{group.group}</h3>
                       </div>
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => handleToggleFeature(id, 'NEW', isNew)} 
-                          className={`px-4 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isNew ? "bg-hyper-pink text-background" : "bg-background border border-foreground/10 text-dim"}`}
-                        >
-                          {isNew ? "NEW_ON" : "NEW_OFF"}
-                        </button>
-                        <button 
-                          onClick={() => handleToggleFeature(id, 'ENABLED', isEnabled)} 
-                          className={`px-6 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-electric-volt text-background" : "bg-red-500 text-foreground"}`}
-                        >
-                          {isEnabled ? "ACTIVE" : "OFFLINE"}
-                        </button>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {group.modules.map(mod => {
+                          const feat = features.find(f => f.id === mod.id);
+                          const isEnabled = feat ? feat.is_enabled : true;
+                          return (
+                            <div key={mod.id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-cyber-blue transition-all group relative overflow-hidden">
+                              <div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-cyber-blue transition-colors" />
+                              <div>
+                                <div className="text-[8px] font-black text-foreground/30 uppercase mb-1">{mod.id}</div>
+                                <div className="text-2xl font-black italic text-foreground uppercase group-hover:text-cyber-blue transition-colors">{mod.name}</div>
+                                <p className="text-[10px] text-dim font-bold mt-1 uppercase">{mod.desc}</p>
+                              </div>
+                              <button 
+                                onClick={() => handleToggleFeature(mod.id, 'ENABLED', isEnabled)} 
+                                className={`px-8 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-cyber-blue text-background" : "bg-red-500 text-foreground"}`}
+                              >
+                                {isEnabled ? "ONLINE" : "OFFLINE"}
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
-                    </div> 
-                  );
-                })}</div>
+                    </div>
+                  ))}
+
+                  {/* 2. Arcade Categories (Mobile / PC) */}
+                  {CATEGORIES.map(cat => (
+                    <div key={cat.title} className="space-y-6">
+                      <div className="flex items-center gap-4 border-b border-foreground/10 pb-4">
+                        <cat.icon className={`w-6 h-6 ${cat.color}`} />
+                        <h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">ARCADE: {cat.title}</h3>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {cat.games.map(game => {
+                          const feat = features.find(f => f.id === game.id);
+                          const isEnabled = feat ? feat.is_enabled : true;
+                          const isNew = feat ? feat.is_new : false;
+                          return (
+                            <div key={game.id} className="flex items-center justify-between p-8 bg-background/50 border-2 border-foreground/5 hover:border-hyper-pink transition-all group relative overflow-hidden">
+                              <div className="absolute top-0 left-0 w-1 h-full bg-foreground/10 group-hover:bg-hyper-pink transition-colors" />
+                              <div>
+                                <div className="text-[8px] font-black text-foreground/30 uppercase mb-1">MODULE_ID</div>
+                                <div className="text-2xl font-black italic text-foreground uppercase group-hover:text-hyper-pink transition-colors">{game.id}</div>
+                              </div>
+                              <div className="flex gap-2">
+                                <button 
+                                  onClick={() => handleToggleFeature(game.id, 'NEW', isNew)} 
+                                  className={`px-4 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isNew ? "bg-hyper-pink text-background" : "bg-background border border-foreground/10 text-dim"}`}
+                                >
+                                  {isNew ? "NEW_ON" : "NEW_OFF"}
+                                </button>
+                                <button 
+                                  onClick={() => handleToggleFeature(game.id, 'ENABLED', isEnabled)} 
+                                  className={`px-6 py-3 font-black uppercase italic transition-all shadow-[5px_5px_0_0_black] hover:shadow-none active:translate-x-1 active:translate-y-1 ${isEnabled ? "bg-electric-volt text-background" : "bg-red-500 text-foreground"}`}
+                                >
+                                  {isEnabled ? "ACTIVE" : "OFFLINE"}
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : activeTab === "LEADERBOARDS" ? (
                 <div className="space-y-12 animate-in fade-in zoom-in duration-500">{Array.from(new Set(leaderboardScores.map(s => s.game_id))).map(gameId => (<div key={gameId} className="space-y-4"><div className="flex items-center gap-3 border-b border-cyber-blue/30 pb-3"><Trophy className="w-6 h-6 text-cyber-blue" /><h3 className="text-2xl font-black italic text-foreground uppercase tracking-wider">{gameId}</h3></div><table className="w-full text-left border-collapse"><thead><tr className="border-b border-foreground/10 text-[10px] uppercase text-dim"><th className="pb-3 px-6 font-black">ALIAS_ID</th><th className="pb-3 px-6 font-black">DATA_POINTS</th><th className="pb-3 px-6 font-black text-right">ACTION</th></tr></thead><tbody>{leaderboardScores.filter(s => s.game_id === gameId).map(s => (<tr key={s.id} className="border-b border-foreground/5 hover:bg-foreground/5 transition-all"><td className="py-4 px-6 font-black text-foreground text-lg tracking-widest">{s.initials}</td><td className="py-4 px-6 font-black italic text-electric-volt text-2xl tabular-nums">{s.score}</td><td className="py-4 px-6 text-right"><button onClick={() => handleDeleteScore(s.id)} className="p-2 text-red-500 hover:bg-red-500 hover:text-foreground transition-all rounded border border-transparent hover:border-foreground/20"><ShieldAlert className="w-6 h-6" /></button></td></tr>))}</tbody></table></div>))}{leaderboardScores.length === 0 && <div className="text-center text-foreground/20 font-black uppercase tracking-[0.5em] py-20 italic">NO_SIMULATION_DATA_DETECTED</div>}</div>
               ) : !selectedEmail ? (

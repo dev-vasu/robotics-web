@@ -156,3 +156,30 @@ export const CATEGORIES = [
     ]
   }
 ];
+
+export const SYSTEM_MODULES = [
+  {
+    group: "GLOBAL_SYSTEMS",
+    modules: [
+      { id: "site_wide", name: "GLOBAL_MAINTENANCE", desc: "Locks the entire platform for maintenance." },
+      { id: "vibe_grid", name: "SYNTHWAVE_ENGINE", desc: "Enables/Disables the 3D grid background." },
+    ]
+  },
+  {
+    group: "COMMUNICATIONS",
+    modules: [
+      { id: "newsletter", name: "SQUAD_SUBSCRIPTIONS", desc: "Enable/Disable newsletter signups." },
+      { id: "contact_portal", name: "UPLINK_QUERIES", desc: "Enable/Disable the contact form." },
+      { id: "feedback_portal", name: "STATION_DIAGNOSTICS", desc: "Enable/Disable feedback and bug reports." },
+      { id: "auto_emails", name: "NEURAL_MAILING", desc: "Master switch for automated email dispatch." },
+    ]
+  },
+  {
+    group: "LAB_SECTORS",
+    modules: [
+      { id: "canvas", name: "NEON_CANVAS", desc: "Art generation module status." },
+      { id: "beats", name: "ROBO_BEATS", desc: "Audio sequencer module status." },
+      { id: "terminal", name: "DATA_VAULT", desc: "Lore terminal module status." },
+    ]
+  }
+];
