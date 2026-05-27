@@ -77,7 +77,7 @@ export default function PlaygroundHub() {
             <Link 
               key={sector.id}
               href={sector.href} 
-              className={`sector-card group relative block p-1 bg-white/10 hover:bg-foreground transition-all`}
+              className={`sector-card group relative block p-1 bg-foreground/10 hover:bg-foreground transition-all`}
             >
               <div className="bg-background p-12 h-full relative overflow-hidden">
                 <div className={`absolute -bottom-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity text-${sector.color}`}>
@@ -94,7 +94,7 @@ export default function PlaygroundHub() {
                     <span className={`text-${sector.color}`}>{sector.title.split("_")[1]}</span>
                   </h2>
                   
-                  <p className="text-foreground/40 font-bold mb-10 text-lg leading-relaxed max-w-sm">
+                  <p className="text-dim font-bold mb-10 text-lg leading-relaxed max-w-sm">
                     {sector.desc}
                   </p>
                   

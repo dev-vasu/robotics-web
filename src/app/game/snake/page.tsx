@@ -128,12 +128,12 @@ export default function SnakeGame() {
           <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">NEON_<span className="text-hyper-pink">SNAKE</span></h1>
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-[10px]">ORGANIC_LINK_ACTIVE</p>
         </div>
-        <div className="relative glass-panel border-4 border-white/10 overflow-hidden" style={{ width: 600, height: 600 }}>
+        <div className="relative glass-panel border-4 border-foreground/10 overflow-hidden" style={{ width: 600, height: 600 }}>
           <canvas ref={canvasRef} width={600} height={600} />
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
               <button onClick={initGame} className="px-10 py-5 bg-hyper-pink text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff]">START_GROWTH</button>
-              <p className="mt-6 text-foreground/40 font-black uppercase text-[10px]">USE_ARROWS_TO_GUIDE</p>
+              <p className="mt-6 text-dim font-black uppercase text-[10px]">USE_ARROWS_TO_GUIDE</p>
             </div>
           )}
           {gameState === "GAMEOVER" && (

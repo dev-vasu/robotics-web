@@ -24,20 +24,20 @@ export default function ThemeToggle() {
   return (
     <button 
       onClick={toggleTheme}
-      className="flex items-center gap-3 px-4 py-2 border-2 border-white/10 hover:border-hyper-pink transition-all group relative overflow-hidden"
+      className="flex items-center gap-3 px-4 py-2 border-2 border-foreground/10 hover:border-hyper-pink transition-all group relative overflow-hidden"
     >
       <div className="relative z-10 flex items-center gap-2">
         {theme === "dark" ? (
           <>
             <Moon className="w-4 h-4 text-cyber-blue animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-white group-hover:text-hyper-pink transition-colors">
+            <span className="text-[10px] font-black uppercase tracking-widest text-foreground group-hover:text-hyper-pink transition-colors">
               VOID_VIBE
             </span>
           </>
         ) : (
           <>
             <Sun className="w-4 h-4 text-[#ffaa00] animate-spin-slow" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-black">
+            <span className="text-[10px] font-black uppercase tracking-widest text-background">
               FLASHBANG
             </span>
           </>
@@ -45,7 +45,7 @@ export default function ThemeToggle() {
       </div>
       
       {/* Dynamic background slide for Light mode */}
-      <div className={`absolute inset-0 bg-white transition-transform duration-500 -z-0 ${theme === 'light' ? 'translate-y-0' : 'translate-y-full'}`} />
+      <div className={`absolute inset-0 bg-foreground transition-transform duration-500 -z-0 ${theme === 'light' ? 'translate-y-0' : 'translate-y-full'}`} />
     </button>
   );
 }

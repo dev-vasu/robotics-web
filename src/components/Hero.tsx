@@ -54,10 +54,10 @@ export default function Hero() {
 
         <h1
           ref={titleRef}
-          className="text-6xl md:text-[10rem] font-black italic tracking-tight text-white leading-none uppercase mb-12"
+          className="text-6xl md:text-[10rem] font-black italic tracking-tight text-foreground leading-none uppercase mb-12"
         >
           CREATIVE <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-hyper-pink via-white to-electric-volt text-glitch">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-hyper-pink via-foreground to-electric-volt text-glitch">
             PLAYGROUND
           </span>
         </h1>
@@ -77,7 +77,7 @@ export default function Hero() {
                 {/* @ts-ignore */}
                 <item.icon className={`w-8 h-8 ${item.color}`} />
               </div>
-              <span className="text-xs font-black uppercase tracking-widest text-white/80">{item.label}</span>
+              <span className="text-xs font-black uppercase tracking-widest text-foreground/80">{item.label}</span>
             </Link>
           ))}
         </div>

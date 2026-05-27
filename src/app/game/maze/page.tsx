@@ -141,14 +141,14 @@ export default function MazeGame() {
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px]">LEVEL_{level}_PATH_CALCULATION</p>
         </div>
 
-        <div className="relative glass-panel border-4 border-white/10 overflow-hidden shadow-[0_0_50px_rgba(255,0,122,0.1)]" style={{ width: 600, height: 600 }}>
+        <div className="relative glass-panel border-4 border-foreground/10 overflow-hidden shadow-[0_0_50px_rgba(255,0,122,0.1)]" style={{ width: 600, height: 600 }}>
           <canvas ref={canvasRef} width={600} height={600} />
           
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95">
               <Eye className="w-20 h-20 text-cyber-blue mb-8 animate-pulse" />
               <button onClick={() => initGame(1)} className="px-16 py-8 bg-cyber-blue text-background font-black text-3xl uppercase italic shadow-[12px_12px_0_0_#ff007a]">BOOT_MAZE_V2</button>
-              <div className="mt-8 text-foreground/40 font-black uppercase text-[10px] tracking-widest text-center">
+              <div className="mt-8 text-dim font-black uppercase text-[10px] tracking-widest text-center">
                  USE_ARROWS_TO_NAVIGATE<br/>
                  FIND_THE_EXIT_PROTOCOL_
               </div>
@@ -182,11 +182,11 @@ export default function MazeGame() {
 
         <div className="mt-8 flex gap-4 w-full max-w-[600px]">
            <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue">
-              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">INTEL_POINTS</div>
+              <div className="text-[10px] font-black text-dim uppercase mb-1">INTEL_POINTS</div>
               <div className="text-3xl font-black italic text-foreground tabular-nums">{score}</div>
            </div>
            <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink">
-              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">MAZE_DENSITY</div>
+              <div className="text-[10px] font-black text-dim uppercase mb-1">MAZE_DENSITY</div>
               <div className="text-3xl font-black italic text-foreground">{gridCountRef.current}x{gridCountRef.current}</div>
            </div>
         </div>

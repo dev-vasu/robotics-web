@@ -3,25 +3,25 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
-  --text-dim: rgba(255, 255, 255, 0.4);
+  --text-dim: rgba(255, 255, 255, 0.5);
   --hyper-pink: #ff007a;
   --electric-volt: #ccff00;
   --cyber-blue: #00f0ff;
   --grid-color: rgba(255, 0, 122, 0.1);
-  --panel-bg: rgba(0, 0, 0, 0.7);
+  --panel-bg: rgba(10, 10, 10, 0.8);
   --border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="light"] {
-  --background: #ffffff;
-  --foreground: #000000;
-  --text-dim: rgba(0, 0, 0, 0.5);
-  --hyper-pink: #ff007a;
-  --electric-volt: #447700;
-  --cyber-blue: #0077aa;
-  --grid-color: rgba(0, 0, 0, 0.05);
-  --panel-bg: rgba(240, 240, 240, 0.8);
-  --border-color: rgba(0, 0, 0, 0.1);
+  --background: #ffffff !important;
+  --foreground: #000000 !important;
+  --text-dim: rgba(0, 0, 0, 0.6) !important;
+  --hyper-pink: #ff007a !important;
+  --electric-volt: #336600 !important;
+  --cyber-blue: #006688 !important;
+  --grid-color: rgba(0, 0, 0, 0.05) !important;
+  --panel-bg: rgba(245, 245, 245, 0.9) !important;
+  --border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 @theme inline {
@@ -38,12 +38,22 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui;
   overflow-x: hidden;
   cursor: crosshair;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Global Color Resets */
+h1, h2, h3, h4, h5, h6, p, span, div, input, textarea, button, a {
+  border-color: var(--border-color);
+}
+
+/* Utility for Dimmed Text */
+.text-dim {
+  color: var(--text-dim) !important;
 }
 
 /* Original Hyper-Pink Grid */
@@ -75,10 +85,16 @@ body {
 
 .glass-panel {
   background: var(--panel-bg);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  transition: all 0.4s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.arcade-card-inner {
+  background: var(--background);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
 }
 
 @keyframes scan {
@@ -101,7 +117,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;

@@ -69,7 +69,7 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
               placeholder="USER@DOMAIN.XYZ"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs font-mono text-foreground focus:outline-none focus:border-[#ffaa00] transition-colors"
+              className="w-full bg-foreground/5 border border-foreground/10 px-4 py-3 text-xs font-mono text-foreground focus:outline-none focus:border-[#ffaa00] transition-colors"
             />
             <textarea
               required
@@ -77,7 +77,7 @@ export default function MinimalFeedback({ featureName }: { featureName: string }
               placeholder="WHAT'S BROKEN? BE BRUTAL."
               value={feedback}
               onChange={e => setFeedback(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs font-mono text-foreground focus:outline-none focus:border-[#ffaa00] resize-none transition-colors"
+              className="w-full bg-foreground/5 border border-foreground/10 px-4 py-3 text-xs font-mono text-foreground focus:outline-none focus:border-[#ffaa00] resize-none transition-colors"
             />
             <button 
               type="submit"

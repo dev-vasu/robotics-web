@@ -98,7 +98,7 @@ export default function TyperGame() {
           </p>
         </div>
 
-        <div className="w-full max-w-4xl glass-panel border-4 border-white/5 p-12 relative overflow-hidden">
+        <div className="w-full max-w-4xl glass-panel border-4 border-foreground/5 p-12 relative overflow-hidden">
           {/* Animated Matrix Background Effect */}
           <div className="absolute inset-0 opacity-5 pointer-events-none font-mono text-[8px] overflow-hidden whitespace-pre leading-none text-cyber-blue">
             {Array(50).fill("SYSTEM_FAILURE_CORE_DUMP_MEMORY_LEAK_ACCESS_DENIED_").join("\n")}
@@ -114,11 +114,11 @@ export default function TyperGame() {
                 INITIATE_HACK
               </button>
               <div className="mt-12 grid grid-cols-2 gap-8 max-w-md mx-auto">
-                 <div className="text-center p-4 border border-white/10 glass-panel">
+                 <div className="text-center p-4 border border-foreground/10 glass-panel">
                     <div className="text-[10px] text-cyber-blue font-black tracking-widest uppercase mb-2">CONTROLS</div>
                     <div className="text-foreground font-bold text-xs uppercase">KEYBOARD: TYPE_CODE</div>
                  </div>
-                 <div className="text-center p-4 border border-white/10 glass-panel">
+                 <div className="text-center p-4 border border-foreground/10 glass-panel">
                     <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
                     <div className="text-foreground font-bold text-xs uppercase">DECRYPT_PROTOCOLS<br/>BEFORE_TIME_OUT</div>
                  </div>
@@ -131,11 +131,11 @@ export default function TyperGame() {
               <div className="flex justify-between items-center mb-12">
                 <div className="flex gap-10">
                    <div>
-                     <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">TIME_REMAINING</div>
+                     <div className="text-[10px] text-dim font-black uppercase tracking-widest">TIME_REMAINING</div>
                      <div className={`text-4xl font-black italic ${timeLeft < 10 ? "text-red-500 animate-pulse" : "text-foreground"}`}>{timeLeft}S</div>
                    </div>
                    <div>
-                     <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">BYTES_DECRYPTED</div>
+                     <div className="text-[10px] text-dim font-black uppercase tracking-widest">BYTES_DECRYPTED</div>
                      <div className="text-4xl font-black italic text-electric-volt">{score}</div>
                    </div>
                 </div>
@@ -144,7 +144,7 @@ export default function TyperGame() {
                 </div>
               </div>
 
-              <div className="mb-8 p-10 bg-background/80 border-2 border-white/10 rounded-xl">
+              <div className="mb-8 p-10 bg-background/80 border-2 border-foreground/10 rounded-xl">
                  <div className="text-xs font-mono text-cyber-blue mb-4 tracking-tighter opacity-50">&gt; TARGET_PROTOCOL:</div>
                  <div className="text-4xl md:text-5xl font-mono font-bold tracking-tighter text-foreground break-all">
                     {targetText.split("").map((char, i) => (
@@ -160,7 +160,7 @@ export default function TyperGame() {
                 type="text"
                 value={userInput}
                 onChange={handleInput}
-                className="w-full bg-white/5 border-4 border-cyber-blue p-8 text-3xl font-mono font-black uppercase text-foreground focus:outline-none placeholder:text-foreground/10 shadow-[0_0_30px_rgba(0,240,255,0.1)]"
+                className="w-full bg-foreground/5 border-4 border-cyber-blue p-8 text-3xl font-mono font-black uppercase text-foreground focus:outline-none placeholder:text-foreground/10 shadow-[0_0_30px_rgba(0,240,255,0.1)]"
                 placeholder="TYPE_HERE_TO_DECRYPT..."
               />
             </div>
@@ -187,11 +187,11 @@ export default function TyperGame() {
               </p>
               <div className="flex justify-center gap-12 mb-10">
                  <div>
-                   <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">SPEED</div>
+                   <div className="text-[10px] text-dim font-black uppercase tracking-widest">SPEED</div>
                    <div className="text-5xl font-black italic text-cyber-blue">{wpm} <span className="text-xl">WPM</span></div>
                  </div>
                  <div>
-                   <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">TOTAL_DATA</div>
+                   <div className="text-[10px] text-dim font-black uppercase tracking-widest">TOTAL_DATA</div>
                    <div className="text-5xl font-black italic text-electric-volt">{score} <span className="text-xl">B</span></div>
                  </div>
               </div>
@@ -209,14 +209,14 @@ export default function TyperGame() {
            <div className="flex-1 glass-panel p-6 flex items-center gap-4">
               <Zap className="w-8 h-8 text-electric-volt" />
               <div>
-                 <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">MULTIPLIER</div>
+                 <div className="text-[10px] text-dim font-black uppercase tracking-widest">MULTIPLIER</div>
                  <div className="text-2xl font-black italic text-foreground">x{(1 + score / 500).toFixed(1)}</div>
               </div>
            </div>
            <div className="flex-1 glass-panel p-6 flex items-center gap-4">
               <AlertTriangle className="w-8 h-8 text-hyper-pink" />
               <div>
-                 <div className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">ACCURACY</div>
+                 <div className="text-[10px] text-dim font-black uppercase tracking-widest">ACCURACY</div>
                  <div className="text-2xl font-black italic text-foreground">99.8%</div>
               </div>
            </div>

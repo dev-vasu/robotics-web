@@ -174,7 +174,7 @@ export default function BeatGame() {
           </p>
         </div>
 
-        <div className="relative glass-panel border-4 border-white/10 overflow-hidden" style={{ width: 600, height: 600 }}>
+        <div className="relative glass-panel border-4 border-foreground/10 overflow-hidden" style={{ width: 600, height: 600 }}>
           <canvas ref={canvasRef} width={600} height={600} />
 
           {gameState === "IDLE" && (
@@ -193,7 +193,7 @@ export default function BeatGame() {
                       <Info className="w-4 h-4" /> ADVANCED_PROTOCOL
                    </div>
                    <ul className="text-[10px] text-foreground/70 font-bold uppercase space-y-2 text-left list-disc list-inside">
-                      <li>HIT THE KEYS <span className="text-foreground bg-white/20 px-2">A S D F</span> WHEN NODES REACH THE <span className="text-electric-volt">GLOWING BOX</span>.</li>
+                      <li>HIT THE KEYS <span className="text-foreground bg-foreground/20 px-2">A S D F</span> WHEN NODES REACH THE <span className="text-electric-volt">GLOWING BOX</span>.</li>
                       <li>PRECISION MATTERS: HITTING TOO EARLY OR TOO LATE WILL BREAK YOUR COMBO.</li>
                       <li>COMBOS INCREASE YOUR DATA HARVEST MULTIPLIER (x2, x3, x4).</li>
                       <li>SYSTEM TOLERANCE: <span className="text-red-500">15 MISSES</span> WILL TERMINATE THE UPLINK.</li>
@@ -203,7 +203,7 @@ export default function BeatGame() {
                 <div className="grid grid-cols-4 gap-4">
                    {KEYS.map(k => (
                      <div key={k} className="flex flex-col items-center">
-                        <div className="w-12 h-12 border-4 border-white/20 flex items-center justify-center font-black text-foreground text-xl mb-2">{k}</div>
+                        <div className="w-12 h-12 border-4 border-foreground/20 flex items-center justify-center font-black text-foreground text-xl mb-2">{k}</div>
                         <div className={`w-2 h-2 rounded-full ${k === 'A' ? 'bg-[#ff007a]' : k === 'S' ? 'bg-[#00f0ff]' : k === 'D' ? 'bg-[#ccff00]' : 'bg-foreground'}`} />
                      </div>
                    ))}
@@ -240,11 +240,11 @@ export default function BeatGame() {
           {gameState === "PLAYING" && (
             <>
               <div className="absolute top-6 left-6">
-                <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">COMBO_BREAKER</div>
+                <div className="text-[10px] font-black text-dim uppercase tracking-widest">COMBO_BREAKER</div>
                 <div className="text-5xl font-black italic text-foreground animate-pulse">{combo}x</div>
               </div>
               <div className="absolute top-6 right-6 text-right">
-                <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">CORE_STABILITY</div>
+                <div className="text-[10px] font-black text-dim uppercase tracking-widest">CORE_STABILITY</div>
                 <div className="text-2xl font-black italic text-red-500">{15 - missed} / 15</div>
               </div>
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-foreground/20 font-black tracking-[0.5em] text-[10px]">HIT_ZONE_ACTIVE</div>
@@ -253,12 +253,12 @@ export default function BeatGame() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-[600px]">
-           <div className="bg-white/5 p-6 border-l-4 border-cyber-blue flex justify-between items-center">
-              <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">BYTES_SYNCED</span>
+           <div className="bg-foreground/5 p-6 border-l-4 border-cyber-blue flex justify-between items-center">
+              <span className="text-[10px] font-black text-dim uppercase tracking-widest">BYTES_SYNCED</span>
               <span className="text-2xl font-black italic text-foreground tabular-nums">{score}</span>
            </div>
-           <div className="bg-white/5 p-6 border-l-4 border-hyper-pink flex justify-between items-center">
-              <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">MULTIPLIER</span>
+           <div className="bg-foreground/5 p-6 border-l-4 border-hyper-pink flex justify-between items-center">
+              <span className="text-[10px] font-black text-dim uppercase tracking-widest">MULTIPLIER</span>
               <span className="text-2xl font-black italic text-foreground">x{(Math.floor(combo / 5) + 1)}</span>
            </div>
         </div>

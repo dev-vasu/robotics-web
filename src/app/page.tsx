@@ -55,7 +55,7 @@ export default function Home() {
                        DESIGNED FOR PLAY. <br/> BUILT FOR CREATION.
                      </div>
                      <div className="w-full h-px bg-foreground/20 mt-auto mb-4" />
-                     <div className="flex justify-between w-full text-[8px] font-mono text-text-dim">
+                     <div className="flex justify-between w-full text-[8px] font-mono text-dim">
                        <span>VER: PLAYGROUND-V1</span>
                        <span>STATUS: WELCOMING</span>
                      </div>

@@ -27,8 +27,8 @@ export default function BroadcastBanner() {
   if (!content) return null;
 
   return (
-    <div className="fixed top-0 left-0 w-full z-[100] bg-hyper-pink text-black overflow-hidden h-8 flex items-center border-b-2 border-white/20">
-      <div className="flex items-center gap-2 px-4 bg-black text-hyper-pink h-full border-r border-white/10 shrink-0">
+    <div className="fixed top-0 left-0 w-full z-[100] bg-hyper-pink text-background overflow-hidden h-8 flex items-center border-b-2 border-foreground/20">
+      <div className="flex items-center gap-2 px-4 bg-background text-hyper-pink h-full border-r border-foreground/10 shrink-0">
         <Radio className="w-3 h-3 animate-pulse" />
         <span className="text-[8px] font-black uppercase tracking-widest">LIVE_UPLINK</span>
       </div>

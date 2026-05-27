@@ -55,7 +55,7 @@ export default function RoboBeats() {
       <div className="fixed top-24 left-6 z-40 flex flex-col gap-4">
         <Link 
           href="/playground" 
-          className="flex items-center gap-2 px-4 py-2 bg-background border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel"
+          className="flex items-center gap-2 px-4 py-2 bg-background border border-foreground/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel"
         >
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-[10px] font-black uppercase tracking-widest">Exit_to_Lab</span>
@@ -72,9 +72,9 @@ export default function RoboBeats() {
           </p>
         </div>
 
-        <div className="w-full max-w-5xl glass-panel border-4 border-white/10 p-10 relative overflow-hidden">
+        <div className="w-full max-w-5xl glass-panel border-4 border-foreground/10 p-10 relative overflow-hidden">
           {/* Controls */}
-          <div className="flex justify-between items-center mb-12 border-b border-white/5 pb-8">
+          <div className="flex justify-between items-center mb-12 border-b border-foreground/5 pb-8">
             <div className="flex gap-6">
               <button 
                 onClick={() => setIsPlaying(!isPlaying)}
@@ -83,8 +83,8 @@ export default function RoboBeats() {
                 {isPlaying ? <><Square className="w-6 h-6 fill-current" /> STOP_CORE</> : <><Play className="w-6 h-6 fill-current" /> BOOT_SEQUENCE</>}
               </button>
               
-              <div className="flex items-center gap-4 px-6 bg-white/5 border border-white/10">
-                 <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">BPM</span>
+              <div className="flex items-center gap-4 px-6 bg-foreground/5 border border-foreground/10">
+                 <span className="text-[10px] font-black text-dim uppercase tracking-widest">BPM</span>
                  <input 
                   type="range" min="60" max="180" value={bpm} 
                   onChange={(e) => setBpm(parseInt(e.target.value))}
@@ -96,11 +96,11 @@ export default function RoboBeats() {
 
             <div className="hidden md:flex gap-8">
                <div className="text-right">
-                  <div className="text-[10px] font-black text-foreground/40 uppercase">STATUS</div>
+                  <div className="text-[10px] font-black text-dim uppercase">STATUS</div>
                   <div className="text-electric-volt font-black italic">SYNC_ACTIVE</div>
                </div>
                <div className="text-right">
-                  <div className="text-[10px] font-black text-foreground/40 uppercase">ENGINE</div>
+                  <div className="text-[10px] font-black text-dim uppercase">ENGINE</div>
                   <div className="text-hyper-pink font-black italic">industrial.vibe</div>
                </div>
             </div>
@@ -120,9 +120,9 @@ export default function RoboBeats() {
                       onClick={() => toggleStep(tIdx, sIdx)}
                       className={`h-12 border-2 transition-all transform hover:scale-105 ${
                         active 
-                          ? `${track.bg} border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]` 
-                          : `bg-white/5 border-white/5`
-                      } ${currentStep === sIdx && isPlaying ? "scale-110 border-white/40 ring-4 ring-white/10" : ""}`}
+                          ? `${track.bg} border-foreground shadow-[0_0_15px_rgba(255,255,255,0.3)]` 
+                          : `bg-foreground/5 border-foreground/5`
+                      } ${currentStep === sIdx && isPlaying ? "scale-110 border-foreground/40 ring-4 ring-white/10" : ""}`}
                     />
                   ))}
                 </div>
@@ -131,10 +131,10 @@ export default function RoboBeats() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-12 pt-8 border-t border-white/5 flex justify-between items-center text-foreground/20">
+          <div className="mt-12 pt-8 border-t border-foreground/5 flex justify-between items-center text-foreground/20">
              <div className="flex gap-2">
                 {Array(16).fill(0).map((_, i) => (
-                  <div key={i} className={`w-2 h-2 rounded-full ${currentStep === i && isPlaying ? "bg-electric-volt shadow-[0_0_10px_#ccff00]" : "bg-white/10"}`} />
+                  <div key={i} className={`w-2 h-2 rounded-full ${currentStep === i && isPlaying ? "bg-electric-volt shadow-[0_0_10px_#ccff00]" : "bg-foreground/10"}`} />
                 ))}
              </div>
              <div className="text-[10px] font-black uppercase tracking-[0.4em]">ROBOVIBE_AUDIO_CORE_ENGAGED</div>
@@ -145,14 +145,14 @@ export default function RoboBeats() {
            <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue flex items-center gap-4">
               <Activity className="w-8 h-8 text-cyber-blue" />
               <div>
-                 <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">OSCILLATOR</div>
+                 <div className="text-[10px] font-black text-dim uppercase tracking-widest">OSCILLATOR</div>
                  <div className="text-xl font-black italic text-foreground">RESONANT_WAVE_FORM</div>
               </div>
            </div>
            <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink flex items-center gap-4">
               <Volume2 className="w-8 h-8 text-hyper-pink" />
               <div>
-                 <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">OUTPUT</div>
+                 <div className="text-[10px] font-black text-dim uppercase tracking-widest">OUTPUT</div>
                  <div className="text-xl font-black italic text-foreground">LOW_LATENCY_DRIVE</div>
               </div>
            </div>

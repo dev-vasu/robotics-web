@@ -50,11 +50,11 @@ export default function ContactPage() {
       
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="text-left mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1 bg-hyper-pink text-black text-[10px] font-black uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1 bg-hyper-pink text-background text-[10px] font-black uppercase tracking-widest mb-6">
             <Terminal className="w-3 h-3" />
             Establish_Protocol
           </div>
-          <h1 className="text-6xl md:text-8xl font-black italic text-white uppercase leading-none mb-6">
+          <h1 className="text-6xl md:text-8xl font-black italic text-foreground uppercase leading-none mb-6">
             SEND IT <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-hyper-pink to-cyber-blue text-glitch">
               WITHOUT_DELAY
@@ -67,7 +67,7 @@ export default function ContactPage() {
           onSubmit={handleSubmit}
           className="p-1 md:p-1 bg-gradient-to-br from-hyper-pink via-transparent to-electric-volt relative group"
         >
-          <div className="bg-black p-8 md:p-12 relative overflow-hidden">
+          <div className="bg-background p-8 md:p-12 relative overflow-hidden">
              {/* Scanning Line Animation */}
             <div className="absolute top-0 left-0 w-full h-1.5 bg-electric-volt shadow-[0_0_20px_#ccff00] -translate-y-full animate-scan z-10" />
             
@@ -77,7 +77,7 @@ export default function ContactPage() {
                   type="text"
                   placeholder="NAME_OR_ALIAS"
                   required
-                  className="w-full bg-transparent border-b-2 border-white/20 pb-4 text-2xl font-black uppercase text-white focus:outline-none focus:border-hyper-pink transition-colors placeholder:text-white/20"
+                  className="w-full bg-transparent border-b-2 border-foreground/20 pb-4 text-2xl font-black uppercase text-foreground focus:outline-none focus:border-hyper-pink transition-colors placeholder:text-foreground/20"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
@@ -88,7 +88,7 @@ export default function ContactPage() {
                   type="email"
                   placeholder="DIGITAL_ADDRESS"
                   required
-                  className="w-full bg-transparent border-b-2 border-white/20 pb-4 text-2xl font-black uppercase text-white focus:outline-none focus:border-cyber-blue transition-colors placeholder:text-white/20"
+                  className="w-full bg-transparent border-b-2 border-foreground/20 pb-4 text-2xl font-black uppercase text-foreground focus:outline-none focus:border-cyber-blue transition-colors placeholder:text-foreground/20"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -99,7 +99,7 @@ export default function ContactPage() {
                   placeholder="DATA_STREAM_CONTENT"
                   required
                   rows={4}
-                  className="w-full bg-transparent border-b-2 border-white/20 pb-4 text-2xl font-black uppercase text-white focus:outline-none focus:border-electric-volt transition-colors placeholder:text-white/20 resize-none"
+                  className="w-full bg-transparent border-b-2 border-foreground/20 pb-4 text-2xl font-black uppercase text-foreground focus:outline-none focus:border-electric-volt transition-colors placeholder:text-foreground/20 resize-none"
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 />
@@ -108,7 +108,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full py-8 bg-white text-black font-black text-2xl uppercase italic tracking-widest hover:bg-hyper-pink hover:text-white transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                className="w-full py-8 bg-foreground text-background font-black text-2xl uppercase italic tracking-widest hover:bg-hyper-pink hover:text-foreground transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50"
               >
                 {status === "loading" ? (
                   "UPLOADING..."

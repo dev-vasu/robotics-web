@@ -132,7 +132,7 @@ export default function PongGame() {
           <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">VOID_<span className="text-cyber-blue">PONG</span></h1>
           <p className="text-hyper-pink font-black uppercase tracking-[0.5em] text-[10px]">PADDLE_LINK_STABLE</p>
         </div>
-        <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-none" style={{ width: 800, height: 500 }} onMouseMove={handleMouseMove} onClick={() => gameState !== "PLAYING" && initGame()}>
+        <div className="relative glass-panel border-4 border-foreground/10 overflow-hidden cursor-none" style={{ width: 800, height: 500 }} onMouseMove={handleMouseMove} onClick={() => gameState !== "PLAYING" && initGame()}>
           <canvas ref={canvasRef} width={800} height={500} />
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">

@@ -262,7 +262,7 @@ export default function GamePage() {
         </div>
 
         <div 
-          className="relative bg-background border-4 border-white/10 shadow-[0_0_50px_rgba(204,255,0,0.1)] group"
+          className="relative bg-background border-4 border-foreground/10 shadow-[0_0_50px_rgba(204,255,0,0.1)] group"
           style={{ width: 800, height: 500 }}
         >
           <canvas 
@@ -285,11 +285,11 @@ export default function GamePage() {
                 START_MISSION
               </button>
               <div className="mt-8 grid grid-cols-2 gap-8 max-w-md">
-                 <div className="text-center p-4 border border-white/10 glass-panel">
+                 <div className="text-center p-4 border border-foreground/10 glass-panel">
                     <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">CONTROLS</div>
                     <div className="text-foreground font-bold text-xs uppercase">MOUSE: MOVE_CORE<br/>LEFT_CLICK: FIRE_LASER</div>
                  </div>
-                 <div className="text-center p-4 border border-white/10 glass-panel">
+                 <div className="text-center p-4 border border-foreground/10 glass-panel">
                     <div className="text-[10px] text-hyper-pink font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
                     <div className="text-foreground font-bold text-xs uppercase">ELIMINATE_ENEMIES<br/>DODGE_COLLISIONS</div>
                  </div>
@@ -326,7 +326,7 @@ export default function GamePage() {
           {gameState === "PLAYING" && (
             <div className="absolute top-4 left-4 flex gap-8 pointer-events-none">
                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-foreground/40 uppercase">DATA_HARVESTED</span>
+                  <span className="text-[10px] font-black text-dim uppercase">DATA_HARVESTED</span>
                   <span className="text-foreground text-4xl font-black italic tracking-tighter">{score}</span>
                </div>
             </div>
@@ -335,11 +335,11 @@ export default function GamePage() {
 
         <div className="mt-8 flex gap-4 w-full max-w-[800px]">
            <div className="flex-1 p-4 glass-panel border-l-4 border-hyper-pink">
-              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">HIGHSCORE_INTEL</div>
+              <div className="text-[10px] font-black text-dim uppercase mb-1">HIGHSCORE_INTEL</div>
               <div className="text-2xl font-black italic text-foreground">{highScore}</div>
            </div>
            <div className="flex-1 p-4 glass-panel border-l-4 border-electric-volt">
-              <div className="text-[10px] font-black text-foreground/40 uppercase mb-1">SYSTEM_LOAD</div>
+              <div className="text-[10px] font-black text-dim uppercase mb-1">SYSTEM_LOAD</div>
               <div className="text-2xl font-black italic text-foreground">{enemiesRef.current.length} UNIT(S)</div>
            </div>
         </div>

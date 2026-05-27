@@ -122,16 +122,16 @@ export default function DodgeGame() {
           <p className="text-electric-volt font-black uppercase tracking-[0.5em] text-sm mt-4">EVADE_OR_BE_DELETED</p>
         </div>
 
-        <div ref={containerRef} className="relative glass-panel border-8 border-white/5 overflow-hidden cursor-none" style={{ width: GAME_WIDTH, height: GAME_HEIGHT }}>
+        <div ref={containerRef} className="relative glass-panel border-8 border-foreground/5 overflow-hidden cursor-none" style={{ width: GAME_WIDTH, height: GAME_HEIGHT }}>
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90 backdrop-blur-md">
               <button onClick={startGame} className="px-16 py-8 bg-foreground text-background font-black text-3xl uppercase italic hover:bg-electric-volt transition-all shadow-[15px_15px_0_0_#ff007a]">BOOT_DODGE</button>
               <div className="mt-12 grid grid-cols-2 gap-8 max-w-md">
-                 <div className="text-center p-4 border border-white/10 glass-panel">
+                 <div className="text-center p-4 border border-foreground/10 glass-panel">
                     <div className="text-[10px] text-electric-volt font-black tracking-widest uppercase mb-2">CONTROLS</div>
                     <div className="text-foreground font-bold text-xs uppercase">MOUSE: MOVE_CORE</div>
                  </div>
-                 <div className="text-center p-4 border border-white/10 glass-panel">
+                 <div className="text-center p-4 border border-foreground/10 glass-panel">
                     <div className="text-[10px] text-hyper-pink font-black tracking-widest uppercase mb-2">OBJECTIVE</div>
                     <div className="text-foreground font-bold text-xs uppercase">EVADE_PINK_VOID<br/>SURVIVE_OVERLOAD</div>
                  </div>

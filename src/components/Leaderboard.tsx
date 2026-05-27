@@ -46,14 +46,14 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
       onPointerDown={(e) => e.stopPropagation()}
       onTouchStart={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center gap-2 mb-6 border-b border-white/10 pb-4">
+      <div className="flex items-center gap-2 mb-6 border-b border-foreground/10 pb-4">
         <Trophy className="w-6 h-6 text-hyper-pink" />
         <h3 className="text-xl font-black italic text-foreground uppercase tracking-widest">GLOBAL_RANKS</h3>
       </div>
 
       {!isSubmitted ? (
-        <form onSubmit={handleSubmit} className="mb-6 bg-white/5 p-4 border border-white/10">
-          <p className="text-[10px] text-foreground/60 font-black uppercase tracking-widest mb-3">ENTER_3_LETTER_ID_TO_UPLOAD_SCORE</p>
+        <form onSubmit={handleSubmit} className="mb-6 bg-foreground/5 p-4 border border-foreground/10">
+          <p className="text-[10px] text-dim font-black uppercase tracking-widest mb-3">ENTER_3_LETTER_ID_TO_UPLOAD_SCORE</p>
           <div className="flex gap-2">
             <input 
               type="text" 
@@ -84,9 +84,9 @@ export default function Leaderboard({ gameId, currentScore, onRestart }: Leaderb
           <div className="text-center text-foreground/30 text-xs font-mono py-4">NO_DATA_FOUND</div>
         ) : (
           leaders.map((l, i) => (
-            <div key={i} className="flex justify-between items-center bg-background/50 p-2 border-l-2 border-white/20">
+            <div key={i} className="flex justify-between items-center bg-background/50 p-2 border-l-2 border-foreground/20">
               <div className="flex items-center gap-3">
-                <span className={`text-[10px] font-black ${i === 0 ? 'text-hyper-pink' : i === 1 ? 'text-cyber-blue' : i === 2 ? 'text-electric-volt' : 'text-foreground/40'}`}>
+                <span className={`text-[10px] font-black ${i === 0 ? 'text-hyper-pink' : i === 1 ? 'text-cyber-blue' : i === 2 ? 'text-electric-volt' : 'text-dim'}`}>
                   #{i + 1}
                 </span>
                 <span className="text-foreground font-black tracking-widest">{l.initials}</span>

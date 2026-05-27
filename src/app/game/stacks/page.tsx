@@ -117,12 +117,12 @@ export default function StacksGame() {
           <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">STACKS</span></h1>
           <p className="text-cyber-blue font-black uppercase tracking-[0.5em] text-[10px]">STRUCTURAL_INTEGRITY_REQUIRED</p>
         </div>
-        <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer" style={{ width: 400, height: 600 }} onClick={placeBlock}>
+        <div className="relative glass-panel border-4 border-foreground/10 overflow-hidden cursor-pointer" style={{ width: 400, height: 600 }} onClick={placeBlock}>
           <canvas ref={canvasRef} width={400} height={600} />
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
               <button className="px-10 py-5 bg-cyber-blue text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#ff007a]">BOOT_STACKER</button>
-              <p className="mt-6 text-foreground/40 font-black uppercase text-[10px]">TAP_TO_STACK</p>
+              <p className="mt-6 text-dim font-black uppercase text-[10px]">TAP_TO_STACK</p>
             </div>
           )}
           {gameState === "GAMEOVER" && (

@@ -51,7 +51,7 @@ export default function Footer() {
                 ROBO<span className="text-hyper-pink">VIBE</span>
               </span>
             </Link>
-            <p className="text-text-dim text-xl font-bold leading-tight max-w-md mb-10 italic">
+            <p className="text-dim text-xl font-bold leading-tight max-w-md mb-10 italic">
               WE BUILD THE TOOLS. YOU BUILD THE FUTURE. WELCOME TO THE ULTIMATE CREATIVE HUB.
             </p>
             <div className="flex gap-6">
@@ -68,7 +68,7 @@ export default function Footer() {
             <ul className="space-y-6">
               {["PLAYGROUND", "ARCADE", "CANVAS", "COMMS", "FEEDBACK"].map((item) => (
                 <li key={item}>
-                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : item === "FEEDBACK" ? "/feedback" : "/contact"} className="text-foreground/60 hover:text-foreground font-black text-lg transition-colors flex items-center gap-2 group">
+                  <Link href={item === "PLAYGROUND" ? "/playground" : item === "ARCADE" ? "/game" : item === "CANVAS" ? "/playground/canvas" : item === "FEEDBACK" ? "/feedback" : "/contact"} className="text-dim hover:text-foreground font-black text-lg transition-colors flex items-center gap-2 group">
                     <span className="w-0 group-hover:w-4 h-1 bg-hyper-pink transition-all" />
                     {item}
                   </Link>
@@ -79,7 +79,7 @@ export default function Footer() {
 
           <div>
             <h4 className="text-electric-volt font-black mb-10 uppercase text-xs tracking-[0.4em]">_JOIN_SQUAD</h4>
-            <p className="text-text-dim font-bold mb-6 text-sm">DROP YOUR DIGITAL SIGNATURE FOR UPDATES.</p>
+            <p className="text-dim font-bold mb-6 text-sm">DROP YOUR DIGITAL SIGNATURE FOR UPDATES.</p>
             <div className="space-y-4">
               <input 
                 type="email" 

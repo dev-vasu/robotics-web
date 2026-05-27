@@ -71,7 +71,7 @@ export default function Solutions() {
           <h2 className="text-xs font-black text-hyper-pink uppercase tracking-[0.5em] mb-4">
             Creative_Ecosystem
           </h2>
-          <h3 className="text-6xl md:text-[8rem] font-black italic text-white tracking-tighter uppercase leading-none">
+          <h3 className="text-6xl md:text-[8rem] font-black italic text-foreground tracking-tighter uppercase leading-none">
             CHOOSE YOUR <br />
             <span className="text-glitch">MODULE</span>
           </h3>
@@ -82,17 +82,17 @@ export default function Solutions() {
             <Link
               key={i}
               href={item.href}
-              className="group relative p-10 bg-black border-2 border-white/5 hover:border-hyper-pink transition-all duration-300 block"
+              className="group relative p-10 bg-background border-2 border-foreground/5 hover:border-hyper-pink transition-all duration-300 block"
             >
               <div
                 className={`w-16 h-16 bg-gradient-to-br ${item.color} p-4 mb-10 group-hover:rotate-12 transition-transform duration-500 shadow-[0_0_30px_rgba(255,0,122,0.3)]`}
               >
-                <item.icon className="w-full h-full text-black" />
+                <item.icon className="w-full h-full text-background" />
               </div>
-              <h4 className="text-3xl font-black italic text-white mb-6 uppercase tracking-tighter">
+              <h4 className="text-3xl font-black italic text-foreground mb-6 uppercase tracking-tighter">
                 {item.title}
               </h4>
-              <p className="text-white/40 text-sm font-bold leading-relaxed mb-10 group-hover:text-white transition-colors">
+              <p className="text-dim text-sm font-bold leading-relaxed mb-10 group-hover:text-foreground transition-colors">
                 {item.desc}
               </p>
               <div className="flex items-center gap-4 text-[10px] font-black tracking-[0.3em] text-hyper-pink">

@@ -137,9 +137,9 @@ export default function NeonCanvas() {
         <Navbar />
         
         <div className="fixed top-24 left-6 z-40">
-          <Link href="/playground" className="flex items-center gap-2 px-4 py-2 bg-background border border-white/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel">
+          <Link href="/playground" className="flex items-center gap-2 px-4 py-2 bg-background border border-foreground/10 hover:border-hyper-pink hover:text-hyper-pink transition-all group glass-panel">
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60 group-hover:text-foreground">Exit_to_Lab</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-dim group-hover:text-foreground">Exit_to_Lab</span>
           </Link>
         </div>
 
@@ -153,7 +153,7 @@ export default function NeonCanvas() {
             </p>
           </div>
 
-          <div ref={containerRef} className="relative w-full max-w-5xl aspect-video glass-panel border-4 border-white/10 shadow-[0_0_80px_rgba(255,0,122,0.15)] group bg-background overflow-hidden">
+          <div ref={containerRef} className="relative w-full max-w-5xl aspect-video glass-panel border-4 border-foreground/10 shadow-[0_0_80px_rgba(255,0,122,0.15)] group bg-background overflow-hidden">
             <canvas 
               ref={canvasRef}
               onPointerDown={handlePointerDown}
@@ -168,14 +168,14 @@ export default function NeonCanvas() {
                  <button 
                   key={c}
                   onClick={() => setColor(c)}
-                  className={`w-10 h-10 rounded-full border-2 transition-all transform hover:scale-125 ${color === c ? "border-white scale-125 shadow-[0_0_20px_white]" : "border-transparent"}`}
+                  className={`w-10 h-10 rounded-full border-2 transition-all transform hover:scale-125 ${color === c ? "border-foreground scale-125 shadow-[0_0_20px_white]" : "border-transparent"}`}
                   style={{ backgroundColor: c }}
                  />
                ))}
             </div>
 
             <div className="absolute bottom-6 right-6 flex gap-4 z-20">
-              <button onClick={clearLab} className="p-4 bg-background border border-white/10 text-foreground/60 hover:text-red-500 hover:border-red-500 transition-all glass-panel group">
+              <button onClick={clearLab} className="p-4 bg-background border border-foreground/10 text-dim hover:text-red-500 hover:border-red-500 transition-all glass-panel group">
                  <Trash2 className="w-6 h-6 group-active:scale-90" />
               </button>
               <button onClick={exportData} className="p-4 bg-foreground text-background hover:bg-hyper-pink hover:text-foreground transition-all shadow-[6px_6px_0_0_#ff007a] group">
@@ -197,14 +197,14 @@ export default function NeonCanvas() {
              <div className="flex-1 glass-panel p-6 border-l-4 border-cyber-blue flex items-center gap-4 bg-background/80">
                 <Sparkles className="w-8 h-8 text-cyber-blue animate-spin-slow" />
                 <div>
-                   <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">SYSTEM_STATUS</div>
+                   <div className="text-[10px] font-black text-dim uppercase tracking-widest">SYSTEM_STATUS</div>
                    <div className="text-xl font-black italic text-foreground uppercase">ULTRA_SYNC_READY</div>
                 </div>
              </div>
              <div className="flex-1 glass-panel p-6 border-l-4 border-hyper-pink flex items-center gap-4 bg-background/80">
                 <ActivityIcon className="w-8 h-8 text-hyper-pink" />
                 <div>
-                   <div className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">ACTIVE_UNITS</div>
+                   <div className="text-[10px] font-black text-dim uppercase tracking-widest">ACTIVE_UNITS</div>
                    <div className="text-2xl font-black italic text-foreground tabular-nums">{activeUnits}</div>
                 </div>
              </div>

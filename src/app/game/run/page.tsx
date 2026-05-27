@@ -147,12 +147,12 @@ export default function RunGame() {
           <h1 className="text-5xl md:text-7xl font-black italic text-foreground uppercase tracking-tighter text-glitch">CYBER_<span className="text-hyper-pink">RUN</span></h1>
           <p className="text-cyber-blue font-black uppercase tracking-[0.3em] text-[10px]">SPEED_CORE_ACTIVE</p>
         </div>
-        <div className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer" style={{ width: 800, height: 400 }} onClick={jump}>
+        <div className="relative glass-panel border-4 border-foreground/10 overflow-hidden cursor-pointer" style={{ width: 800, height: 400 }} onClick={jump}>
           <canvas ref={canvasRef} width={800} height={400} />
           {gameState === "IDLE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/90">
               <button className="px-10 py-5 bg-hyper-pink text-background font-black text-xl uppercase italic shadow-[10px_10px_0_0_#00f0ff]">BOOT_RUNNER</button>
-              <p className="mt-6 text-foreground/40 font-black uppercase text-[10px]">TAP_OR_SPACE_TO_JUMP</p>
+              <p className="mt-6 text-dim font-black uppercase text-[10px]">TAP_OR_SPACE_TO_JUMP</p>
             </div>
           )}
           {gameState === "GAMEOVER" && (

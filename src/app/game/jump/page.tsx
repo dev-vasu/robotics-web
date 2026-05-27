@@ -178,7 +178,7 @@ export default function JumpGame() {
         </div>
 
         <div 
-          className="relative glass-panel border-4 border-white/10 overflow-hidden cursor-pointer"
+          className="relative glass-panel border-4 border-foreground/10 overflow-hidden cursor-pointer"
           style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
           onClick={jump}
         >
@@ -244,12 +244,12 @@ export default function JumpGame() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-[400px]">
-           <div className="bg-white/5 p-4 border-l-4 border-cyber-blue flex justify-between items-center">
-              <span className="text-[8px] font-black text-foreground/40 uppercase">RECORD</span>
+           <div className="bg-foreground/5 p-4 border-l-4 border-cyber-blue flex justify-between items-center">
+              <span className="text-[8px] font-black text-dim uppercase">RECORD</span>
               <span className="text-xl font-black italic text-foreground tabular-nums">{highScore}</span>
            </div>
-           <div className="bg-white/5 p-4 border-l-4 border-hyper-pink flex justify-between items-center">
-              <span className="text-[8px] font-black text-foreground/40 uppercase">V_INDEX</span>
+           <div className="bg-foreground/5 p-4 border-l-4 border-hyper-pink flex justify-between items-center">
+              <span className="text-[8px] font-black text-dim uppercase">V_INDEX</span>
               <span className="text-xl font-black italic text-foreground tabular-nums">{(START_SPEED + score * 0.05).toFixed(1)}x</span>
            </div>
         </div>
