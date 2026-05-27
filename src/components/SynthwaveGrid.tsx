@@ -31,7 +31,7 @@ export default function SynthwaveGrid() {
       const gridSpacing = 40;
       const fov = 250;
       
-      ctx.strokeStyle = "rgba(255, 0, 122, 0.4)";
+      ctx.strokeStyle = "rgba(0, 240, 255, 0.4)"; // Cyber Blue
       ctx.lineWidth = 1;
 
       // Draw horizontal lines moving forward towards viewer
@@ -45,6 +45,7 @@ export default function SynthwaveGrid() {
         const scale = fov / pz;
         const y = 80 * scale; // camera height
         
+        ctx.strokeStyle = `rgba(0, 240, 255, ${Math.max(0, 0.6 - pz/600)})`;
         ctx.moveTo(-w * scale, y);
         ctx.lineTo(w * scale, y);
       }
@@ -61,6 +62,7 @@ export default function SynthwaveGrid() {
           const px = x * scale;
           const py = 80 * scale;
           
+          ctx.strokeStyle = `rgba(0, 240, 255, ${Math.max(0, 0.6 - pz/600)})`;
           if (first) {
             ctx.moveTo(px, py);
             first = false;
