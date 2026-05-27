@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal, Music, Smartphone, MousePointer2, Move, Ghost, Target, Eye, Layers } from "lucide-react";
+import { Crosshair, ShieldAlert, Gamepad2, Zap, Terminal, Music, Smartphone, MousePointer2, Move, Ghost, Target, Eye, Layers, Circle } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 const CATEGORIES = [
@@ -12,6 +12,36 @@ const CATEGORIES = [
     icon: Smartphone,
     color: "text-cyber-blue",
     games: [
+      {
+        id: "beyond",
+        title: "BIT_BEYOND",
+        desc: "Gravity inversion runner. Flip your world to survive.",
+        href: "/game/beyond",
+        icon: Move,
+        colorClass: "bg-[#ffaa00]",
+        textClass: "text-[#ffaa00]",
+        tag: "GRAVITY_FLIP"
+      },
+      {
+        id: "orb",
+        title: "NEON_ORB",
+        desc: "High-speed evasion. Navigate the void with precision.",
+        href: "/game/orb",
+        icon: Circle,
+        colorClass: "bg-cyber-blue",
+        textClass: "text-cyber-blue",
+        tag: "FAST_FOLLOW"
+      },
+      {
+        id: "tap",
+        title: "CYBER_TAP",
+        desc: "Reflex calibration. Neutralize nodes at light speed.",
+        href: "/game/tap",
+        icon: Zap,
+        colorClass: "bg-electric-volt",
+        textClass: "text-electric-volt",
+        tag: "REFLEX_TEST"
+      },
       {
         id: "jump",
         title: "CYBER_JUMP",
@@ -135,7 +165,7 @@ const CATEGORIES = [
 
 export default function ArcadeHub() {
   return (
-    <main className="min-h-screen bg-transparent grid-bg flex flex-col pt-20">
+    <main className="min-h-screen bg-background grid-bg flex flex-col pt-20">
       <Navbar />
 
       <div className="flex-1 container mx-auto px-6 py-20">
